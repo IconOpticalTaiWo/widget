@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>&#x1F50D;</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0">
+		<link rel="icon"  href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
+        <script>
+		function LoadRequest(ID,Action){
+			let V=document.getElementById(ID).value
+			if (V){ window.open("https://www.iconoptical.com/"+Action+V) }
+		}
+        function SearchOrder(){ LoadRequest("order-number","account/view-order/") }
+        function SearchUser(){ LoadRequest("user-keyword","wp-admin/users.php?s=") }
+        function SearchGeneral(){ LoadRequest("general-keyword","wp-admin/edit.php?post_status=all&post_type=shop_order&s=") }
+        </script>
+		<style>
+		* { overflow:hidden; border:0; margin:0; padding:0; }
+		input, button { font-size:3vh; font-weight:600; margin:2vh 0; padding:2vh 2vw; background:transparent; }
+		.input-box{border:1px solid; max-width:300px;}
+		.offset-left{margin-left:-10vh;}
+		</style>
+    </head>
+    <body>
+	<center>
+			<div style="margin:5vh 0;"><img src="https://www.iconoptical.com/wp-content/uploads/2018/02/logo.jpg" /></div>
+			<form action="javascript:SearchOrder()">
+				<input autofocus class="input-box" id="order-number" placeholder="快速查單" />
+				<button class="offset-left" tabindex='-1'>&#x1F50D;</button>
+			</form>
+			<form action="javascript:SearchUser()">
+				<input class="input-box" id="user-keyword" placeholder="查詢用戶" />
+				<button class="offset-left" tabindex='-1'>&#x1F50D;</button>
+			</form>
+			<form action="javascript:SearchGeneral()">
+				<input class="input-box" id="general-keyword" placeholder="後台查單" />
+				<button class="offset-left" tabindex='-1'>&#x1F50D;</button>
+			</form>
+	</center>
+    </body>
+</html>
