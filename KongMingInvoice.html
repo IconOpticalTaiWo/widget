@@ -131,7 +131,7 @@
         $('#submit_button').val("遞交中...").attr("disabled", true)
         $.get(ActionURL, $(Form).serialize()).then(function () {
             $('#submit_button').val("遞交").removeAttr("disabled")
-            $(Form).reset()
+            $(Form)[0].reset()
         })
     }
 
