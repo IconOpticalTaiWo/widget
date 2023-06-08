@@ -73,9 +73,8 @@
 <body>
     <div>康明 - 登記收貨單</div>
 
-    <form id="main_form"
-        action="https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec">
-        
+    <form id="main_form" onsubmit='FormSubmit(this); return false;'>
+
         <input type="hidden" name="Action" value="NewEntry">
 
         <div class="flex-container shrink-bottom">
@@ -113,11 +112,9 @@
             <input name="InvoiceSum" type="tel" pattern="\d{1,}" required>
         </div>
 
-        <input type="submit" value="遞交">
+        <input id="submit_button" type="submit" value="遞交">
 
     </form>
-
-
 
     <div class='center' style='margin-top: 2em;'>
         <a href='https://docs.google.com/spreadsheets/d/1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ/edit?usp=sharing'
@@ -130,6 +127,12 @@
 
     var ActionURL = 'https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec'
 
+    function FormSubmit(Form) {
+        $('#submit_button').val("遞交中...").attr("disabled", true)
+        $.get(ActionURL, $(Form).serialize()).then(function () {
+            $('#submit_button').val("遞交").removeAttr("disabled")
+        })
+    }
 
 </script>
 
