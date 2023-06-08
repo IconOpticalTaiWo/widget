@@ -3,18 +3,135 @@
 <html>
 
 <head>
-    <title>Icon Optical Widget</title>
+    <title>康明 - 登記收貨單</title>
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0">
+    <script src='JS/jquery-3.6.4.min.js'></script>
     <style>
+        * {
+            padding: 0;
+            margin: 10px auto;
+            width: auto;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        body {
+            border: 0;
+            min-width: 340px;
+            max-width: 430px;
+        }
+
+        .shrink-bottom {
+            margin-bottom: -40px;
+            padding-bottom: 0;
+        }
+
+        .flex-container {
+            display: flex;
+            align-content: center;
+            align-items: center;
+        }
+
+        label.branch-name>input[name="Branch"][type="radio"] {
+            transform: translateY(-60px);
+            opacity: 0;
+        }
+
+        label.branch-name>div {
+            color: grey;
+            padding: 30px 20px;
+            background-color: whitesmoke;
+        }
+
+        label.branch-name:has(input:checked)>div {
+            color: black;
+            background-color: lightgreen;
+
+            text-shadow: 1px 0 white, -1px 0 white, 0 1px white, 0 -1px white;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="tel"],
+        input[type="submit"] {
+            width: 180px;
+            border-radius: 8px;
+            border: grey 1px solid;
+            text-align: start;
+            padding: 10px 20px;
+        }
+
+        input[type="submit"] {
+            text-align: center;
+            background-color: whitesmoke;
+        }
     </style>
 </head>
 
 <body>
+    <div>康明 - 登記收貨單</div>
 
-This page is for KM invoice
+    <form id="main_form"
+        action="https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec">
+        
+        <input type="hidden" name="Action" value="NewEntry">
+
+        <div class="flex-container shrink-bottom">
+            <label class="branch-name">
+                <div>大埔</div>
+                <input name="Branch" type="radio" value="TP" required>
+            </label>
+            <label class="branch-name">
+                <div>葵廣</div>
+                <input name="Branch" type="radio" value="KC">
+            </label>
+            <label class="branch-name">
+                <div>太和</div>
+                <input name="Branch" type="radio" value="WT">
+            </label>
+        </div>
+
+        <div>
+            <label>單據日期</label>
+            <input id="date_picker" name="InvoiceDate" type="date" onclick="this.showPicker()" />
+        </div>
+
+        <div>
+            <label>負責同事</label>
+            <input name="Blame" type="text" required>
+        </div>
+
+        <div>
+            <label>單據編號</label>
+            <input name="InvoiceNumber" type="tel" pattern="\d{1,}" required>
+        </div>
+
+        <div>
+            <label>總共價錢</label>
+            <input name="InvoiceSum" type="tel" pattern="\d{1,}" required>
+        </div>
+
+        <input type="submit" value="遞交">
+
+    </form>
+
+
+
+    <div class='center' style='margin-top: 2em;'>
+        <a href='https://docs.google.com/spreadsheets/d/1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ/edit?usp=sharing'
+            target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+    </div>
 
 </body>
+<script>
+    $('#date_picker').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
+
+    var ActionURL = 'https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec'
+
+
+</script>
 
 </html>
