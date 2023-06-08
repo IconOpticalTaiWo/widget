@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>HCV Referral</title>
+    <meta charset='UTF-8'>
+    <meta name='viewport'
+        content='width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0'>
+    <script src='JS/jquery-3.6.4.min.js'></script>
+    <style>
+        body {
+            width: 100%;
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-flow: row;
+            flex-wrap: wrap;
+        }
+
+        .center {
+            max-width: 600px;
+            margin: 0 auto;
+            width: auto;
+        }
+
+        input,
+        button {
+            width: 40vw;
+            max-width: 40%;
+            flex-basis: 40%;
+            margin: 1vh auto;
+            padding: 18px 2%;
+            color: black;
+            font-size: 18px;
+            font-weight: 900;
+            text-shadow: 1px 0 white, -1px 0 white, 0 1px white, 0 -1px white;
+            border: 0;
+        }
+
+        input {
+            border: 1px solid grey;
+            border-radius: 10px;
+            padding: 18px 2vw 18px 4vw;
+        }
+
+        .colour-green {
+            background-color: rgb(118, 224, 91);
+        }
+
+        .card[data-status="待覆驗"],
+        .colour-blue {
+            background-color: rgb(98, 201, 236);
+        }
+
+        .card[data-status="已覆驗"],
+        .colour-yellow {
+            background-color: rgb(235, 235, 88);
+        }
+
+        button:disabled,
+        .colour-grey {
+            background-color: rgb(90, 90, 90);
+        }
+
+        .colour-pink {
+            background-color: rgb(226, 153, 215);
+        }
+
+        .colour-red {
+            background-color: rgb(217, 72, 72);
+        }
+
+        .card {
+            flex-basis: 40%;
+            width: 40vw;
+            max-width: 40%;
+            margin: 1vh auto;
+            padding: 1%;
+            font-weight: 600;
+            background-color: rgba(144, 220, 230, 0.4);
+            box-shadow: 2px 2px 5px grey;
+        }
+
+        dialog {
+            max-width: 400px;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid;
+            border-color: #FF3D00 transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .invisible {
+            visibility: hidden;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id='card-template' class='hidden card'></div>
+
+    <dialog id='registration-form'>
+        <form onsubmit='Register(this); return false;' class='center flex-container'>
+            <input type="hidden" name='action' value='register'>
+            <input type='text' name='name' placeholder='姓名' required>
+            <input type='text' name='phone' placeholder='電話' required>
+            <input type='text' name='claim' placeholder='HCV金額' required>
+            <input type='text' name='invoice' placeholder='單號' required>
+            <input type='text' name='pickup' placeholder='取貨分店' required>
+            <input type='text' name='remark' placeholder='備註(可不填)'>
+            <div style='width:60vw;'></div>
+            <button class='colour-green' type='submit'>登記</button>
+            <button class='colour-grey' type='button' onclick='CloseModal(this)'>取消</button>
+        </form>
+    </dialog>
+
+    <dialog id='done-form'>
+        <form onsubmit='SetStatus(this,"已覆驗"); return false;' class='center flex-container'>
+            <input type="hidden" name='action' value='done'>
+            <input type="hidden" name='key' class='key-holder'>
+            <button class='button-done colour-yellow' type='submit'>完成覆驗</button>
+            <button class='colour-grey' type='button' onclick='CloseModal(this)'>取消</button>
+        </form>
+    </dialog>
+
+    <dialog id='undo-form'>
+        <form onsubmit='SetStatus(this,"待覆驗"); return false;' class='center flex-container'>
+            <input type="hidden" name='action' value='undo'>
+            <input type="hidden" name='key' class='key-holder'>
+            <button class='button-undo colour-blue' type='submit'>回復待覆驗</button>
+            <button class='colour-grey' type='button' onclick='CloseModal(this)'>取消</button>
+        </form>
+    </dialog>
+
+    <dialog id='empty-form'>
+        <form class='center flex-container'>
+            <button class='colour-grey' type='submit' formmethod='dialog'>取消</button>
+        </form>
+    </dialog>
+
+    <div style='height: 20px'></div>
+    <div class="center flex-container">
+        <button class="colour-green" onclick="$('#registration-form')[0].showModal()">登記</button>
+        <button class="colour-pink" id='button-check-all' onclick='CardShowAll()'>查看全部</button>
+        <button class="colour-blue" onclick='CardOnlyShow("待覆驗")'>待覆驗</button>
+        <button class="colour-yellow" onclick='CardOnlyShow("已覆驗")'>已覆驗</button>
+        <input autofocus id='keyword-searcher' type='text' placeholder='搜尋' oninput='SearchAmongVisibleCard()'>
+    </div>
+
+    <div class='loader hidden' style='position:relative; left:50%; top:1vh; translate: -50%;' id='loader-widget'></div>
+
+    </div>
+    <div id='output' class="center flex-container"></div>
+    <div class='center' style='margin-top: 2em;'>
+        <a href='https://docs.google.com/spreadsheets/d/1Kfv_AOscXF1e8sjHO1Yg-cDzM4J5ScV1B8HsUV5EfQo/edit?usp=sharing'
+            target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+    </div>
+</body>
+
+<script>
+
+    var ActionURL = 'https://script.google.com/macros/s/AKfycbxerZk_XKvlMP818IMUNK9elOhSEMObsW2HqiCzvgXrAUJHCw5ac_wqH9ArqkvVX0Sg/exec'
+
+    var LoaderWidget = $('#loader-widget')
+    function Loading(isLoading) {
+        if (isLoading) LoaderWidget.removeClass('hidden'); else LoaderWidget.addClass('hidden')
+    }
+
+    var OutputDevice = $('#output')
+    function Output(Content) { OutputDevice.html(Content) }
+
+    function ConvertToMapArray(CSV) {
+        const HeaderRow = CSV[0]
+        var MapArray = []
+        var MapElement = {}
+        for (const FieldName of HeaderRow) MapElement[FieldName] = {}
+
+        for (const Row in CSV) {
+            if (Row > 0) {
+                var ResultantMap = structuredClone(MapElement)
+                for (const Col in HeaderRow) ResultantMap[HeaderRow[Col]] = CSV[Row][Col]
+                MapArray.push(ResultantMap)
+            }
+        }
+        return MapArray
+    }
+
+    var ActiveCardFilter = null
+
+    var DataBase = null
+
+    function ReloadDataBase() {
+        return $.get(ActionURL, { action: 'list' }, (R) => { DataBase = ConvertToMapArray(R) })
+    }
+
+    Loading(true)
+    ReloadDataBase().then(() => {
+        ReloadCards()
+        Loading(false)
+    })
+
+    function CloseModal(that) {
+        $(that).parents('dialog').last()[0].close()
+    }
+
+    function CardClone() {
+        return $('#card-template').clone(true).removeClass('hidden').removeAttr('id')
+    }
+
+    function MakeCard(e) {
+        var NewCard = CardClone().attr('data-key', e.Key).attr('data-status', e.Status)
+        var CardContent = `${e.Name}<br>${e.Phone}<br>$&nbsp;${e.Claim}<br>${e.Invoice}<br>${e.PickUp}取`
+        if (e.Remark != null && e.Remark != '') CardContent += `<br>!! Remark:<br>${e.Remark}`
+        NewCard.html(CardContent)
+
+        var StatusFormName = { '待覆驗': 'done', '已覆驗': 'undo' }[e.Status] ?? 'empty'
+
+        NewCard.on('click', () => {
+            $(`#${StatusFormName}-form .key-holder`).attr('value', e.Key)
+            $(`#${StatusFormName}-form`)[0].showModal()
+        })
+
+        NewCard.appendTo(OutputDevice)
+    }
+
+    function ReloadCards() {
+        Output('')
+        for (const Entry of DataBase) MakeCard(Entry)
+    }
+
+    function AsyncSubmit(Form) {
+        CloseModal(Form)
+        return $.get(ActionURL, $(Form).serialize())
+    }
+
+    function Register(that) {
+        Loading(true)
+        AsyncSubmit(that).then(() => {
+            ReloadDataBase().then(() => {
+                ReloadCards()
+                Loading(false)
+            })
+        })
+    }
+
+    function SetStatus(that, NewStatus) {
+        AsyncSubmit(that)
+        var Key = $(that).children('input[name="key"]').val()
+        for (const Entry of DataBase) if (Entry.Key == Key) Entry.Status = NewStatus
+        ReloadCards()
+    }
+
+    function CardClearFilter() {
+        $('.card').not('#card-template').removeClass('hidden')
+    }
+
+    function CardShowAll(){
+        CardClearFilter()
+        $('#keyword-searcher').val('')
+    }
+
+    function SearchAmongVisibleCard() {
+        CardClearFilter()
+        var Keyword = $('#keyword-searcher').val()
+        $('.card').not(`:contains(${Keyword})`).addClass('hidden')
+    }
+
+    function CardOnlyShow(Status) {
+        //CardClearFilter()
+        SearchAmongVisibleCard()
+        $('.card').not(`[data-status='${Status}']`).addClass('hidden')
+
+    }
+
+
+</script>
+
+</html>
