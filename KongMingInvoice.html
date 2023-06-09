@@ -104,12 +104,12 @@
 
         <div>
             <label>單據編號</label>
-            <input name="InvoiceNumber" type="tel" pattern="\d{1,}" required>
+            <input name="InvoiceNumber" type="text" required>
         </div>
 
         <div>
             <label>總共價錢</label>
-            <input name="InvoiceSum" type="tel" pattern="\d{1,}" required>
+            <input name="InvoiceSum" type="text" required>
         </div>
 
         <input id="submit_button" type="submit" value="遞交">
@@ -123,10 +123,7 @@
 
 </body>
 <script>
-    function DatePickerInit(){
-        $('#date_picker').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
-    }
-    DatePickerInit()
+    $('#date_picker').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
 
     var ActionURL = 'https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec'
 
@@ -134,8 +131,6 @@
         $('#submit_button').val("遞交中...").attr("disabled", true)
         $.get(ActionURL, $(Form).serialize()).then(function () {
             $('#submit_button').val("遞交").removeAttr("disabled")
-            $(Form)[0].reset()
-            DatePickerInit()
         })
     }
 
