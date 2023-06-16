@@ -67,6 +67,10 @@
                 <td><input id="date_picker" name="InvoiceDate" type="date" onclick="this.showPicker()" /></td>
             </tr>
             <tr>
+                <td><label>供應商</label></td>
+                <td><input name="Supplier" type="text"></td>
+            </tr>
+            <tr>
                 <td><label>單號</label></td>
                 <td><input name="InvoiceNumber" type="text"></td>
             </tr>
@@ -91,7 +95,7 @@
 
 </body>
 <script>
-    function DatePickerInit(){
+    function DatePickerInit() {
         $('#date_picker').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
     }
     DatePickerInit()
