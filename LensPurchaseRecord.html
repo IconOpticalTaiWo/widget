@@ -36,6 +36,22 @@
             align-items: center;
         }
 
+        label.branch-name>input[name="Branch"][type="radio"] {
+            transform: translateY(-60px);
+            opacity: 0;
+        }
+
+        label.branch-name>div {
+            color: grey;
+            padding: 30px 20px;
+            background-color: whitesmoke;
+        }
+
+        label.branch-name:has(input:checked)>div {
+            background-color: lightgreen;
+            text-shadow: 1px 0 white, -1px 0 white, 0 1px white, 0 -1px white;
+        }
+
         input[type="text"],
         input[type="date"],
         input[type="tel"],
@@ -61,6 +77,21 @@
 
         <input type="hidden" name="Action" value="NewEntry">
 
+        <div class="flex-container shrink-bottom">
+            <label class="branch-name">
+                <div>大埔</div>
+                <input name="Branch" type="radio" value="TP" required>
+            </label>
+            <label class="branch-name">
+                <div>葵廣</div>
+                <input name="Branch" type="radio" value="KC">
+            </label>
+            <label class="branch-name">
+                <div>太和</div>
+                <input name="Branch" type="radio" value="WT">
+            </label>
+        </div>
+
         <table>
             <tr>
                 <td><label>單據日期</label></td>
@@ -71,7 +102,7 @@
                 <td><input name="InvoiceNumber" type="text"></td>
             </tr>
             <tr>
-                <td><label>笙 單號</label></td>
+                <td><label> 笙 單號</label></td>
                 <td><input name="OurRef" type="text"></td>
             </tr>
             <tr>
