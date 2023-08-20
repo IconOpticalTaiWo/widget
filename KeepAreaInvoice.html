@@ -7,8 +7,8 @@
     <meta charset="UTF-8">
     <link rel="icon" href="data:," />
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
-    <script src='JS/htmx.min.1.9.4.js' crossorigin="anonymous"></script>
-    <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet" crossorigin="anonymous">
+    <script src='JS/jquery-3.6.4.min.js'></script>
+    <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
     <style>
         .bounded-width {
             max-width: 400px;
@@ -17,20 +17,15 @@
 
         .f-xlg {
             font-weight: 900;
-            font-size: 28px;
+            font-size: 24px;
         }
 
         .f-lg {
             font-weight: 600;
-            font-size: 24px;
+            font-size: 22px;
         }
 
-        .htmx-indicator:not(.htmx-request .htmx-indicator, .htmx-request.htmx-indicator) {
-            display: none;
-        }
-
-        .htmx-request .htmx-anti-indicator,
-        .htmx-request.htmx-anti-indicator {
+        .hidden {
             display: none;
         }
     </style>
@@ -38,12 +33,10 @@
 
 <body>
     <div class="container overflow-hidden bounded-width ">
-        <h2 class="f-xlg m-3">康明 - 登記收貨單</h2>
+        <h2 class="f-xlg m-3">協域 - 登記收貨單</h2>
 
         <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
-            hx-on="htmx:configRequest: event.detail.headers=''; event.detail.headers['Content-Type']='application/x-www-form-urlencoded; charset=UTF-8'"
-            hx-get="https://script.google.com/macros/s/AKfycbyyE74SsFH5e1ugb3S8LkZ239X_nKpxX1IYJh5nAySehdSu73BTdYcFo7R6p42GgHkaaQ/exec"
-            hx-trigger="HxFormSubmit" hx-swap="none">
+            onsubmit='FormSubmit(this); return false;'>
 
             <input type="hidden" name="Action" value="NewEntry">
 
@@ -103,7 +96,7 @@
 
             <button class="col-12 f-xlg btn btn-lg btn-primary" style="height:80px;" type="submit">
                 <div id="Input_Submit" class="htmx-anti-indicator">遞交</div>
-                <div id="Input_Indicator" class="htmx-indicator spinner-border"></div>
+                <div id="Input_Indicator" class="hidden spinner-border"></div>
             </button>
         </form>
 
@@ -115,35 +108,30 @@
 </body>
 <script>
     function DatePickerInit() {
-        document.getElementById('Input_InvoiceDate').value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+        $('#Input_InvoiceDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
     }
     DatePickerInit()
 
-    document.addEventListener("htmx:afterSettle", (Detail) => {
-        console.log("after settle")
-        document.getElementById('Input_InvoiceNumber').value = "";
-        document.getElementById('Input_InvoiceSum').value = "";
-        document.getElementById('Input_Submit').innerHTML = "完成";
-        document.getElementById('Input_Form').classList.remove('was-validated')
-    })
-
     document.querySelectorAll("input").forEach((E) => { E.style.height = "80px" })
 
-    document.querySelectorAll(".needs-validation").forEach((Form) => {
-        Form.classList.remove('was-validated')
-    })
+    var ActionURL = 'https://script.google.com/macros/s/AKfycbyyE74SsFH5e1ugb3S8LkZ239X_nKpxX1IYJh5nAySehdSu73BTdYcFo7R6p42GgHkaaQ/exec'
 
-    document.querySelectorAll(".needs-validation").forEach((Form) => {
-        Form.addEventListener('submit', function (event) {
-            Form.classList.add('was-validated')
-            document.getElementById('Input_Submit').innerHTML = "遞交";
-            event.preventDefault()
-            event.stopPropagation()
-            if (Form.checkValidity()) {
-                htmx.trigger(Form, "HxFormSubmit");
-            }
-        })
-    })
+    function FormSubmit(Form) {
+        Form.classList.add('was-validated')
+        $('#Input_Submit').html("遞交")
+        if (Form.checkValidity()) {
+            $('#Input_Submit').addClass('hidden')
+            $('#Input_Indicator').removeClass('hidden')
+
+            $.get(ActionURL, $(Form).serialize()).then(() => {
+                $('#Input_Submit').html("已遞交").removeClass('hidden')
+                $('#Input_Indicator').addClass('hidden')
+                $('#Input_InvoiceSum').val("");
+                $('#Input_InvoiceNumber').val("");
+                Form.classList.remove('was-validated')
+            })
+        }
+    }
 </script>
 
 </html>

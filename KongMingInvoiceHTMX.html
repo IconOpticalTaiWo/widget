@@ -25,7 +25,12 @@
             font-size: 22px;
         }
 
-        .hidden {
+        .htmx-indicator:not(.htmx-request .htmx-indicator, .htmx-request.htmx-indicator) {
+            display: none;
+        }
+
+        .htmx-request .htmx-anti-indicator,
+        .htmx-request.htmx-anti-indicator {
             display: none;
         }
     </style>
@@ -36,7 +41,9 @@
         <h2 class="f-xlg m-3">康明 - 登記收貨單</h2>
 
         <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
-            onsubmit='FormSubmit(this); return false;'>
+            hx-on="htmx:configRequest: event.detail.headers=''; event.detail.headers['Content-Type']='application/x-www-form-urlencoded; charset=UTF-8'"
+            hx-get="https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec"
+            hx-trigger="HxFormSubmit" hx-swap="innerHTML">
 
             <input type="hidden" name="Action" value="NewEntry">
 
@@ -96,7 +103,7 @@
 
             <button class="col-12 f-xlg btn btn-lg btn-primary" style="height:80px;" type="submit">
                 <div id="Input_Submit" class="htmx-anti-indicator">遞交</div>
-                <div id="Input_Indicator" class="hidden spinner-border"></div>
+                <div id="Input_Indicator" class="htmx-indicator spinner-border"></div>
             </button>
         </form>
 
@@ -108,30 +115,34 @@
 </body>
 <script>
     function DatePickerInit() {
-        $('#Input_InvoiceDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
+        document.getElementById('Input_InvoiceDate').value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     }
     DatePickerInit()
 
+    document.addEventListener("htmx:afterSettle", (Detail) => {
+        document.getElementById('Input_InvoiceNumber').value = "";
+        document.getElementById('Input_InvoiceSum').value = "";
+        document.getElementById('Input_Submit').innerHTML = "已遞交";
+        document.getElementById('Input_Form').classList.remove('was-validated')
+    })
+
     document.querySelectorAll("input").forEach((E) => { E.style.height = "80px" })
 
-    var ActionURL = 'https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec'
+    document.querySelectorAll(".needs-validation").forEach((Form) => {
+        Form.classList.remove('was-validated')
+    })
 
-    function FormSubmit(Form) {
-        Form.classList.add('was-validated')
-        $('#Input_Submit').html("遞交")
-        if (Form.checkValidity()) {
-            $('#Input_Submit').addClass('hidden')
-            $('#Input_Indicator').removeClass('hidden')
-
-            $.get(ActionURL, $(Form).serialize()).then(() => {
-                $('#Input_Submit').html("已遞交").removeClass('hidden')
-                $('#Input_Indicator').addClass('hidden')
-                $('#Input_InvoiceSum').val("");
-                $('#Input_InvoiceNumber').val("");
-                Form.classList.remove('was-validated')
-            })
-        }
-    }
+    document.querySelectorAll(".needs-validation").forEach((Form) => {
+        Form.addEventListener('submit', function (event) {
+            Form.classList.add('was-validated')
+            document.getElementById('Input_Submit').innerHTML = "遞交";
+            event.preventDefault()
+            event.stopPropagation()
+            if (Form.checkValidity()) {
+                htmx.trigger(Form, "HxFormSubmit");
+            }
+        })
+    })
 </script>
 
 </html>
