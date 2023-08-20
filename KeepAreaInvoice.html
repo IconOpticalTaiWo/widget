@@ -5,139 +5,145 @@
 <head>
     <title>協域 - 登記收貨單</title>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0">
-    <script src='JS/jquery-3.6.4.min.js'></script>
+    <link rel="icon" href="data:," />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
+    <script src='JS/htmx.min.1.9.4.js' crossorigin="anonymous"></script>
+    <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet" crossorigin="anonymous">
     <style>
-        * {
-            padding: 0;
-            margin: 10px auto;
-            width: auto;
-            text-align: center;
-            color: black;
-            font-size: 20px;
+        .bounded-width {
+            max-width: 400px;
+            min-width: 360px;
+        }
+
+        .f-xlg {
             font-weight: 900;
+            font-size: 28px;
         }
 
-        body {
-            border: 0;
-            min-width: 340px;
-            max-width: 430px;
+        .f-lg {
+            font-weight: 600;
+            font-size: 24px;
         }
 
-        .shrink-bottom {
-            margin-bottom: -40px;
-            padding-bottom: 0;
+        .htmx-indicator:not(.htmx-request .htmx-indicator, .htmx-request.htmx-indicator) {
+            display: none;
         }
 
-        .flex-container {
-            display: flex;
-            align-content: center;
-            align-items: center;
-        }
-
-        label.branch-name>input[name="Branch"][type="radio"] {
-            transform: translateY(-60px);
-            opacity: 0;
-        }
-
-        label.branch-name>div {
-            color: grey;
-            padding: 30px 20px;
-            background-color: whitesmoke;
-        }
-
-        label.branch-name:has(input:checked)>div {
-            background-color: lightgreen;
-            text-shadow: 1px 0 white, -1px 0 white, 0 1px white, 0 -1px white;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="tel"],
-        input[type="submit"] {
-            width: 180px;
-            border-radius: 8px;
-            border: grey 1px solid;
-            text-align: start;
-            padding: 10px 20px;
-        }
-
-        input[type="submit"] {
-            text-align: center;
-            background-color: whitesmoke;
+        .htmx-request .htmx-anti-indicator,
+        .htmx-request.htmx-anti-indicator {
+            display: none;
         }
     </style>
 </head>
 
 <body>
-    <div>協域 - 登記收貨單</div>
+    <div class="container overflow-hidden bounded-width ">
+        <h2 class="f-xlg m-3">康明 - 登記收貨單</h2>
 
-    <form id="main_form" onsubmit='FormSubmit(this); return false;'>
+        <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
+            hx-on="htmx:configRequest: event.detail.headers=''; event.detail.headers['Content-Type']='application/x-www-form-urlencoded; charset=UTF-8'"
+            hx-get="https://script.google.com/macros/s/AKfycbyyE74SsFH5e1ugb3S8LkZ239X_nKpxX1IYJh5nAySehdSu73BTdYcFo7R6p42GgHkaaQ/exec"
+            hx-trigger="HxFormSubmit" hx-swap="none">
 
-        <input type="hidden" name="Action" value="NewEntry">
+            <input type="hidden" name="Action" value="NewEntry">
 
-        <div class="flex-container shrink-bottom">
-            <label class="branch-name">
-                <div>大埔</div>
-                <input name="Branch" type="radio" value="TP" required>
-            </label>
-            <label class="branch-name">
-                <div>葵廣</div>
-                <input name="Branch" type="radio" value="KC">
-            </label>
-            <label class="branch-name">
-                <div>太和</div>
-                <input name="Branch" type="radio" value="WT">
-            </label>
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="Branch" id="Branch_TP" value="TP">
+                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_TP">大埔</label>
+
+                <input class="btn-check" type="radio" name="Branch" id="Branch_KC" value="KC">
+                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_KC">葵廣</label>
+
+                <input class="btn-check" type="radio" name="Branch" id="Branch_WT" value="WT">
+                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_WT">太和</label>
+            </div>
+            <input style="display: none;" type="radio" name="Branch" required>
+            <div class="invalid-feedback ">選擇收貨分店</div>
+            <div class="mb-3"></div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-lg" id="Input_InvoiceDate" type="date" placeholder=" " required
+                    name="InvoiceDate" onclick="this.showPicker()">
+                <label class="form-label" for="Input_InvoiceDate">單據日期</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required
+                    name="Blame">
+                <label class="form-label" for="Input_Blame">負責同事</label>
+                <datalist id="Staff_List">
+                    <option value="Dennis"></option>
+                    <option value="Darren"></option>
+                    <option value="Eva"></option>
+                    <option value="Sammy"></option>
+                    <option value="Nick"></option>
+                    <option value="Ango"></option>
+                    <option value="Jacky"></option>
+                    <option value="Sam"></option>
+                    <option value="Lam"></option>
+                    <option value="Melody"></option>
+                </datalist>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-lg" id="Input_InvoiceNumber" type="text" placeholder=" " required
+                    pattern="[Ss][0-9]{11}" name="InvoiceNumber">
+                <label class="form-label" for="Input_InvoiceNumber">單據編號</label>
+                <div class="invalid-feedback">輸入 S 接 11 位數字</div>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text f-lg">$</span>
+                <div class="form-floating">
+                    <input class="form-control f-lg" id="Input_InvoiceSum" type="text" placeholder=" " required
+                        pattern="[\+\-]?[0-9]+" name="InvoiceSum">
+                    <label class="form-label" for="Input_InvoiceSum">合計價錢</label>
+                </div>
+            </div>
+
+            <button class="col-12 f-xlg btn btn-lg btn-primary" style="height:80px;" type="submit">
+                <div id="Input_Submit" class="htmx-anti-indicator">遞交</div>
+                <div id="Input_Indicator" class="htmx-indicator spinner-border"></div>
+            </button>
+        </form>
+
+        <div class='center' style='margin-top: 2em;'>
+            <a href='https://docs.google.com/spreadsheets/d/1r2GfHbxoTYCz-LxNqR0rHCSg_Z_DXGA5XOWfcgGxH9w/edit?usp=sharing'
+                target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
         </div>
-
-        <div>
-            <label>單據日期</label>
-            <input id="date_picker" name="InvoiceDate" type="date" onclick="this.showPicker()" />
-        </div>
-
-        <div>
-            <label>負責同事</label>
-            <input name="Blame" type="text" required>
-        </div>
-
-        <div>
-            <label>單據編號</label>
-            <input name="InvoiceNumber" type="text" required>
-        </div>
-
-        <div>
-            <label>合計價錢</label>
-            <input name="InvoiceSum" type="text" required>
-        </div>
-
-        <input id="submit_button" type="submit" value="遞交">
-
-    </form>
-
-    <div class='center' style='margin-top: 2em;'>
-        <a href='https://docs.google.com/spreadsheets/d/1r2GfHbxoTYCz-LxNqR0rHCSg_Z_DXGA5XOWfcgGxH9w/edit?usp=sharing'
-            target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
     </div>
-
 </body>
 <script>
-    function DatePickerInit(){
-        $('#date_picker').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
+    function DatePickerInit() {
+        document.getElementById('Input_InvoiceDate').value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     }
     DatePickerInit()
 
-    var ActionURL = 'https://script.google.com/macros/s/AKfycbyyE74SsFH5e1ugb3S8LkZ239X_nKpxX1IYJh5nAySehdSu73BTdYcFo7R6p42GgHkaaQ/exec'
+    document.addEventListener("htmx:afterSettle", (Detail) => {
+        console.log("after settle")
+        document.getElementById('Input_InvoiceNumber').value = "";
+        document.getElementById('Input_InvoiceSum').value = "";
+        document.getElementById('Input_Submit').innerHTML = "完成";
+        document.getElementById('Input_Form').classList.remove('was-validated')
+    })
 
-    function FormSubmit(Form) {
-        $('#submit_button').val("遞交中...").attr("disabled", true)
-        $.get(ActionURL, $(Form).serialize()).then(function () {
-            $('#submit_button').val("遞交").removeAttr("disabled")
-            $(Form)[0].reset()
-            DatePickerInit()
+    document.querySelectorAll("input").forEach((E) => { E.style.height = "80px" })
+
+    document.querySelectorAll(".needs-validation").forEach((Form) => {
+        Form.classList.remove('was-validated')
+    })
+
+    document.querySelectorAll(".needs-validation").forEach((Form) => {
+        Form.addEventListener('submit', function (event) {
+            Form.classList.add('was-validated')
+            document.getElementById('Input_Submit').innerHTML = "遞交";
+            event.preventDefault()
+            event.stopPropagation()
+            if (Form.checkValidity()) {
+                htmx.trigger(Form, "HxFormSubmit");
+            }
         })
-    }
+    })
 </script>
 
 </html>
