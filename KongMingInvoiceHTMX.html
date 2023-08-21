@@ -24,7 +24,10 @@
             font-weight: 600;
             font-size: 22px;
         }
-
+        .f-norm {
+            font-weight: 600;
+            font-size: 20px;
+        }
         .htmx-indicator:not(.htmx-request .htmx-indicator, .htmx-request.htmx-indicator) {
             display: none;
         }
@@ -62,7 +65,7 @@
             <div class="mb-3"></div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-lg" id="Input_InvoiceDate" type="date" placeholder=" " required
+                <input class="form-control f-norm" id="Input_InvoiceDate" type="date" placeholder=" " required
                     name="InvoiceDate" onclick="this.showPicker()">
                 <label class="form-label" for="Input_InvoiceDate">單據日期</label>
             </div>
@@ -132,7 +135,7 @@
     });
 
     document.querySelectorAll("input").forEach((E) => {
-        E.style.height = "84px"
+        E.style.height = "80px"
         E.setAttribute("autocomplete", "off")
     })
 
