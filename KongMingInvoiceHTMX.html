@@ -41,7 +41,6 @@
         <h2 class="f-xlg m-3">康明 - 登記收貨單</h2>
 
         <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
-            hx-on="htmx:configRequest: event.detail.headers=''; event.detail.headers['Content-Type']='application/x-www-form-urlencoded; charset=UTF-8'"
             hx-get="https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec"
             hx-trigger="HxFormSubmit" hx-swap="innerHTML">
 
@@ -125,6 +124,11 @@
         document.getElementById('Input_Submit').innerHTML = "已遞交";
         document.getElementById('Input_Form').classList.remove('was-validated')
     })
+
+    document.body.addEventListener('htmx:configRequest', function (event) {
+        event.detail.headers = ''
+        event.detail.headers['Content-Type'] = "application/x-www-form-urlencoded; charset=UTF-8"
+    });
 
     document.querySelectorAll("input").forEach((E) => { E.style.height = "80px" })
 
