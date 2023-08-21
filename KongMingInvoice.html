@@ -23,7 +23,6 @@
         .f-lg {
             font-weight: 600;
             font-size: 22px;
-            background-color: transparent;
         }
 
         .hidden {
@@ -113,7 +112,10 @@
     }
     DatePickerInit()
 
-    document.querySelectorAll("input").forEach((E) => { E.style.height = "80px" })
+    document.querySelectorAll("input").forEach((E) => {
+        E.style.height = "84px"
+        E.setAttribute("autocomplete", "off")
+    })
 
     var ActionURL = 'https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec'
 

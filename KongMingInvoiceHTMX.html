@@ -6,7 +6,6 @@
     <title>康明 - 登記收貨單</title>
     <meta charset="UTF-8">
     <link rel="icon" href="data:," />
-    <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
     <script src='JS/htmx.min.1.9.4.js'></script>
     <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
@@ -43,7 +42,8 @@
 
         <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
             hx-get="https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec"
-            hx-trigger="HxFormSubmit" hx-swap="innerHTML">
+            hx-trigger="HxFormSubmit" hx-swap="innerHTML"
+            hx-boost="false">
 
             <input type="hidden" name="Action" value="NewEntry">
 
@@ -132,7 +132,7 @@
     // });
 
     document.querySelectorAll("input").forEach((E) => {
-        E.style.height = "80px"
+        E.style.height = "84px"
         E.setAttribute("autocomplete", "off")
     })
 
