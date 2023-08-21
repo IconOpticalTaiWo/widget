@@ -5,6 +5,7 @@
 <head>
     <title>協域 - 登記收貨單</title>
     <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
     <link rel="icon" href="data:," />
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
     <script src='JS/htmx.min.1.9.4.js'></script>
@@ -125,12 +126,15 @@
         document.getElementById('Input_Form').classList.remove('was-validated')
     })
 
-    document.body.addEventListener('htmx:configRequest', function (event) {
-        event.detail.headers = ''
-        event.detail.headers['Content-Type'] = "application/x-www-form-urlencoded; charset=UTF-8"
-    });
+    // document.body.addEventListener('htmx:configRequest', function (event) {
+    //     event.detail.headers = ''
+    //     event.detail.headers['Content-Type'] = "application/x-www-form-urlencoded; charset=UTF-8"
+    // });
 
-    document.querySelectorAll("input").forEach((E) => { E.style.height = "80px" })
+    document.querySelectorAll("input").forEach((E) => {
+        E.style.height = "80px"
+        E.setAttribute("autocomplete", "off")
+    })
 
     document.querySelectorAll(".needs-validation").forEach((Form) => {
         Form.classList.remove('was-validated')
