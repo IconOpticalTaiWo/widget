@@ -121,9 +121,8 @@
     $('#Input_InvoiceNumber')
         .on('input', function () {
             const CurrentStrValue = $(this).val()
-            if (!CurrentStrValue.toUpperCase().startsWith('S')) {
-                $(this).val('S' + CurrentStrValue)
-            }
+            if (CurrentStrValue === "" || CurrentStrValue.toUpperCase().startsWith('S') ) return
+            $(this).val('S' + CurrentStrValue)
         })
         .on('change', function () {
             $(this).val($(this).val().replace(/ /g, ''))
