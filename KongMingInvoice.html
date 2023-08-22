@@ -92,10 +92,10 @@
             </div>
 
             <div class="input-group mb-3">
-                <span class="input-group-text f-lg">$</span>
+                <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
                 <div class="form-floating">
-                    <input class="form-control f-lg" id="Input_InvoiceSum" type="text" placeholder=" " required
-                        pattern="[\+\-]?[0-9]+" name="InvoiceSum">
+                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text"
+                        placeholder=" " required pattern="[\+\-]?[0-9]+" name="InvoiceSum">
                     <label class="form-label" for="Input_InvoiceSum">合計價錢</label>
                 </div>
             </div>
@@ -117,6 +117,11 @@
         $('#Input_InvoiceDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
     }
     DatePickerInit()
+
+    $('#Input_InvoiceNumber')
+        .on('change', function () {
+            $(this).val($(this).val().replace(/ /g, ''))
+        })
 
     document.querySelectorAll("input").forEach((E) => {
         E.style.height = "80px"
