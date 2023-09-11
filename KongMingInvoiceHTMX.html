@@ -25,10 +25,12 @@
             font-weight: 600;
             font-size: 22px;
         }
+
         .f-norm {
             font-weight: 600;
             font-size: 20px;
         }
+
         .htmx-indicator:not(.htmx-request .htmx-indicator, .htmx-request.htmx-indicator) {
             display: none;
         }
@@ -46,8 +48,8 @@
 
         <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
             hx-get="https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec"
-            hx-trigger="HxFormSubmit" hx-swap="innerHTML"
-            hx-boost="false">
+            hx-swap="none" hx-trigger="HxFormSubmit throttle:1s queue:none"
+            hx-on::config-request="event.detail.headers=''">
 
             <input type="hidden" name="Action" value="NewEntry">
 
@@ -119,41 +121,33 @@
 </body>
 <script>
     function DatePickerInit() {
-        document.getElementById('Input_InvoiceDate').value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+        htmx.find('#Input_InvoiceDate').value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     }
     DatePickerInit()
 
-    document.addEventListener("htmx:afterSettle", (Detail) => {
-        document.getElementById('Input_InvoiceNumber').value = "";
-        document.getElementById('Input_InvoiceSum').value = "";
-        document.getElementById('Input_Submit').innerHTML = "已遞交";
-        document.getElementById('Input_Form').classList.remove('was-validated')
+    const Form = htmx.find('#Input_Form')
+
+    htmx.on('htmx:afterSettle', () => {
+        htmx.find('#Input_InvoiceNumber').value = "";
+        htmx.find('#Input_InvoiceSum').value = "";
+        htmx.find('#Input_Submit').innerHTML = "已遞交";
+        htmx.removeClass(Form, 'was-validated')
     })
 
-    document.body.addEventListener('htmx:configRequest', function (event) {
-        event.detail.headers = ''
-        event.detail.headers['Content-Type'] = "application/x-www-form-urlencoded; charset=UTF-8"
-    });
-
-    document.querySelectorAll("input").forEach((E) => {
-        E.style.height = "80px"
-        E.setAttribute("autocomplete", "off")
+    htmx.findAll('input').forEach((elt) => {
+        elt.style.height = "80px"
+        elt.setAttribute("autocomplete", "off")
     })
 
-    document.querySelectorAll(".needs-validation").forEach((Form) => {
-        Form.classList.remove('was-validated')
-    })
-
-    document.querySelectorAll(".needs-validation").forEach((Form) => {
-        Form.addEventListener('submit', function (event) {
-            Form.classList.add('was-validated')
-            document.getElementById('Input_Submit').innerHTML = "遞交";
-            event.preventDefault()
-            event.stopPropagation()
-            if (Form.checkValidity()) {
-                htmx.trigger(Form, "HxFormSubmit");
-            }
-        })
+    htmx.removeClass(Form, 'was-validated')
+    htmx.on(Form, 'submit', (event) => {
+        htmx.addClass(Form, 'was-validated')
+        htmx.find('#Input_Submit').innerHTML = "遞交";
+        event.preventDefault()
+        event.stopPropagation()
+        if (Form.checkValidity()) {
+            htmx.trigger(Form, "HxFormSubmit");
+        }
     })
 </script>
 
