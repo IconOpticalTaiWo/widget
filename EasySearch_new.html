@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>&#x1F50D;</title>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0">
+	<link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
+	<link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
+	<script>
+		function LoadRequest(ID, Action) {
+			let V = document.getElementById(ID).value
+			if (V) { window.open("https://www.iconoptical.com/" + Action + V) }
+		}
+		function SearchOrder() { LoadRequest("order-number", "account/view-order/") }
+		function SearchUser() { LoadRequest("user-keyword", "wp-admin/users.php?s=") }
+		function SearchGeneral() { LoadRequest("general-keyword", "wp-admin/edit.php?post_status=all&post_type=shop_order&s=") }
+	</script>
+	<style>
+		.f-lg {
+			font-weight: 600;
+			font-size: 30px;
+		}
+
+		.fixed-width {
+			max-width: 540px;
+			min-width: 320px;
+		}
+	</style>
+</head>
+
+<body>
+	<main class="container fixed-width mt-3 text-center">
+		<img class="w-auto mb-4" src="https://www.iconoptical.com/wp-content/uploads/2018/02/logo.jpg" />
+		
+		<div class="card shadow-lg bg-body-tertiary">
+			<div class="card-body">
+				<form class="input-group mt-3 mb-4" autocomplete="off" onsubmit='SearchOrder(); return false;' target="_blank">
+					<input type="text" class="form-control f-lg ps-4" id="order-number" placeholder="輸入單號查單">
+					<button tabindex="-1" class="btn btn-success" type="submit">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+							class="bi bi-search" viewBox="0 0 16 16">
+							<path
+								d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+						</svg>
+					</button>
+				</form>
+
+				<form class="input-group mb-4" autocomplete="off" onsubmit='SearchUser(); return false;' target="_blank">
+					<input type="text" class="form-control f-lg ps-4" id="user-keyword" placeholder="輸入電話/客人名">
+					<button tabindex="-1" class="btn btn-success" type="submit">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+							class="bi bi-search" viewBox="0 0 16 16">
+							<path
+								d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+						</svg>
+					</button>
+				</form>
+
+				<form class="input-group mb-4" autocomplete="off" onsubmit='SearchGeneral(); return false;' target="_blank">
+					<input type="text" class="form-control f-lg ps-4" id="general-keyword" placeholder="後台查單">
+					<button tabindex="-1" class="btn btn-success" type="submit">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+							class="bi bi-search" viewBox="0 0 16 16">
+							<path
+								d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+						</svg>
+					</button>
+				</form>
+			</div>
+		</div>
+	</main>
+
+
+
+
+</body>
+
+</html>
