@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 
@@ -149,25 +148,25 @@
         registration_number: "OP101026"
       },
       habbitual: {
-        sph: {r: "-100", l: "-225"},
-        cyl: {r: "-075", l: "-150"},
-        axis: {r: "175", l: "015"}
+        sph: { r: "-100", l: "-225" },
+        cyl: { r: "-075", l: "-150" },
+        axis: { r: "175", l: "015" }
       },
       full: {
-        sph: {r: "-150", l: "-225"},
-        cyl: {r: "-175", l: "-175"},
-        axis: {r: "170", l: "010"},
-        pd: {r: "30.5", l: "31"},
-        va: {r: "0.9", l: "0.8-"}
+        sph: { r: "-150", l: "-225" },
+        cyl: { r: "-175", l: "-175" },
+        axis: { r: "170", l: "010" },
+        pd: { r: "30.5", l: "31" },
+        va: { r: "0.9", l: "0.8-" }
       },
       adjusted: {
         purpose: "Near",
-        sph: {r: "-150", l: "-225"},
-        cyl: {r: "-175", l: "-175"},
-        axis: {r: "170", l: "010"},
-        pd: {r: "30.5", l: "31"},
-        h: {r: "23", l: "23"},
-        va: {r: "0.9", l: "0.8-"}
+        sph: { r: "-150", l: "-225" },
+        cyl: { r: "-175", l: "-175" },
+        axis: { r: "170", l: "010" },
+        pd: { r: "30.5", l: "31" },
+        h: { r: "23", l: "23" },
+        va: { r: "0.9", l: "0.8-" }
       }
     };
 
@@ -177,17 +176,17 @@
         registration_number: "OP101026"
       },
       habbitual: {
-        r: {sph: "-100", cyl: "-075", axis: "175"},
-        l: {sph: "-300", cyl: "-225", axis: "013"}
+        r: { sph: "-100", cyl: "-075", axis: "175" },
+        l: { sph: "-300", cyl: "-225", axis: "013" }
       },
       full: {
-        r: {sph: "-100", cyl: "-075", axis: "175", add: "250", pd: "30.5", va: "0.9"},
-        l: {sph: "-300", cyl: "-225", axis: "013", pd: "31", va: "0.8-"}
+        r: { sph: "-100", cyl: "-075", axis: "175", add: "250", pd: "30.5", va: "0.9" },
+        l: { sph: "-300", cyl: "-225", axis: "013", pd: "31", va: "0.8-" }
       },
       adjusted: {
         purpose: "Near",
-        r: {sph: "+150", cyl: "-075", axis: "175", pd: "29.5"},
-        l: {sph: "-050", cyl: "-225", axis: "013", pd: "30"}
+        r: { sph: "+150", cyl: "-075", axis: "175", pd: "29.5" },
+        l: { sph: "-050", cyl: "-225", axis: "013", pd: "30" }
       }
     };
 
@@ -244,13 +243,18 @@
     function LoadTestData() {
       $.ajax("https://samyankc.site/cgi/load_json", {
         type: 'GET',
-        data: {refraction_id: $('#refraction_id_input').val()}
+        data: { refraction_id: $('#refraction_id_input').val() }
       }).then(FillData);
+    }
+
+    function BodyInit() {
+      $('#show_optom_name_here').html(location.hash?.substring(1))
     }
   </script>
 </head>
 
-<body>
+<body onload="BodyInit()">
+
   <div>
     <span>Refraction ID : </span>
     <span id="show_rx_id_here">########</span>
@@ -385,6 +389,7 @@
     </div>
 
 
+    <div id="abc" style="margin-top: 100vh;">12123123123</div>
   </main>
 
 </body>
