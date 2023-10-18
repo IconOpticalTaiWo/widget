@@ -85,8 +85,8 @@
             </div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-lg" id="Input_InvoiceNumber" type="text" placeholder=" " required
-                    pattern="[0-9]{7}" name="InvoiceNumber">
+                <input class="form-control f-lg" id="Input_InvoiceNumber" type="number" placeholder=" " required
+                    pattern="[0-9]{7}" inputmode="numeric" name="InvoiceNumber">
                 <label class="form-label" for="Input_InvoiceNumber">單據編號</label>
                 <div class="invalid-feedback">輸入 7 位數字</div>
             </div>
@@ -95,7 +95,7 @@
                 <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
                 <div class="form-floating">
                     <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text"
-                        placeholder=" " required pattern="[\+\-]?[0-9]+" name="InvoiceSum">
+                        placeholder=" " required pattern="[\+\-]?[0-9]+" inputmode="decimal" name="InvoiceSum">
                     <label class="form-label" for="Input_InvoiceSum">合計價錢</label>
                 </div>
             </div>
