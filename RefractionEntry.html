@@ -16,8 +16,8 @@
     }
 
     .fixed-width {
-      max-width: 400px;
-      min-width: 320px;
+      /* max-width: 400px; */
+      /* min-width: 770px; */
     }
 
     .rx-entry {
@@ -41,7 +41,28 @@
     .rx-entry-pd {}
 
     input.rx-entry {
-      max-width: 200px;
+    }
+
+
+    .rx-table{
+      /* max-width: 600px ; */
+      width: 100%;
+      min-width: 600px ;
+    }
+
+    .numpad-container{
+      max-width: 300px ;
+      min-width: 300px ;
+    }
+
+    .btn-numpad {
+      aspect-ratio: 1 / 1;
+      width: 100%;
+    }
+
+    .btn-numpad-0 {
+      aspect-ratio: 2 / 1;
+      width: 100%;
     }
   </style>
   <script>
@@ -60,8 +81,6 @@
 
       $('input.rx-entry').each((unused, e) => {
         $(e).val(SafeReach(Refraction, e.name.split('_'), void 0))
-        // var NameFragment = e.name.split('_')
-        // $(e).val(Refraction[NameFragment[0]][NameFragment[1]][NameFragment[2]])
       })
 
 
@@ -140,35 +159,6 @@
       // }
 
     }
-
-    // deprecated
-    var TestData_1 = {
-      optometrist: {
-        name: "Yan Ka Chun",
-        registration_number: "OP101026"
-      },
-      habbitual: {
-        sph: { r: "-100", l: "-225" },
-        cyl: { r: "-075", l: "-150" },
-        axis: { r: "175", l: "015" }
-      },
-      full: {
-        sph: { r: "-150", l: "-225" },
-        cyl: { r: "-175", l: "-175" },
-        axis: { r: "170", l: "010" },
-        pd: { r: "30.5", l: "31" },
-        va: { r: "0.9", l: "0.8-" }
-      },
-      adjusted: {
-        purpose: "Near",
-        sph: { r: "-150", l: "-225" },
-        cyl: { r: "-175", l: "-175" },
-        axis: { r: "170", l: "010" },
-        pd: { r: "30.5", l: "31" },
-        h: { r: "23", l: "23" },
-        va: { r: "0.9", l: "0.8-" }
-      }
-    };
 
     var TestData_2 = {
       optometrist: {
@@ -254,132 +244,190 @@
 </head>
 
 <body onload="BodyInit()">
-
+  <div style="padding-top: 10px;"></div>
   <div>
     <span>Refraction ID : </span>
-    <span id="show_rx_id_here">########</span>
+    <span><input id="show_rx_id_here" name="refraction_id"></span>
     <br>
     <span>Optometrist : </span>
-    <span id="show_optom_name_here">########</span>
-    <span>(</span>
-    <span id="show_optom_number_here">########</span>
-    <span>)</span>
+    <span><input id="show_optom_name_here" name="optom_name"></span>
+    <br>
+    <span>Registration Number : </span>
+    <span><input id="show_optom_number_here" name="optom_number"></span>
   </div>
-  <main class="container w-100 h-100 pt-3">
-    <form class="f-lg" autocomplete="off" onsubmit="return false;">
-      <div id="habbitual_rx_group">
-        <div>Habbitual RX</div>
-        <div class="row g-2 text-center">
-          <div class="col-1"> </div>
-          <div class="col">Sph</div>
-          <div class="col">Cyl</div>
-          <div class="col">Axis</div>
-          <div class="col">ADD</div>
-          <div class="col">H</div>
-          <div class="col">VA</div>
-          <div class="col">PD</div>
-        </div>
-        <div id="habbitual_r" class="row g-2">
-          <div class="col-1 text-center"><label class="form-label">R</label></div>
-          <div class="col"><input name="habbitual_r_sph" class="rx-entry rx-entry-sph form-control" type="text"></div>
-          <div class="col"><input name="habbitual_r_cyl" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-          <div class="col"><input name="habbitual_r_axis" class="rx-entry rx-entry-axis form-control" type="text"></div>
-          <div class="col"><input name="habbitual_r_add" class="rx-entry rx-entry-add form-control" type="text"></div>
-          <div class="col"><input name="habbitual_r_h" class="rx-entry rx-entry-h form-control" type="text"></div>
-          <div class="col"><input name="habbitual_r_va" class="rx-entry rx-entry-va form-control" type="text"></div>
-          <div class="col"><input name="habbitual_r_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
-        </div>
-        <div id="habbitual_l" class="row g-2">
-          <div class="col-1 text-center"><label class="form-label">L</label></div>
-          <div class="col"><input name="habbitual_l_sph" class="rx-entry rx-entry-sph form-control" type="text"></div>
-          <div class="col"><input name="habbitual_l_cyl" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-          <div class="col"><input name="habbitual_l_axis" class="rx-entry rx-entry-axis form-control" type="text"></div>
-          <div class="col"><input name="habbitual_l_add" class="rx-entry rx-entry-add form-control" type="text"></div>
-          <div class="col"><input name="habbitual_l_h" class="rx-entry rx-entry-h form-control" type="text"></div>
-          <div class="col"><input name="habbitual_l_va" class="rx-entry rx-entry-va form-control" type="text"></div>
-          <div class="col"><input name="habbitual_l_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
+
+  <main class="container">
+    <div class="row gx-1 gy-1">
+      <div class="col">
+        <div class="rx-table" autocomplete="off">
+          <div id="habbitual_rx_group">
+            <div>Habbitual RX</div>
+            <div class="row g-2 text-center">
+              <div class="col-1"> </div>
+              <div class="col">Sph</div>
+              <div class="col">Cyl</div>
+              <div class="col">Axis</div>
+              <div class="col">ADD</div>
+              <div class="col">H</div>
+              <div class="col">VA</div>
+              <div class="col">PD</div>
+            </div>
+            <div id="habbitual_r" class="row g-2">
+              <div class="col-1 text-center"><label class="form-label">R</label></div>
+              <div class="col"><input name="habbitual_r_sph" class="rx-entry rx-entry-sph form-control" type="text">
+              </div>
+              <div class="col"><input name="habbitual_r_cyl" class="rx-entry rx-entry-cyl form-control" type="text">
+              </div>
+              <div class="col"><input name="habbitual_r_axis" class="rx-entry rx-entry-axis form-control" type="text">
+              </div>
+              <div class="col"><input name="habbitual_r_add" class="rx-entry rx-entry-add form-control" type="text">
+              </div>
+              <div class="col"><input name="habbitual_r_h" class="rx-entry rx-entry-h form-control" type="text"></div>
+              <div class="col"><input name="habbitual_r_va" class="rx-entry rx-entry-va form-control" type="text"></div>
+              <div class="col"><input name="habbitual_r_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            </div>
+            <div id="habbitual_l" class="row g-2">
+              <div class="col-1 text-center"><label class="form-label">L</label></div>
+              <div class="col"><input name="habbitual_l_sph" class="rx-entry rx-entry-sph form-control" type="text">
+              </div>
+              <div class="col"><input name="habbitual_l_cyl" class="rx-entry rx-entry-cyl form-control" type="text">
+              </div>
+              <div class="col"><input name="habbitual_l_axis" class="rx-entry rx-entry-axis form-control" type="text">
+              </div>
+              <div class="col"><input name="habbitual_l_add" class="rx-entry rx-entry-add form-control" type="text">
+              </div>
+              <div class="col"><input name="habbitual_l_h" class="rx-entry rx-entry-h form-control" type="text"></div>
+              <div class="col"><input name="habbitual_l_va" class="rx-entry rx-entry-va form-control" type="text"></div>
+              <div class="col"><input name="habbitual_l_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            </div>
+          </div>
+
+          <div id="full_rx_group">
+            <div>Full RX</div>
+            <div class="row g-2 text-center">
+              <div class="col-1"> </div>
+              <div class="col">Sph</div>
+              <div class="col">Cyl</div>
+              <div class="col">Axis</div>
+              <div class="col">ADD</div>
+              <div class="col">H</div>
+              <div class="col">VA</div>
+              <div class="col">PD</div>
+            </div>
+            <div id="full_r" class="row g-2">
+              <div class="col-1 text-center"><label class="form-label">R</label></div>
+              <div class="col"><input name="full_r_sph" class="rx-entry rx-entry-sph form-control" type="text"></div>
+              <div class="col"><input name="full_r_cyl" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+              <div class="col"><input name="full_r_axis" class="rx-entry rx-entry-axis form-control" type="text"></div>
+              <div class="col"><input name="full_r_add" class="rx-entry rx-entry-add form-control" type="text"></div>
+              <div class="col"><input name="full_r_h" class="rx-entry rx-entry-h form-control" type="text"></div>
+              <div class="col"><input name="full_r_va" class="rx-entry rx-entry-va form-control" type="text"></div>
+              <div class="col"><input name="full_r_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            </div>
+            <div id="full_l" class="row g-2">
+              <div class="col-1 text-center"><label class="form-label">L</label></div>
+              <div class="col"><input name="full_l_sph" class="rx-entry rx-entry-sph form-control" type="text"></div>
+              <div class="col"><input name="full_l_cyl" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+              <div class="col"><input name="full_l_axis" class="rx-entry rx-entry-axis form-control" type="text"></div>
+              <div class="col"><input name="full_l_add" class="rx-entry rx-entry-add form-control" type="text"></div>
+              <div class="col"><input name="full_l_h" class="rx-entry rx-entry-h form-control" type="text"></div>
+              <div class="col"><input name="full_l_va" class="rx-entry rx-entry-va form-control" type="text"></div>
+              <div class="col"><input name="full_l_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            </div>
+          </div>
+
+          <div id="adjusted_rx_group">
+            <div>
+              <span>Adjusted RX For: </span><span>
+                <select name="adjusted_purpose" class="rx-entry">
+                  <option value="Distant">Distant</option>
+                  <option value="Near">Near</option>
+                  <option value="Progressive">Progressive</option>
+                  <option value="Record">Record</option>
+                </select>
+              </span>
+            </div>
+
+            <div class="row g-2 text-center">
+              <div class="col-1"> </div>
+              <div class="col">Sph</div>
+              <div class="col">Cyl</div>
+              <div class="col">Axis</div>
+              <div class="col">ADD</div>
+              <div class="col">H</div>
+              <div class="col">VA</div>
+              <div class="col">PD</div>
+            </div>
+            <div id="adjusted_r" class="row g-2">
+              <div class="col-1 text-center"><label class="form-label">R</label></div>
+              <div class="col"><input name="adjusted_r_sph" class="rx-entry rx-entry-sph form-control" type="text">
+              </div>
+              <div class="col"><input name="adjusted_r_cyl" class="rx-entry rx-entry-cyl form-control" type="text">
+              </div>
+              <div class="col"><input name="adjusted_r_axis" class="rx-entry rx-entry-axis form-control" type="text">
+              </div>
+              <div class="col"><input name="adjusted_r_add" class="rx-entry rx-entry-add form-control" type="text">
+              </div>
+              <div class="col"><input name="adjusted_r_h" class="rx-entry rx-entry-h form-control" type="text"></div>
+              <div class="col"><input name="adjusted_r_va" class="rx-entry rx-entry-va form-control" type="text"></div>
+              <div class="col"><input name="adjusted_r_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            </div>
+            <div id="adjusted_l" class="row g-2">
+              <div class="col-1 text-center"><label class="form-label">L</label></div>
+              <div class="col"><input name="adjusted_l_sph" class="rx-entry rx-entry-sph form-control" type="text">
+              </div>
+              <div class="col"><input name="adjusted_l_cyl" class="rx-entry rx-entry-cyl form-control" type="text">
+              </div>
+              <div class="col"><input name="adjusted_l_axis" class="rx-entry rx-entry-axis form-control" type="text">
+              </div>
+              <div class="col"><input name="adjusted_l_add" class="rx-entry rx-entry-add form-control" type="text">
+              </div>
+              <div class="col"><input name="adjusted_l_h" class="rx-entry rx-entry-h form-control" type="text"></div>
+              <div class="col"><input name="adjusted_l_va" class="rx-entry rx-entry-va form-control" type="text"></div>
+              <div class="col"><input name="adjusted_l_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div id="full_rx_group">
-        <div>Full RX</div>
-        <div class="row g-2 text-center">
-          <div class="col-1"> </div>
-          <div class="col">Sph</div>
-          <div class="col">Cyl</div>
-          <div class="col">Axis</div>
-          <div class="col">ADD</div>
-          <div class="col">H</div>
-          <div class="col">VA</div>
-          <div class="col">PD</div>
-        </div>
-        <div id="full_r" class="row g-2">
-          <div class="col-1 text-center"><label class="form-label">R</label></div>
-          <div class="col"><input name="full_r_sph" class="rx-entry rx-entry-sph form-control" type="text"></div>
-          <div class="col"><input name="full_r_cyl" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-          <div class="col"><input name="full_r_axis" class="rx-entry rx-entry-axis form-control" type="text"></div>
-          <div class="col"><input name="full_r_add" class="rx-entry rx-entry-add form-control" type="text"></div>
-          <div class="col"><input name="full_r_h" class="rx-entry rx-entry-h form-control" type="text"></div>
-          <div class="col"><input name="full_r_va" class="rx-entry rx-entry-va form-control" type="text"></div>
-          <div class="col"><input name="full_r_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
-        </div>
-        <div id="full_l" class="row g-2">
-          <div class="col-1 text-center"><label class="form-label">L</label></div>
-          <div class="col"><input name="full_l_sph" class="rx-entry rx-entry-sph form-control" type="text"></div>
-          <div class="col"><input name="full_l_cyl" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-          <div class="col"><input name="full_l_axis" class="rx-entry rx-entry-axis form-control" type="text"></div>
-          <div class="col"><input name="full_l_add" class="rx-entry rx-entry-add form-control" type="text"></div>
-          <div class="col"><input name="full_l_h" class="rx-entry rx-entry-h form-control" type="text"></div>
-          <div class="col"><input name="full_l_va" class="rx-entry rx-entry-va form-control" type="text"></div>
-          <div class="col"><input name="full_l_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
+      <div class="col-auto">
+        <div class="row row-cols-4 gx-1 gy-1 text-center numpad-container">
+          <div class="col-4"><button class="btn btn-numpad-0 btn-outline-success">-</button></div>
+          <div class="col-4"><button class="btn btn-numpad-0 btn-outline-success">PL</button></div>
+          <div class="col-4"><button class="btn btn-numpad-0 btn-outline-success">+</button></div>
+          
+          <div class="col"><button class="btn btn-numpad btn-outline-success">7</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success">8</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success">9</button></div>
+
+          <div class="col"><button class="btn btn-numpad btn-outline-success">75</button></div>
+
+          <div class="col"><button class="btn btn-numpad btn-outline-success">4</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success">5</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success">6</button></div>
+
+          <div class="col"><button class="btn btn-numpad btn-outline-success">50</button></div>
+
+          <div class="col"><button class="btn btn-numpad btn-outline-success">1</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success">2</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success">3</button></div>
+
+          <div class="col"><button class="btn btn-numpad btn-outline-success">25</button></div>
+
+          <div class="col-6"><button class="btn btn-numpad-0 btn-outline-success">0</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success">.</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success">00</button></div>
+
+          <div class="col-12"><div class="pb-3"></div></div>
+
+          <div class="col-6"><button class="btn btn-numpad-0 btn-outline-success">Clear</button></div>
+          <div class="col-6"><button class="btn btn-numpad-0 btn-outline-success">Next</button></div>
+
         </div>
       </div>
+    </div>
 
-      <div id="adjusted_rx_group">
-        <div>
-          <span>Adjusted RX For: </span><span>
-            <select name="adjusted_purpose" class="rx-entry">
-              <option value="Distant">Distant</option>
-              <option value="Near">Near</option>
-              <option value="Progressive">Progressive</option>
-              <option value="Record">Record</option>
-            </select>
-          </span>
-        </div>
-
-        <div class="row g-2 text-center">
-          <div class="col-1"> </div>
-          <div class="col">Sph</div>
-          <div class="col">Cyl</div>
-          <div class="col">Axis</div>
-          <div class="col">ADD</div>
-          <div class="col">H</div>
-          <div class="col">VA</div>
-          <div class="col">PD</div>
-        </div>
-        <div id="adjusted_r" class="row g-2">
-          <div class="col-1 text-center"><label class="form-label">R</label></div>
-          <div class="col"><input name="adjusted_r_sph" class="rx-entry rx-entry-sph form-control" type="text"></div>
-          <div class="col"><input name="adjusted_r_cyl" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-          <div class="col"><input name="adjusted_r_axis" class="rx-entry rx-entry-axis form-control" type="text"></div>
-          <div class="col"><input name="adjusted_r_add" class="rx-entry rx-entry-add form-control" type="text"></div>
-          <div class="col"><input name="adjusted_r_h" class="rx-entry rx-entry-h form-control" type="text"></div>
-          <div class="col"><input name="adjusted_r_va" class="rx-entry rx-entry-va form-control" type="text"></div>
-          <div class="col"><input name="adjusted_r_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
-        </div>
-        <div id="adjusted_l" class="row g-2">
-          <div class="col-1 text-center"><label class="form-label">L</label></div>
-          <div class="col"><input name="adjusted_l_sph" class="rx-entry rx-entry-sph form-control" type="text"></div>
-          <div class="col"><input name="adjusted_l_cyl" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-          <div class="col"><input name="adjusted_l_axis" class="rx-entry rx-entry-axis form-control" type="text"></div>
-          <div class="col"><input name="adjusted_l_add" class="rx-entry rx-entry-add form-control" type="text"></div>
-          <div class="col"><input name="adjusted_l_h" class="rx-entry rx-entry-h form-control" type="text"></div>
-          <div class="col"><input name="adjusted_l_va" class="rx-entry rx-entry-va form-control" type="text"></div>
-          <div class="col"><input name="adjusted_l_pd" class="rx-entry rx-entry-pd form-control" type="text"></div>
-        </div>
-      </div>
-
-    </form>
     <button class="btn btn-success" onclick="SaveTestData()">Save</button>
     <button class="btn btn-success" onclick="SendTestData()">Send Test Data</button>
 
