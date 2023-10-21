@@ -263,13 +263,53 @@ VA_L
       }).then(FillData);
     }
 
+    var FocusedCell;
+
+    function UpdateNumpadDisplay(){
+      $('#numpad-display-panel').val(FocusedCell.value)
+    }
+
+    function MarkFocus(Element) {
+      FocusedCell = Element
+      $('#CurrentFocus').html(FocusedCell.name)
+      UpdateNumpadDisplay()
+    }
+
+    function AppendContent(Content){
+      if (!FocusedCell || !Content) return;
+      FocusedCell.value += Content
+      $('#LastNumpadKey').html(Content)
+      UpdateNumpadDisplay()
+    }
+
+    function ClearCell(){
+      FocusedCell.value = ""
+      UpdateNumpadDisplay()
+    }
+
     function BodyInit() {
       $('#optom_name_input').val(location.hash?.substring(1))
+      $('.rx-table input').attr("inputmode","none")
+      $('.rx-table input').attr("onfocus","MarkFocus(this)")
+      // $('.btn-numpad').on('click',NumpadKeyPress)
     }
   </script>
 </head>
 
 <body onload="BodyInit()">
+
+  <div id="Debug_Info_Display">
+    <table>
+      <tr>
+        <td> Element in Focus </td>
+        <td><div id="CurrentFocus"></div></td>
+      </tr>
+      <tr>
+        <td> Last Numpad Key </td>
+        <td><div id="LastNumpadKey"></div></td>
+      </tr>
+    </table>
+  </div>
   <div style="padding-top: 10px;"></div>
   <div>
     <span>Refraction ID : </span>
@@ -299,7 +339,7 @@ VA_L
             </div>
             <div id="habbitual_r" class="row g-2">
               <div class="col-1 text-center"><label class="form-label">R</label></div>
-              <div class="col"><input name="OR_Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
+              <div class="col"><input name="OR_Sphere_R" class="rx-entry rx-entry-sph form-control" type="text" inputmode="none" onfocus="MarkFocus(this)"></div>
               <div class="col"><input name="OR_Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
               <div class="col"><input name="OR_Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
               <div class="col"><input name="OR_ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
@@ -401,39 +441,39 @@ VA_L
       </div>
 
       <div class="col-auto">
-        <div class="row row-cols-4 gx-1 gy-1 text-center numpad-container">
-          <div class="col-12"><input class="btn btn-numpad-A51 btn-outline-success" readonly value="DISPLAY PANEL"></div>
+        <div class="row row-cols-4 gx-0 gy-0 text-center numpad-container">
+          <div class="col-12"><input class="btn btn-numpad-A51 btn-outline-success" readonly type="text" value="DISPLAY PANEL" id="numpad-display-panel"></div>
 
-          <div class="col-4"><button class="btn btn-numpad-A32 btn-outline-success">-</button></div>
-          <div class="col-4"><button class="btn btn-numpad-A32 btn-outline-success">PL</button></div>
-          <div class="col-4"><button class="btn btn-numpad-A32 btn-outline-success">+</button></div>
+          <div class="col-4"><button class="btn btn-numpad-A32 btn-outline-success" onclick="SwitchToMinus()">-</button></div>
+          <div class="col-4"><button class="btn btn-numpad-A32 btn-outline-success" onclick="SwitchToPlano()">PL</button></div>
+          <div class="col-4"><button class="btn btn-numpad-A32 btn-outline-success" onclick="SwitchToPlus()">+</button></div>
           
-          <div class="col"><button class="btn btn-numpad btn-outline-success">7</button></div>
-          <div class="col"><button class="btn btn-numpad btn-outline-success">8</button></div>
-          <div class="col"><button class="btn btn-numpad btn-outline-success">9</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('7')">7</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('8')">8</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('9')">9</button></div>
 
-          <div class="col"><button class="btn btn-numpad btn-outline-success">75</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('75')">75</button></div>
 
-          <div class="col"><button class="btn btn-numpad btn-outline-success">4</button></div>
-          <div class="col"><button class="btn btn-numpad btn-outline-success">5</button></div>
-          <div class="col"><button class="btn btn-numpad btn-outline-success">6</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('4')">4</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('5')">5</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('6')">6</button></div>
 
-          <div class="col"><button class="btn btn-numpad btn-outline-success">50</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('50')">50</button></div>
 
-          <div class="col"><button class="btn btn-numpad btn-outline-success">1</button></div>
-          <div class="col"><button class="btn btn-numpad btn-outline-success">2</button></div>
-          <div class="col"><button class="btn btn-numpad btn-outline-success">3</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('1')">1</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('2')">2</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('3')">3</button></div>
 
-          <div class="col"><button class="btn btn-numpad btn-outline-success">25</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('25')">25</button></div>
 
-          <div class="col-6"><button class="btn btn-numpad-A21 btn-outline-success">0</button></div>
-          <div class="col"><button class="btn btn-numpad btn-outline-success">.</button></div>
-          <div class="col"><button class="btn btn-numpad btn-outline-success">00</button></div>
+          <div class="col-6"><button class="btn btn-numpad-A21 btn-outline-success" onclick="AppendContent('0')">0</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('.')">.</button></div>
+          <div class="col"><button class="btn btn-numpad btn-outline-success" onclick="AppendContent('00')">00</button></div>
 
           <div class="col-12"><div class="pb-3"></div></div>
 
-          <div class="col-6"><button class="btn btn-numpad-A21 btn-outline-success">Clear</button></div>
-          <div class="col-6"><button class="btn btn-numpad-A21 btn-outline-success">Next</button></div>
+          <div class="col-6"><button class="btn btn-numpad-A21 btn-outline-success" onclick="ClearCell()">Clear</button></div>
+          <div class="col-6"><button class="btn btn-numpad-A21 btn-outline-success" onclick="NextCell()">Next</button></div>
 
         </div>
       </div>
