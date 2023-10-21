@@ -1,61 +1,3 @@
-<!-- 
-by
-which CL ??
-
-OR_Sphere_R
-OR_Cylinder_R
-OR_Axis_R
-OR_PD_R
-OR_Prism_R
-OR_ADD_R
-OR_VA_R
-
-OR_Sphere_L
-OR_Cylinder_L
-OR_Axis_L
-OR_PD_L
-OR_Prism_L
-OR_ADD_L
-OR_VA_L
-
-F_Sphere_R
-F_Cylinder_R
-F_Axis_R
-F_PD_R
-F_Prism_R
-F_ADD_R
-F_VA_R
-
-F_Sphere_L
-F_Cylinder_L
-F_Axis_L
-F_PD_L
-F_Prism_L
-F_ADD_L
-F_VA_L
-
-Purpose
-for Copy Use???
-
-Sphere_R
-Cylinder_R
-Axis_R
-PD_R
-Prism_R
-ADD_R
-VA_R
-
-Sphere_L
-Cylinder_L
-Axis_L
-PD_L
-Prism_L
-ADD_L
-VA_L
-
-
- -->
-
 
 <!DOCTYPE html>
 <html>
@@ -64,18 +6,11 @@ VA_L
   <title>Refraction Entry</title>
   <meta charset="UTF-8">
   <meta name="viewport"
-    content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0">
+    content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0, user-scalable=0">
   <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
   <link href="CSS/bootstrap.min.css" rel="stylesheet">
   <script src="JS/jquery-3.7.1.min.js"></script>
   <style>
-html,
-body {
-   max-height: 98%;
-   max-width: 98%;
-   overflow: hidden;
-   position: fixed;
-}
 
 .f-lg {
       font-weight: 600;
@@ -299,12 +234,7 @@ body {
       $('#optom_name_input').val(location.hash?.substring(1))
       $('.rx-table input').attr("inputmode","none")
       $('.rx-table input').attr("onfocus","MarkFocus(this)")
-      // $('.btn-numpad').on('click',NumpadKeyPress)
-      
-      document.ontouchmove = function (event) {
-        event.preventDefault();
-      }
-      
+      $('.numpad-container *').on('touchstart', (e) => { e.target.click() })
     }
   </script>
 </head>
@@ -455,7 +385,7 @@ body {
 
       <div class="col-auto">
         <div class="row row-cols-4 gx-0 gy-0 text-center numpad-container">
-          <div class="col-12"><input class="btn btn-numpad-A51 btn-outline-success" readonly type="text" value="DISPLAY PANEL" id="numpad-display-panel"></div>
+          <div class="col-12"><input class="btn btn-numpad-A51 btn-outline-success" disabled type="text" value="DISPLAY PANEL" id="numpad-display-panel"></div>
 
           <div class="col-4"><button class="btn btn-numpad-A32 btn-outline-success" onclick="SwitchToMinus()">-</button></div>
           <div class="col-4"><button class="btn btn-numpad-A32 btn-outline-success" onclick="SwitchToPlano()">PL</button></div>
