@@ -74,7 +74,7 @@ body {
    overflow-y: hidden;
 }
 
-    .f-lg {
+.f-lg {
       font-weight: 600;
       font-size: 28px;
     }
@@ -297,6 +297,11 @@ body {
       $('.rx-table input').attr("inputmode","none")
       $('.rx-table input').attr("onfocus","MarkFocus(this)")
       // $('.btn-numpad').on('click',NumpadKeyPress)
+      
+      document.ontouchmove = function (event) {
+        event.preventDefault();
+      }
+      
     }
   </script>
 </head>
