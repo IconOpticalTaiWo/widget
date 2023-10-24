@@ -4,11 +4,20 @@
 <head>
   <title>Refraction Entry</title>
   <meta charset="UTF-8">
-  <meta name="viewport" content="height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
   <link href="CSS/bootstrap.min.css" rel="stylesheet">
   <script src="JS/jquery-3.7.1.min.js"></script>
   <style>
+    body {
+      margin: auto;
+      padding: 0;
+      /* max-width: 1000px; */
+      max-height: 100vh;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+
     .f-lg {
       font-weight: 600;
       font-size: 28px;
@@ -26,14 +35,18 @@
 
     .fixed-width {}
 
-    /* .rx-entry,  */
+
+    .rx-group-header {
+      font-weight: 600;
+      font-size: 20px;
+    }
+
     .rx-table input {
       text-align: center;
       font-weight: 600;
       font-size: 22px;
       padding: 10px 0;
-      margin-bottom: 2px;
-      /* min-height: 56px; */
+      margin-bottom: 4px;
     }
 
     .rx-entry-sph {}
@@ -53,8 +66,9 @@
 
     .rx-table {
       /* max-width: 600px ; */
-      width: 100%;
-      min-width: 500px;
+      /* width: 100%; */
+      /* min-width: 500px; */
+      height: 100%;
     }
 
 
@@ -341,7 +355,7 @@
           var A = parseInt($(`input[name=F_ADD_${Side}]`).val())
 
           if (Content === '中距離 睇電腦 打麻雀') A -= 50
-          
+
           if (isNaN(A)) A = 0 // return $(`input[name=F_ADD_${Side}]`).focus()
 
           var Result = (S + A).toString()
@@ -436,142 +450,149 @@
 <body>
   <div style="padding-top: 10px;"></div>
 
-  <main class="container-fluid ps-0">
-    <div class="row">
-      <div class="col-8">
+  <main class="container-fluid ps-0" style="max-height: 100vh;">
+    <div class="row mt-1 pt-1">
 
-        <div class="rx-table" autocomplete="off">
-          <div class="row text-center">
-            <label class="col-3 col-form-label" for="refraction_id_input">Refraction ID :</label>
-            <div class="col"><input id="refraction_id_input" name="refraction_id" class="form-control"></div>
+      <div class="col-8 rx-table">
+        <div class="row text-end">
+          <label class="col-3 col-form-label text-truncate" for="refraction_id_input">Refraction ID :</label>
+          <div class="col-3"><input class="form-control" id="refraction_id_input" type="text" name="refraction_id"></div>
 
-            <label class="col col-form-label" for="customer_phone_input">Customer Phone :</label>
-            <div class="col"><input id="customer_phone_input" name="customer_phone" class="form-control"></div>
-          </div>
-
-          <div class="row text-center">
-            <label class="col-3 col-form-label" for="optom_name_input">Optometrist :</label>
-            <div class="col-6"><input id="optom_name_input" name="by" class="rx-entry form-control"></div>
-            <div class="col"><button class="btn btn-success mt-1 p-2" onclick="LoadData()">Load Record</button></div>
-          </div>
-
-          <div class="ps-2">Habbitual Rx</div>
-          <div id="habbitual_rx_group">
-            <div class="row g-2 text-center">
-              <div class="col-1"> </div>
-              <div class="col">Sph</div>
-              <div class="col">Cyl</div>
-              <div class="col">Axis</div>
-              <div class="col">ADD</div>
-              <div class="col">H</div>
-              <div class="col">VA</div>
-              <div class="col">PD</div>
-            </div>
-            <div id="habbitual_r" class="row g-2">
-              <div class="col-1 text-center"><label class="form-label">R</label></div>
-              <div class="col"><input name="OR_Sphere_R" class="rx-entry rx-entry-sph form-control" type="text" inputmode="none" onfocus="SwitchFocus(this)"></div>
-              <div class="col"><input name="OR_Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-              <div class="col"><input name="OR_Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
-              <div class="col"><input name="OR_ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
-              <div class="col"><input name="OR_Prism_R" class="rx-entry rx-entry-h form-control" type="text"></div>
-              <div class="col"><input name="OR_VA_R" class="rx-entry rx-entry-va form-control" type="text"></div>
-              <div class="col"><input name="OR_PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
-            </div>
-            <div id="habbitual_l" class="row g-2">
-              <div class="col-1 text-center"><label class="form-label">L</label></div>
-              <div class="col"><input name="OR_Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
-              <div class="col"><input name="OR_Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-              <div class="col"><input name="OR_Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
-              <div class="col"><input name="OR_ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
-              <div class="col"><input name="OR_Prism_L" class="rx-entry rx-entry-h form-control" type="text"></div>
-              <div class="col"><input name="OR_VA_L" class="rx-entry rx-entry-va form-control" type="text"></div>
-              <div class="col"><input name="OR_PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
-            </div>
-          </div>
-
-          <div class="ps-2">Full Rx</div>
-          <div id="full_rx_group">
-            <div class="row g-2 text-center">
-              <div class="col-1"> </div>
-              <div class="col">Sph</div>
-              <div class="col">Cyl</div>
-              <div class="col">Axis</div>
-              <div class="col">ADD</div>
-              <div class="col">H</div>
-              <div class="col">VA</div>
-              <div class="col">PD</div>
-            </div>
-            <div id="full_r" class="row g-2">
-              <div class="col-1 text-center"><label class="form-label">R</label></div>
-              <div class="col"><input name="F_Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
-              <div class="col"><input name="F_Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-              <div class="col"><input name="F_Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
-              <div class="col"><input name="F_ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
-              <div class="col"><input name="F_Prism_R" class="rx-entry rx-entry-h form-control" type="text"></div>
-              <div class="col"><input name="F_VA_R" class="rx-entry rx-entry-va form-control" type="text"></div>
-              <div class="col"><input name="F_PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
-            </div>
-            <div id="full_l" class="row g-2">
-              <div class="col-1 text-center"><label class="form-label">L</label></div>
-              <div class="col"><input name="F_Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
-              <div class="col"><input name="F_Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-              <div class="col"><input name="F_Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
-              <div class="col"><input name="F_ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
-              <div class="col"><input name="F_Prism_L" class="rx-entry rx-entry-h form-control" type="text"></div>
-              <div class="col"><input name="F_VA_L" class="rx-entry rx-entry-va form-control" type="text"></div>
-              <div class="col"><input name="F_PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
-            </div>
-          </div>
-
-          <div class="ps-2">Adjusted Rx</div>
-          <div id="adjusted_rx_group">
-
-            <div class="row g-2 text-center">
-              <div class="col-1"> </div>
-              <div class="col">Sph</div>
-              <div class="col">Cyl</div>
-              <div class="col">Axis</div>
-              <div class="col">ADD</div>
-              <div class="col">H</div>
-              <div class="col">VA</div>
-              <div class="col">PD</div>
-            </div>
-            <div id="adjusted_r" class="row g-2">
-              <div class="col-1 text-center"><label class="form-label">R</label></div>
-              <div class="col"><input name="Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
-              <div class="col"><input name="Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-              <div class="col"><input name="Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
-              <div class="col"><input name="ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
-              <div class="col"><input name="Prism_R" class="rx-entry rx-entry-h form-control" type="text"></div>
-              <div class="col"><input name="VA_R" class="rx-entry rx-entry-va form-control" type="text"></div>
-              <div class="col"><input name="PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
-            </div>
-            <div id="adjusted_l" class="row g-2">
-              <div class="col-1 text-center"><label class="form-label">L</label></div>
-              <div class="col"><input name="Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
-              <div class="col"><input name="Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
-              <div class="col"><input name="Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
-              <div class="col"><input name="ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
-              <div class="col"><input name="Prism_L" class="rx-entry rx-entry-h form-control" type="text"></div>
-              <div class="col"><input name="VA_L" class="rx-entry rx-entry-va form-control" type="text"></div>
-              <div class="col"><input name="PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
-            </div>
-          </div>
-
-          <div class="pb-4"></div>
-
-          <div class="row">
-            <label class="col-2 col-form-label text-end f-lg" for="refraction_purpose_input">用途:</label>
-            <div class="col-5"><input id="refraction_purpose_input" name="Purpose" class="rx-entry rx-entry-purpose form-control text-center"></div>
-            <div class="col-3"><button class="btn btn-success w-100 f-lg" onclick="SaveData()">Save</button></div>
-            <div class="col-2"><button class="btn btn-success w-100" onclick="SendTestData()">Test Data</button></div>
-          </div>
-
+          <label class="col-3 col-form-label text-truncate" for="customer_phone_input">Customer Phone :</label>
+          <div class="col-3"><input class="form-control" id="customer_phone_input" type="text" name="customer_phone"></div>
         </div>
+
+        <div class="row text-end">
+          <label class="col-3 col-form-label text-truncate" for="optom_name_input">Optometrist :</label>
+          <div class="col-6"><input class="rx-entry form-control" id="optom_name_input" type="text" name="by"></div>
+          <div class="col"><button class="btn btn-success mt-1 p-2" onclick="LoadData()">Load Record</button></div>
+        </div>
+
+        <div class="rx-group-header ps-2 pt-3">Habbitual Rx</div>
+        <div id="habbitual_rx_group">
+          <div class="row g-2 text-center">
+            <div class="col-1"> </div>
+            <div class="col">Sph</div>
+            <div class="col">Cyl</div>
+            <div class="col">Axis</div>
+            <div class="col">ADD</div>
+            <div class="col">H</div>
+            <div class="col">VA</div>
+            <div class="col">PD</div>
+          </div>
+          <div id="habbitual_r" class="row g-2">
+            <div class="col-1 col-form-label text-center">R</div>
+            <div class="col"><input name="OR_Sphere_R" class="rx-entry rx-entry-sph form-control" type="text" inputmode="none" onfocus="SwitchFocus(this)"></div>
+            <div class="col"><input name="OR_Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="OR_Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="OR_ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <div class="col"><input name="OR_Prism_R" class="rx-entry rx-entry-h form-control" type="text"></div>
+            <div class="col"><input name="OR_VA_R" class="rx-entry rx-entry-va form-control" type="text"></div>
+            <div class="col"><input name="OR_PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
+          </div>
+          <div id="habbitual_l" class="row g-2">
+            <div class="col-1 col-form-label text-center">L</div>
+            <div class="col"><input name="OR_Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="OR_Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="OR_Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="OR_ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <div class="col"><input name="OR_Prism_L" class="rx-entry rx-entry-h form-control" type="text"></div>
+            <div class="col"><input name="OR_VA_L" class="rx-entry rx-entry-va form-control" type="text"></div>
+            <div class="col"><input name="OR_PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
+          </div>
+        </div>
+
+        <div class="rx-group-header ps-2 pt-3">Full Rx</div>
+        <div id="full_rx_group">
+          <div class="row g-2 text-center">
+            <div class="col-1"> </div>
+            <div class="col">Sph</div>
+            <div class="col">Cyl</div>
+            <div class="col">Axis</div>
+            <div class="col">ADD</div>
+            <div class="col">H</div>
+            <div class="col">VA</div>
+            <div class="col">PD</div>
+          </div>
+          <div id="full_r" class="row g-2">
+            <div class="col-1 col-form-label text-center">R</div>
+            <div class="col"><input name="F_Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="F_Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="F_Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="F_ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <div class="col"><input name="F_Prism_R" class="rx-entry rx-entry-h form-control" type="text"></div>
+            <div class="col"><input name="F_VA_R" class="rx-entry rx-entry-va form-control" type="text"></div>
+            <div class="col"><input name="F_PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
+          </div>
+          <div id="full_l" class="row g-2">
+            <div class="col-1 col-form-label text-center">L</div>
+            <div class="col"><input name="F_Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="F_Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="F_Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="F_ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <div class="col"><input name="F_Prism_L" class="rx-entry rx-entry-h form-control" type="text"></div>
+            <div class="col"><input name="F_VA_L" class="rx-entry rx-entry-va form-control" type="text"></div>
+            <div class="col"><input name="F_PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
+          </div>
+        </div>
+
+        <div class="row ps-2 pt-3">
+          <div class="col-4 mt-auto mb-0 pb-0">
+            <div class="row">
+              <div class="col-8 rx-group-header">Adjusted Rx</div>
+              <label class="col rx-group-header text-end" for="refraction_purpose_input">用途:</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="row">
+              <!-- <label class="col-3 col-form-label text-truncate text-end f-lg" for="refraction_purpose_input">用途:</label> -->
+              <div class="col-8"><input id="refraction_purpose_input" name="Purpose" class="rx-entry rx-entry-purpose form-control text-center"></div>
+              <div class="col"><button class="btn btn-success h-100" tabIndex="-1" onclick="SendTestData()">Test Data</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="adjusted_rx_group">
+
+          <div class="row g-2 text-center">
+            <div class="col-1"> </div>
+            <div class="col">Sph</div>
+            <div class="col">Cyl</div>
+            <div class="col">Axis</div>
+            <div class="col">ADD</div>
+            <div class="col">H</div>
+            <div class="col">VA</div>
+            <div class="col">PD</div>
+          </div>
+          <div id="adjusted_r" class="row g-2">
+            <div class="col-1 col-form-label text-center">R</div>
+            <div class="col"><input name="Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <div class="col"><input name="Prism_R" class="rx-entry rx-entry-h form-control" type="text"></div>
+            <div class="col"><input name="VA_R" class="rx-entry rx-entry-va form-control" type="text"></div>
+            <div class="col"><input name="PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
+          </div>
+          <div id="adjusted_l" class="row g-2">
+            <div class="col-1 col-form-label text-center">L</div>
+            <div class="col"><input name="Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <div class="col"><input name="Prism_L" class="rx-entry rx-entry-h form-control" type="text"></div>
+            <div class="col"><input name="VA_L" class="rx-entry rx-entry-va form-control" type="text"></div>
+            <div class="col"><input name="PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
+          </div>
+        </div>
+
+        <div class="pb-4"></div>
+
+
 
       </div>
 
-      <div class="col-4 mt-1 pt-1">
+      <div class="col-4">
 
         <div id="Debug_Info_Display" class="mb-3">
           <table>
@@ -593,7 +614,8 @@
         <div class="row row-cols-4 g-0 text-center input-panel-common">
 
           <div class="col-6"><button class="btn-numpad" style="--aspect:2/1;" ontouch="ClearCell">Clear</button></div>
-          <div class="col-6"><button class="btn-numpad" style="--aspect:2/1;" ontouch="NextCell">Next</button></div>
+          <!-- <div class="col-6"><button class="btn-numpad" style="--aspect:2/1;" ontouch="NextCell">Next</button></div> -->
+          <div class="col-6"><button class="btn-numpad" style="--aspect:2/1;" ontouch="SaveData">Save</button></div>
 
           <div class="col-12 pb-3"></div>
         </div>
