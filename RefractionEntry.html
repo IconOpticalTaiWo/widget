@@ -194,6 +194,9 @@
     }
 
     function SaveData() {
+      console.log('starts saving')
+      $('#save-processing-indicator').removeClass('hidden')
+
       $.ajax("https://samyankc.site/cgi/add_json", {
         contentType: 'application/json',
         type: 'POST',
@@ -203,7 +206,10 @@
           value: GatherData()
         })
       }).then((response) => {
+        $('#save-processing-indicator').addClass('hidden')
         $('#refraction_id_input').val(response.refraction_id);
+        $('#refraction_id_in_modal').html(response.refraction_id);
+        $('#save-complete-modal')[0].showModal()
       });
     }
 
@@ -622,7 +628,11 @@
 
           <div class="col-6"><button class="btn-numpad" style="--aspect:2/1;" ontouch="ClearCell">Clear</button></div>
           <!-- <div class="col-6"><button class="btn-numpad" style="--aspect:2/1;" ontouch="NextCell">Next</button></div> -->
-          <div class="col-6"><button class="btn-numpad" style="--aspect:2/1;" ontouch="SaveData">Save</button></div>
+          <div class="col-6">
+            <button class="btn-numpad" style="--aspect:2/1;" ontouch="SaveData">
+              Save<div id="save-processing-indicator" class="spinner-border text-success hidden"></div>
+            </button>
+          </div>
 
           <div class="col-12 pb-3"></div>
         </div>
@@ -690,6 +700,21 @@
     </div>
 
   </main>
+
+  <dialog id="save-complete-modal" class="w-50" tabindex="-1">
+
+    <div class="modal-header">
+      <h1 class="modal-title">New Refraction ID</h1>
+    </div>
+    <div class="modal-body">
+      <h1 id="refraction_id_in_modal" class="modal-title text-center">....</h1>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" onclick="$('#save-complete-modal')[0].close()">Close</button>
+    </div>
+
+  </dialog>
+
 
 </body>
 
