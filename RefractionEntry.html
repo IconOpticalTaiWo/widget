@@ -419,11 +419,8 @@
 
     window.onload = function () {
 
-      setTimeout(() => {
-        LoadDataFromIcon(QueryParam_UserID, QueryParam_RefractionType)
-      }, 1000)
-
-      // PageUserID = QueryString.get('userid')
+      if (QueryParam_UserID) LoadDataFromIcon(QueryParam_UserID, QueryParam_RefractionType)
+      
       $('#optom_name_input').val(QueryParam_Optometrist)
       $('.rx-table input').attr("inputmode", "none")
       $('.rx-table input').attr("onfocus", "SwitchFocus(this)")
