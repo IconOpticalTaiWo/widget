@@ -106,10 +106,20 @@
     var QueryString = new URLSearchParams(window.location.search)
 
     function FillData(RefractionRecord) {
-      $('[name="by"]').val(RefractionRecord.by)
+      $('[name="optometrist"]').val(RefractionRecord.optometrist)
       $('[name="Purposes"]').val(RefractionRecord.Purposes)
       $('.rx-entry').each((unused, e) => {
         $(e).val(RefractionRecord[e.name])
+      })
+    }
+
+    function FillDataFromIcon(RefractionRecordString) {
+      var RefractionRecord = JSON.parse(RefractionRecordString)
+      // if (!Record.optometrist){
+      //   $('[name="optometrist"]').val(RefractionRecord.optometrist)
+      // }
+      $('#habbitual_rx_group .rx-entry').each((unused, e) => {
+        $(e).val(RefractionRecord[e.name.slice(3)])
       })
     }
 
@@ -134,7 +144,7 @@
     // };
 
     var TestData_3 = {
-      by: "Yan Ka Chun ( OP101026 )",
+      optometrist: "Yan Ka Chun ( OP101026 )",
       OR_Sphere_R: "-100",
       OR_Cylinder_R: "-200",
       OR_Axis_R: "175",
@@ -189,7 +199,7 @@
     }
 
     function SaveData() {
-      console.log('starts saving')
+      // console.log('starts saving')
       $('#save-processing-indicator').removeClass('hidden')
 
       $.ajax("https://samyankc.site/cgi/add_json", {
@@ -233,6 +243,18 @@
       }).then(FillData);
     }
 
+    function LoadDataFromIcon(UserID, RxType) {
+      // type 1 is adj, type 2 is full adj(?)
+      $.ajax("https://www.iconoptical.com/wp-admin/admin-ajax.php", {
+        type: 'POST',
+        data: {
+          action: "get_last_tm_data_action",
+          type: RxType,
+          user_id: UserID
+        }
+      }).then(FillDataFromIcon);
+    }
+
     var FocusedCell;
 
     function SwitchInputPanel() {
@@ -244,7 +266,7 @@
 
       var ActiveInputPanel = '.standard-numpad'
       switch (StripDecorator(FocusedCell.name)) {
-        case 'by': ActiveInputPanel = '.optom-picker'; break
+        case 'optometrist': ActiveInputPanel = '.optom-picker'; break
         case 'VA': ActiveInputPanel = '.va-picker'; break
         case 'Purposes': ActiveInputPanel = '.purposes-picker'; break
       }
@@ -391,8 +413,18 @@
 
     }
 
+    var QueryParam_Optometrist = QueryString.get('optometrist')
+    var QueryParam_UserID = QueryString.get('userid')
+    var QueryParam_RefractionType = QueryString.get('type')
+
     window.onload = function () {
-      $('#optom_name_input').val(QueryString.get('optom_name'))
+
+      setTimeout(() => {
+        LoadDataFromIcon(QueryParam_UserID, QueryParam_RefractionType)
+      }, 1000)
+
+      // PageUserID = QueryString.get('userid')
+      $('#optom_name_input').val(QueryParam_Optometrist)
       $('.rx-table input').attr("inputmode", "none")
       $('.rx-table input').attr("onfocus", "SwitchFocus(this)")
       $('.btn-numpad').addClass('btn btn-outline-success f-lg')
@@ -473,7 +505,7 @@
 
         <div class="row text-end">
           <label class="col-3 col-form-label text-truncate" for="optom_name_input">Optometrist :</label>
-          <div class="col-6"><input class="rx-entry form-control" id="optom_name_input" type="text" name="by"></div>
+          <div class="col-6"><input class="rx-entry form-control" id="optom_name_input" type="text" name="optometrist"></div>
           <div class="col"><button class="btn btn-success mt-1 p-2" onclick="LoadData()">Load Record</button></div>
         </div>
 
