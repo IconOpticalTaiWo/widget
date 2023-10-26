@@ -15,13 +15,7 @@
       /* max-width: 1000px; */
       height: 100%;
       overflow: hidden;
-       aspect-ratio: 4/3;
-    }
-
-    @media only screen and (min-width: 1200px) {
-      body {
-        aspect-ratio: 4/3;
-      }
+      aspect-ratio: 4/3;
     }
 
     .f-lg {
@@ -560,7 +554,7 @@
           <div class="col">
             <div class="row">
               <!-- <label class="col-3 col-form-label text-truncate text-end f-lg" for="refraction_purpose_input">用途:</label> -->
-              <div class="col-8"><input id="refraction_purpose_input" name="Purpose" class="rx-entry rx-entry-purpose form-control text-center"></div>
+              <div class="col-8"><input id="refraction_purpose_input" name="Purposes" class="rx-entry rx-entry-purpose form-control text-center"></div>
               <div class="col"><button class="btn btn-success h-100" tabIndex="-1" onclick="SendTestData()">Test Data</button></div>
             </div>
           </div>
@@ -677,22 +671,22 @@
         </div>
 
         <div class="row g-2 text-center input-panel optom-picker hidden">
-          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="Provided / Dr Rx">客人提供度數<br>或 醫生處方</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="Optom #05 ( OP123456 )">Optom #01<br>( OP123456 )</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="Optom #05 ( OP223456 )">Optom #02<br>( OP223456 )</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="Optom #05 ( OP323456 )">Optom #03<br>( OP323456 )</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="Optom #05 ( OP423456 )">Optom #04<br>( OP423456 )</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="Optom #05 ( OP523456 )">Optom #05<br>( OP523456 )</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="COPY RX / GIVEN RX">客人提供度數<br>或 醫生處方</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="OP101012 LAW PUI LEUNG">OP101012<br>LAW PUI LEUNG</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="OP101026 YAN KA CHUN">OP101026<br>YAN KA CHUN</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="OP400195 CHEUNG SHIU WAH">OP400195<br>CHEUNG SHIU WAH</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="OP400281 HUI KAM POR">OP400281<br>HUI KAM POR</button></div>
         </div>
 
         <div class="row g-0 text-center input-panel purpose-picker hidden">
-          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose" value="遠用">遠用</button></div>
+          <!-- <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose" value="遠用">遠用</button></div>
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose" value="老花 近用">近用</button></div>
           <div class="col-12"><button class="btn-picker" ontouch="SwitchPurpose" value="中距離 睇電腦 打麻雀">中距離</button></div>
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose" value="漸進式">漸進式</button></div>
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose" value="雙光">雙光</button></div>
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose">Mono Vision</button></div>
-          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose">Contact Lens</button></div>
+          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose">Contact Lens</button></div> -->
+          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurpose">配眼鏡處方</button></div>
           <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurpose">Record</button></div>
           <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurpose" value="ClearAdjustedRx">Clear Adjusted Rx</button></div>
         </div>
