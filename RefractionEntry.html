@@ -107,7 +107,7 @@
 
     function FillData(RefractionRecord) {
       $('[name="by"]').val(RefractionRecord.by)
-      $('[name="Purpose"]').val(RefractionRecord.Purpose)
+      $('[name="Purposes"]').val(RefractionRecord.Purposes)
       $('.rx-entry').each((unused, e) => {
         $(e).val(RefractionRecord[e.name])
       })
@@ -163,7 +163,7 @@
       // F_Prism_L: "",
       F_ADD_L: "250",
       F_VA_L: "0.9+",
-      Purpose: "Progressive",
+      Purposes: "配眼鏡處方",
       // Sphere_R: "",
       // Cylinder_R: "",
       // Axis_R: "",
@@ -246,7 +246,7 @@
       switch (StripDecorator(FocusedCell.name)) {
         case 'by': ActiveInputPanel = '.optom-picker'; break
         case 'VA': ActiveInputPanel = '.va-picker'; break
-        case 'Purpose': ActiveInputPanel = '.purpose-picker'; break
+        case 'Purposes': ActiveInputPanel = '.purposes-picker'; break
       }
       $('.input-panel').addClass('hidden')
       $(ActiveInputPanel).removeClass('hidden')
@@ -332,7 +332,7 @@
       }
     }
 
-    function SwitchPurpose(Content) {
+    function SwitchPurposes(Content) {
       ClearAdjustedRx()
       if (Content.includes('ClearAdjustedRx')) return ClearCell()
 
@@ -548,13 +548,13 @@
           <div class="col-4 mt-auto mb-0 pb-0">
             <div class="row">
               <div class="col-8 rx-group-header">Adjusted Rx</div>
-              <label class="col rx-group-header text-end" for="refraction_purpose_input">用途:</label>
+              <label class="col rx-group-header text-end" for="refraction_purposes_input">用途:</label>
             </div>
           </div>
           <div class="col">
             <div class="row">
-              <!-- <label class="col-3 col-form-label text-truncate text-end f-lg" for="refraction_purpose_input">用途:</label> -->
-              <div class="col-8"><input id="refraction_purpose_input" name="Purposes" class="rx-entry rx-entry-purpose form-control text-center"></div>
+              <!-- <label class="col-3 col-form-label text-truncate text-end f-lg" for="refraction_purposes_input">用途:</label> -->
+              <div class="col-8"><input id="refraction_purposes_input" name="Purposes" class="rx-entry rx-entry-purposes form-control text-center"></div>
               <div class="col"><button class="btn btn-success h-100" tabIndex="-1" onclick="SendTestData()">Test Data</button></div>
             </div>
           </div>
@@ -678,17 +678,17 @@
           <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="OP400281 HUI KAM POR">OP400281<br>HUI KAM POR</button></div>
         </div>
 
-        <div class="row g-0 text-center input-panel purpose-picker hidden">
-          <!-- <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose" value="遠用">遠用</button></div>
-          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose" value="老花 近用">近用</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="SwitchPurpose" value="中距離 睇電腦 打麻雀">中距離</button></div>
-          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose" value="漸進式">漸進式</button></div>
-          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose" value="雙光">雙光</button></div>
-          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose">Mono Vision</button></div>
-          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurpose">Contact Lens</button></div> -->
-          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurpose">配眼鏡處方</button></div>
-          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurpose">Record</button></div>
-          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurpose" value="ClearAdjustedRx">Clear Adjusted Rx</button></div>
+        <div class="row g-0 text-center input-panel purposes-picker hidden">
+          <!-- <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="遠用">遠用</button></div>
+          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="老花 近用">近用</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="SwitchPurposes" value="中距離 睇電腦 打麻雀">中距離</button></div>
+          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="漸進式">漸進式</button></div>
+          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="雙光">雙光</button></div>
+          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes">Mono Vision</button></div>
+          <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes">Contact Lens</button></div> -->
+          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes">配眼鏡處方</button></div>
+          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes">Record</button></div>
+          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="ClearAdjustedRx">Clear Adjusted Rx</button></div>
         </div>
       </div>
 
