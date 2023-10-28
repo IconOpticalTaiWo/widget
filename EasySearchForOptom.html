@@ -13,9 +13,7 @@
       let V = document.getElementById(ID).value
       if (V) { window.open("https://www.iconoptical.com/" + Action + V) }
     }
-    function SearchOrder() { LoadRequest("order-number", "account/view-order/") }
     function SearchUser() { LoadRequest("user-keyword", "wp-admin/users.php?s=") }
-    function SearchGeneral() { LoadRequest("general-keyword", "wp-admin/edit.php?post_status=all&post_type=shop_order&s=") }
   </script>
   <style>
     .f-lg {
@@ -45,19 +43,10 @@
 
     <div class="card shadow-lg p-2 bg-body-tertiary">
       <div class="card-body">
-        <form class="input-group mt-4 mb-5" autocomplete="off" onsubmit='SearchOrder(); return false;'>
-          <input type="text" class="form-control shadow-none border-success f-lg ps-4" id="order-number"
-            placeholder="輸入單號查單" autofocus>
-          <button tabindex="-1" class="btn btn-success p-3" type="submit">
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" version="2.0">
-              <use href="#search-symbol" />
-            </svg>
-          </button>
-        </form>
 
         <form class="input-group mb-5" autocomplete="off" onsubmit='SearchUser(); return false;'>
-          <input type="text" class="form-control shadow-none border-success f-lg ps-4" id="user-keyword"
-            placeholder="輸入電話/客人名">
+          <input type="tel" class="form-control shadow-none border-success f-lg ps-4" id="user-keyword"
+            placeholder="輸入電話">
           <button tabindex="-1" class="btn btn-success p-3" type="submit">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" version="2.0">
               <use href="#search-symbol" /> 
@@ -65,15 +54,6 @@
           </button>
         </form>
 
-        <form class="input-group mb-4" autocomplete="off" onsubmit='SearchGeneral(); return false;'>
-          <input type="text" class="form-control shadow-none border-success f-lg ps-4" id="general-keyword"
-            placeholder="後台查單">
-          <button tabindex="-1" class="btn btn-success p-3" type="submit">
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" version="2.0">
-              <use href="#search-symbol" />
-            </svg>
-          </button>
-        </form>
       </div>
     </div>
   </main>
