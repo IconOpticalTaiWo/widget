@@ -116,6 +116,9 @@
       $('.rx-entry').each((unused, e) => {
         $(e).val(RefractionRecord[e.name])
       })
+      $('#supplementary_info input').each((unused,e)=>{
+        if (RefractionRecord[e.name]) $(e).val(RefractionRecord[e.name])
+      })
     }
 
     function FillDataFromIconOptical(RefractionRecordString) {
@@ -125,15 +128,17 @@
         // skip leading 'OR_' on input name
         $(e).val(RefractionRecord[e.name.slice(3)])
       })
+      $('#supplementary_info input').each((unused,e)=>{
+        if (RefractionRecord[e.name]) $(e).val(RefractionRecord[e.name])
+      })
     }
-
-
-    // };
-
 
     function GatherData() {
       var Refraction = {}
       $('.rx-entry').each((i, e) => {
+        if (e.value) Refraction[e.name] = e.value
+      })
+      $('#supplementary_info input').each((i, e) => {
         if (e.value) Refraction[e.name] = e.value
       })
       return Refraction
@@ -142,6 +147,8 @@
     function SaveData() {
       var Refraction = GatherData()
       if (Object.keys(Refraction).length === 0) return
+
+      Refraction.create_date = new Date().toJSON().slice(0, 10)
 
       $('#save-complete-modal')[0].showModal()
       $('#save-processing-indicator').removeClass('hidden')
@@ -152,7 +159,6 @@
         type: 'POST',
         data: JSON.stringify({
           identifier_name: "refraction_id",
-          // custom_reference: $('#customer_phone_input').val(),
           value: Refraction
         })
       }).then((response) => {
@@ -166,8 +172,7 @@
       $.ajax("https://samyankc.site/cgi/load_json", {
         type: 'GET',
         data: {
-          // custom_reference: $('#customer_phone_input').val() 
-          refraction_id: $('#refraction_id_input').val(),
+          refraction_id: $('#refraction_id_input').val()
         }
       }).then(FillData);
     }
@@ -363,13 +368,16 @@
     }
 
     var QueryParam_Optometrist = QueryString.get('optometrist') || window.localStorage.optometrist_on_duty
-    var QueryParam_UserID = QueryString.get('userid')
+    var QueryParam_UserID = QueryString.get('userid') || QueryString.get('user_id')
     var QueryParam_RefractionType = QueryString.get('type') || 1
+    var QueryParam_UserTel = QueryString.get('tel')
     var TabIndexCounter = 0;
 
 
     window.onload = function () {
 
+      $('#supplementary_info input[name=user_id]').val(QueryParam_UserID)
+      $('#supplementary_info input[name=tel]').val(QueryParam_UserTel)
       if (QueryParam_UserID) LoadDataFromIconOptical(QueryParam_UserID, QueryParam_RefractionType)
 
       $('#optom_name_input').val(QueryParam_Optometrist)
@@ -462,6 +470,12 @@
 </head>
 
 <body>
+  <div id="supplementary_info">
+    <input type="hidden" name="user_id">
+    <input type="hidden" name="tel">
+    <!-- <input type="hidden" name="create_date"> -->
+  </div>
+
   <div style="padding-top: 10px;"></div>
 
   <main class="container-fluid ps-0">
