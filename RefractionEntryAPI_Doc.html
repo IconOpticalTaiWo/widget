@@ -12,7 +12,7 @@
   <style>
     body {
       margin: auto;
-      max-width: 840px;
+      max-width: 960px;
     }
   </style>
 </head>
@@ -21,7 +21,9 @@
 
   <div class="card m-3">
     <div class="card-header">
-      <span class="fs-4 fw-bold">https://iconopticaltaiwo.github.io/widget/RefractionEntry</span>
+
+      <span class="fs-4 fw-bold">Static Web Page
+        URL:<br>https://iconopticaltaiwo.github.io/widget/RefractionEntry</span>
     </div>
     <div class="card-body">
       <table class='table  table-hover table-bordered border-black m-auto'>
@@ -67,13 +69,117 @@
         </tbody>
       </table>
     </div>
+    <div class="card-footer">
+      Usage Demo:<br>
+      https://iconopticaltaiwo.github.io/widget/RefractionEntry?user_id=22839&tel=98765432
+    </div>
   </div>
 
+  <div class="p-1"></div>
 
-  <hr>
+  <div class="card m-3">
+    <div class="card-header">
+      <span class="fs-4 fw-bold">API Endpoint:<br>https://samyankc.site/cgi/icon_load_refraction</span>
+    </div>
+    <div class="card-body">
 
-
-
+      <table class='table table-striped-columns table-hover table-bordered border-black m-auto'>
+        <tr>
+          <td width="30%">Request Method</td>
+          <td>GET</td>
+        </tr>
+        <tr>
+          <td>Response Content Type</td>
+          <td>application/json</td>
+        </tr>
+      </table>
+      <div class="p-1"></div>
+      <table class='table  table-hover table-bordered border-black m-auto'>
+        <thead class="table-secondary border-black">
+          <tr>
+            <th>Category</th>
+            <th>Supported Parameter</th>
+            <th>Content Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="3">Retrieval</td>
+            <td>refraction_id</td>
+            <td>
+              Refraction record database primary key<br>
+              Retrieve refraction record by unique refraction ID
+            </td>
+          </tr>
+          <tr>
+            <td>user_id</td>
+            <td>
+              Retrieve refraction record using user ID from iconoptical.com database<br>
+              !! Important Note: This is only useful if the refraction record is created along with an existing user_id
+              in the first place<br>
+              ie. from a refraction entry page redirected from iconoptical.com with user_id supplied<br>
+              New customer's user_id is NOT yet available in such moment
+            </td>
+          </tr>
+          <tr>
+            <td>tel</td>
+            <td>
+              Retrieve refraction record using user's phone number<br>
+              This data can also be used for cross-referencing<br>
+              especially for new customer<br>
+              ps. customer name could be another piece of data for the this purpose
+            </td>
+          </tr>
+          <tr>
+            <td>Modifier</td>
+            <td>purpose</td>
+            <td class="p-0">
+              <table class='table table-hover table-bordered border-1 m-0'>
+                <thead class="table-secondary ">
+                  <tr>
+                    <th>Value Options</th>
+                    <th>Content Meaning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>distant, dist</td>
+                    <td>Modify the adjusted refraction for distant<br>
+                      Remove ADD part</td>
+                  </tr>
+                  <tr>
+                    <td>intermediate, inter</td>
+                    <td>Modify the adjusted refraction for intermediate<br>
+                      Remove redundant ADD part<br>
+                      Modify PD to -0.5 on each eye</td>
+                  </tr>
+                  <tr>
+                    <td>near, read, reading</td>
+                    <td>Modify the adjusted refraction for read<br>
+                      Remove redundant ADD part<br>
+                      Modify PD to -1 on each eye </td>
+                  </tr>
+                  <tr>
+                    <td>progressive, PAL</td>
+                    <td>No modification for progressive </td>
+                  </tr>
+                  <tr>
+                    <td>record</td>
+                    <td>No modification for Record </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer">
+      Usage Demo:<br>
+      https://samyankc.site/cgi/icon_load_refraction?user_id=22839&tel=98765432&purpose=near
+    </div>
+  </div>
+  <div class="p-3"></div>
 
 </body>
 
