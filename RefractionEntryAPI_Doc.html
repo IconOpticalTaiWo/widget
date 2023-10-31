@@ -4,74 +4,78 @@
 <head>
   <title>Refraction Entry</title>
   <meta charset="UTF-8">
-  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=0.8, maximum-scale=1.1">
+  <meta name="viewport"
+    content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=0.8, maximum-scale=1.1">
   <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
   <link href="CSS/bootstrap.min.css" rel="stylesheet">
   <script src="JS/jquery-3.7.1.min.js"></script>
-<style>
-  body{
-    margin: auto;
-    max-width: 720px;
-    font-size: 18px;
-  }
-</style>
+  <style>
+    body {
+      margin: auto;
+      max-width: 840px;
+    }
+  </style>
 </head>
 
 <body>
+
+  <div class="card m-3">
+    <div class="card-header">
+      <span class="fs-4 fw-bold">https://iconopticaltaiwo.github.io/widget/RefractionEntry</span>
+    </div>
+    <div class="card-body">
+      <table class='table  table-hover table-bordered border-black m-auto'>
+        <thead class="table-secondary border-black">
+          <tr>
+            <th>Supported Parameter</th>
+            <th>Content Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>user_id, userid</td>
+            <td>
+              unique user ID from iconoptical.com database<br>
+              upon loading, the entries in habbitual refraction will be filled with data retrieved from<br>
+              iconoptical.com/wp-admin/admin-ajax.php?action=get_last_tm_data_action&.....
+            </td>
+          </tr>
+          <tr>
+            <td>tel</td>
+            <td>
+              Customer's phone number for reference<br>
+              will be auto filled to corresponding input field on the page<br>
+              referer should supply this parameter until suitable api is provided for obtaining this phone number with
+              user_id
+            </td>
+          </tr>
+          <tr>
+            <td>optometrist</td>
+            <td>
+              Specifying which optometrist's name to be auto filled<br>
+              shall be deprecated<br>
+              localStorage is keeping track of active optometrist user
+            </td>
+          </tr>
+          <tr>
+            <td>type</td>
+            <td>This is probably for specifyig which habbitual refraction is loaded from <br>
+              admin-ajax.php?action=get_last_tm_data_action<br>
+              awaiting further clarification
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
   <hr>
-URL:<br>
-  <h1>https://iconopticaltaiwo.github.io/widget/RefractionEntry</h1><br>
-  remark: This URL is only a static webpage
 
-  <table class='table table-primary table-hover table-bordered m-auto'>
-    <thead>
-    <tr>
-      <th>Supported Parameter</th>
-      <th>Content Meaning</th>
-    </tr>
-      </thead>
-      <tbody>
-    <tr>
-      <td>user_id, userid</td>
-      <td>
-        unique user ID from iconoptical.com database<br>
-        upon loading, the entries in habbitual refraction will be filled with data retrieved from<br>
-        iconoptical.com/wp-admin/admin-ajax.php?action=get_last_tm_data_action&.....
-      </td>
-    </tr>
-    <tr>
-      <td>tel</td>
-      <td>
-        Customer's phone number for reference<br>
-        will be auto filled to corresponding input field on the page<br>
-        referer should supply this parameter until suitable api is provided for obtaining this phone number with user_id
-      </td>
-    </tr>
-    <tr>
-      <td>optometrist</td>
-      <td>
-        Specifying which optometrist's name to be auto filled<br>
-        shall be deprecated<br>
-        localStorage is keeping track of active optometrist user
-      </td>
-    </tr>
-    <tr>
-      <td>type</td>
-      <td>This is probably for specifyig which habbitual refraction is loaded from <br>
-        admin-ajax.php?action=get_last_tm_data_action<br>
-        awaiting further clarification                                                      
-      </td>
-    </tr>
-   </tbody>
-  </table>
 
-  <hr>
-  
-<hr>  
 
-  
-  
+
 </body>
 
-  
+
 </html>
