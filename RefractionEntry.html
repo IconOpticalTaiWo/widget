@@ -34,9 +34,6 @@
       font-size: 28px;
     }
 
-    .fixed-width {}
-
-
     .rx-group-header {
       font-weight: 600;
       font-size: 20px;
@@ -54,7 +51,7 @@
       background-color: rgba(255, 20, 20, 0.6);
     }
 
-    .rx-entry-sph {}
+    /* .rx-entry-sph {}
 
     .rx-entry-cyl {}
 
@@ -66,20 +63,11 @@
 
     .rx-entry-va {}
 
-    .rx-entry-pd {}
+    .rx-entry-pd {} */
 
 
     .rx-table {
-      /* max-width: 600px ; */
-      /* width: 100%; */
-      /* min-width: 500px; */
-      /* height: 100%; */
       overflow: hidden;
-    }
-
-
-    :root {
-      /* --aspect: 1/1; */
     }
 
     .btn-numpad {
@@ -104,6 +92,10 @@
       --aspect: 4/3;
     }
 
+    [debug] {
+      display: none;
+    }
+
     .hidden {
       display: none;
     }
@@ -119,6 +111,10 @@
     var DebugMode = HashTag.match(/debug/i)
     var TouchMode = 'ontouchstart' in window
     var QueryString = new URLSearchParams(window.location.search)
+
+    function DebugPrint(...Args) {
+      if (DebugMode) console.log(...Args)
+    }
 
     function FillData(RefractionRecord) {
       $('[name="optometrist"]').val(RefractionRecord.optometrist)
@@ -145,14 +141,37 @@
 
     function GatherData() {
       var Refraction = {}
-      $('.rx-entry').each((i, e) => {
-        if (e.value) Refraction[e.name] = e.value
-      })
-      $('#supplementary_info input').each((i, e) => {
+      var Targets = $('.rx-entry, #supplementary_info input')
+      DebugPrint('GatherData | ', Targets)
+      Targets.each((i, e) => {
         if (e.value) Refraction[e.name] = e.value
       })
       return Refraction
     }
+
+    // function SaveData_deprecated() {
+    //   var Refraction = GatherData()
+    //   if (Object.keys(Refraction).length === 0) return
+
+    //   Refraction.create_date = new Date().toJSON().slice(0, 10)
+
+    //   $('#save-complete-modal')[0].showModal()
+    //   $('#save-processing-indicator').removeClass('hidden')
+    //   $('#refraction_id_in_modal').html('');
+
+    //   $.ajax("https://samyankc.site/cgi/add_json", {
+    //     contentType: 'application/json',
+    //     type: 'POST',
+    //     data: JSON.stringify({
+    //       identifier_name: "refraction_id",
+    //       value: Refraction
+    //     })
+    //   }).then((response) => {
+    //     $('#save-processing-indicator').addClass('hidden')
+    //     $('#refraction_id_input').val(response.refraction_id);
+    //     $('#refraction_id_in_modal').html(response.refraction_id);
+    //   });
+    // }
 
     function SaveData() {
       var Refraction = GatherData()
@@ -164,13 +183,10 @@
       $('#save-processing-indicator').removeClass('hidden')
       $('#refraction_id_in_modal').html('');
 
-      $.ajax("https://samyankc.site/cgi/add_json", {
+      $.ajax("https://samyankc.site/cgi/icon_save_refraction", {
         contentType: 'application/json',
         type: 'POST',
-        data: JSON.stringify({
-          identifier_name: "refraction_id",
-          value: Refraction
-        })
+        data: JSON.stringify(Refraction)
       }).then((response) => {
         $('#save-processing-indicator').addClass('hidden')
         $('#refraction_id_input').val(response.refraction_id);
@@ -179,10 +195,12 @@
     }
 
     function LoadData() {
-      $.ajax("https://samyankc.site/cgi/load_json", {
+      $.ajax("https://samyankc.site/cgi/icon_load_refraction", {
         type: 'GET',
         data: {
-          refraction_id: $('#refraction_id_input').val()
+          refraction_id: $('input[name=refraction_id]').val(),
+          user_id: $('inpur[name=user_id]').val(),
+          tel: $('input[name=tel]').val()
         }
       }).then(FillData);
     }
@@ -199,7 +217,7 @@
     }
 
     function ClearAll() {
-      $('#refraction_id_input').val("")
+      // $('#refraction_id_input').val("")
       $('.rx-table input.rx-entry:not(#optom_name_input)').val("")
     }
 
@@ -386,8 +404,8 @@
 
     window.onload = function () {
 
-      $('#supplementary_info input[name=user_id]').val(QueryParam_UserID)
-      $('#supplementary_info input[name=tel]').val(QueryParam_UserTel)
+      $('input[name=user_id]').val(QueryParam_UserID)
+      $('input[name=tel]').val(QueryParam_UserTel)
       if (QueryParam_UserID) LoadDataFromIconOptical(QueryParam_UserID, QueryParam_RefractionType)
 
       $('#optom_name_input').val(QueryParam_Optometrist)
@@ -398,7 +416,6 @@
       $('input[name*=Axis_]').attr("pattern", '^0[0-9]{2}|[1][0-7][0-9]|180$')
       $('input[name*=ADD_]').attr("pattern", '^[0-9](?:00|25|50|75)$')
       $('input[name*=PD_]').attr("pattern", '^[2-8][0-9](?:\\.5|\\.25|\\.75)?$')
-
 
       $('.rx-table input.rx-entry').each((i, e) => {
         e.tabIndex = ++TabIndexCounter
@@ -473,32 +490,61 @@
       // })
 
 
-      if (!DebugMode) $('#Debug_Info_Display').addClass('hidden')
+      if (DebugMode) $('[debug]').css('display','block')
 
     }
   </script>
 </head>
 
 <body>
-  <div id="supplementary_info">
-    <input type="hidden" name="user_id">
-    <input type="hidden" name="tel">
-    <!-- <input type="hidden" name="create_date"> -->
-  </div>
+  <div debug id="debug-mode-indicator" class="bg-danger text-center text-white">Debug Mode Enabled</div>
+  <div debug id="Debug_Info_Display" class="mb-3">
 
+    <div id="supplementary_info">
+      <div class="row m-1">
+        <label class="col-2 col-form-label text-truncate text-end" for="refraction_id_input">Refraction ID :</label>
+        <div class="col-6"><input class="form-control" id="refraction_id_input" type="text" name="refraction_id"></div>
+        <div class="col"><button class="btn btn-success p-2 w-100" onclick="LoadData()">Load Record</button></div>
+      </div>
+      <div class="row m-1">
+        <label class="col-2 col-form-label text-truncate text-end" for="user_id_input">User ID :</label>
+        <div class="col-6"><input class="form-control" id="user_id_input" type="text" name="user_id"></div>
+      </div>
+      <div class="row m-1">
+        <label class="col-2 col-form-label text-truncate text-end" for="create_date_input">Creat Date :</label>
+        <div class="col-6"><input class="form-control" id="create_date_input" type="text" name="create_date"></div>
+      </div>
+    </div>
+
+    <table>
+      <tr>
+        <td> Element in Focus | </td>
+        <td>
+          <div id="CurrentFocus"></div>
+        </td>
+      </tr>
+      <tr>
+        <td> Last Numpad Key | </td>
+        <td>
+          <div id="LastNumpadKey"></div>
+        </td>
+      </tr>
+    </table>
+  </div>
   <div style="padding-top: 10px;"></div>
+  <div debug id="debug-mode-indicator" class="bg-danger text-center text-white mb-1">Debug Mode Enabled</div>
 
   <main class="container-fluid ps-0">
     <div class="row pt-1">
 
       <div class="col-8 rx-table">
         <div class="row text-end mt-1">
-          <label class="col-3 col-form-label text-truncate" for="refraction_id_input">Refraction ID :</label>
+          <!-- <label class="col-3 col-form-label text-truncate" for="refraction_id_input">Refraction ID :</label>
           <div class="col-6"><input class="form-control" id="refraction_id_input" type="text" name="refraction_id"></div>
 
-          <div class="col"><button class="btn btn-success mt-1 p-2 w-100" onclick="LoadData()">Load Record</button></div>
-          <!-- <label class="col-3 col-form-label text-truncate" for="customer_phone_input">Customer Phone :</label>
-          <div class="col-3"><input class="form-control" id="customer_phone_input" type="text" name="customer_phone"></div> -->
+          <div class="col"><button class="btn btn-success mt-1 p-2 w-100" onclick="LoadData()">Load Record</button></div> -->
+          <label class="col-3 col-form-label text-truncate" for="customer_phone_input">Customer Phone :</label>
+          <div class="col-6"><input class="rx-entry form-control" id="customer_phone_input" type="text" name="tel"></div>
         </div>
 
         <div class="row text-end">
@@ -631,28 +677,9 @@
 
         <div class="pb-4"></div>
 
-
-
       </div>
 
-      <div class="col-4">
-
-        <div id="Debug_Info_Display" class="mb-3">
-          <table>
-            <tr>
-              <td> Element in Focus | </td>
-              <td>
-                <div id="CurrentFocus"></div>
-              </td>
-            </tr>
-            <tr>
-              <td> Last Numpad Key | </td>
-              <td>
-                <div id="LastNumpadKey"></div>
-              </td>
-            </tr>
-          </table>
-        </div>
+      <div id="input-panel-container" class="col-4">
 
         <div class="row row-cols-4 g-0 text-center input-panel-common">
 
@@ -743,7 +770,7 @@
       <h1 id="refraction_id_in_modal" class="modal-title text-center" style="font-size: 160px;">Loading...</h1>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary m-auto p-4 w-25 h-100 f-lg" onclick="ClearAll();$('#save-complete-modal')[0].close()">新紀錄</button>
+      <button class="btn btn-secondary m-auto p-4 w-50 h-100 f-lg" onclick="ClearAll();$('#save-complete-modal')[0].close()">新紀錄</button>
       <button class="btn btn-secondary m-auto p-4 w-25 h-100 f-lg" onclick="$('#save-complete-modal')[0].close()">關閉</button>
     </div>
 
