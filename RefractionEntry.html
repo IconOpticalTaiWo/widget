@@ -132,7 +132,10 @@
       $('#habbitual_rx_group .rx-entry').each((unused, e) => {
         // eg. fill Sphere_R into OR_Sphere_R
         // skip leading 'OR_' on input name
-        $(e).val(RefractionRecord[e.name.slice(3)])
+        var NewValue = RefractionRecord[e.name.slice(3)]
+        if (NewValue && NewValue !== '–––'){
+          $(e).val(RefractionRecord[e.name.slice(3)])
+        }
       })
       $('#supplementary_info input').each((unused, e) => {
         if (RefractionRecord[e.name]) $(e).val(RefractionRecord[e.name])
