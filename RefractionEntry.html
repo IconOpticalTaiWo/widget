@@ -135,13 +135,13 @@
         }
       })
 
-      if (RefractionRecord["result_amount"] === 0) {
-        LoadData()
-      } else {
-        $('#supplementary_info input').each((unused, e) => {
-          if (RefractionRecord[e.name]) $(e).val(RefractionRecord[e.name])
-        })
-      }
+      // if (RefractionRecord["result_amount"] === 0) {
+      //   LoadData()
+      // } else {
+      //   $('#supplementary_info input').each((unused, e) => {
+      //     if (RefractionRecord[e.name]) $(e).val(RefractionRecord[e.name])
+      //   })
+      // }
     }
 
     function GatherData() {
