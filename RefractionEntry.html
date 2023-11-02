@@ -135,6 +135,7 @@
         }
       })
 
+      // this additional loading need heavy a rework
       // if (RefractionRecord["result_amount"] === 0) {
       //   LoadData()
       // } else {
@@ -154,54 +155,31 @@
       return Refraction
     }
 
-    // function SaveData_deprecated() {
-    //   var Refraction = GatherData()
-    //   if (Object.keys(Refraction).length === 0) return
-
-    //   Refraction.create_date = new Date().toJSON().slice(0, 10)
-
-    //   $('#save-complete-modal')[0].showModal()
-    //   $('#save-processing-indicator').removeClass('hidden')
-    //   $('#refraction_id_in_modal').html('');
-
-    //   $.ajax("https://samyankc.site/cgi/add_json", {
-    //     contentType: 'application/json',
-    //     type: 'POST',
-    //     data: JSON.stringify({
-    //       identifier_name: "refraction_id",
-    //       value: Refraction
-    //     })
-    //   }).then((response) => {
-    //     $('#save-processing-indicator').addClass('hidden')
-    //     $('#refraction_id_input').val(response.refraction_id);
-    //     $('#refraction_id_in_modal').html(response.refraction_id);
-    //   });
-    // }
-
     function SaveData() {
       var Refraction = GatherData()
       if (Object.keys(Refraction).length === 0) return
       if (!Refraction.tel) {
-        $('input[name=tel]').attr('placeholder','請輸入客入電話')
+        $('input[name=tel]').attr('placeholder', '請輸入客入電話')
         $('input[name=tel]')[0].focus()
         return
       }
       if (!Refraction.Purposes) {
-        $('input[name=Purposes]').attr('placeholder','請選擇用途')
+        $('input[name=Purposes]').attr('placeholder', '請選擇用途')
         $('input[name=Purposes]')[0].focus()
         return
-      }      
-      if ( String( $('input[name=VA_R]').val() ).length ===0 ) {
-        $('input[name=VA_R]').attr('placeholder','請輸入')
-        $('input[name=VA_R]')[0].focus()
-        return
       }
-      if ( String( $('input[name=VA_L]').val() ).length ===0 ) {
-        $('input[name=VA_L]').attr('placeholder','請輸入')
-        $('input[name=VA_L]')[0].focus()
-        return
+
+      if ($('input[name=Purposes]').val() !== 'COPY') {
+        for (let Side of ['R', 'L']) {
+          let Target = $(`input[name=F_VA_${Side}]`)
+          if (!Target.val()) {
+            Target.attr('placeholder', '請輸入')
+            Target[0].focus()
+            return
+          }
+        }
       }
-      
+
       Refraction.create_date = new Date().toJSON().slice(0, 10)
 
       $('#save-complete-modal')[0].showModal()
@@ -361,6 +339,14 @@
       }
     }
 
+    function CopyFromHabbitualRx(...FieldNames) {
+      for (var Name of FieldNames) {
+        for (var Side of ['R', 'L']) {
+          $(`input[name=${Name}_${Side}]`).val($(`input[name=OR_${Name}_${Side}]`).val())
+        }
+      }
+    }
+
     function SwitchPurposes(Content) {
       ClearAdjustedRx()
       if (Content.includes('ClearAdjustedRx')) return ClearCell()
@@ -381,7 +367,11 @@
         case '老花 近用':
         case '中距離 睇電腦 打麻雀':
           CopyFromFullRx('Cylinder', 'Axis', 'VA', 'PD')
+        default: break;
+        case 'COPY':
+          CopyFromHabbitualRx('Sphere', 'Cylinder', 'Axis', 'ADD', 'Prism', 'VA', 'PD')
       }
+
 
       // Phase 2 Adjustment
 
@@ -446,9 +436,10 @@
       $('.rx-table input.rx-entry').each((i, e) => {
         e.tabIndex = ++TabIndexCounter
       })
-      $('.rx-table input').attr("inputmode", "none")
-      $('.rx-table input').attr("autocomplete", "off")
-      $('.rx-table input').attr("onfocus", "SwitchFocus(this)")
+      $('.rx-table input')
+        .attr("inputmode", "none")
+        .attr("autocomplete", "off")
+        .attr("onfocus", "SwitchFocus(this)")
       $('.btn-numpad').addClass('btn btn-outline-success f-lg')
       $('.btn-picker').addClass('btn btn-outline-success f-lg')
       const TouchTrigger = TouchMode ? 'touchstart' : 'mousedown'
@@ -465,6 +456,19 @@
         const This = e.target
         This.value = This.value.replace(/^[\+\-]?p+l[^\d]*$/i, '+000').replaceAll(/[^\d\+\-]+/g, '')
       })
+
+      $('input[name^=OR_]').on('input', e => {
+        if ($('input[name=Purposes]').val() !== 'COPY') return
+        const FieldNameSuffix = e.target.name.slice(3)
+        $(`input[name=${FieldNameSuffix}]`).val($(e.target).val())
+      })
+
+      $('input[name^=F_]').on('input', e => {
+        if ($('input[name=Purposes]').val() !== '配眼鏡處方') return
+        const FieldNameSuffix = e.target.name.slice(2)
+        $(`input[name=${FieldNameSuffix}]`).val($(e.target).val())
+      })
+
 
       $('input[name*=Cylinder_]').on('focusout', e => {
         const This = e.target
@@ -508,7 +512,10 @@
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
-            $(`input[name*=${This.name.slice(0, -1)}]`).val(asFloat)
+            $(`input[name*=${This.name.slice(0, -1)}]`).each((i, e) => {
+              e.value = asFloat
+              e.dispatchEvent(new Event('input'))
+            })
           }
         }
 
@@ -780,6 +787,7 @@
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes">Contact Lens</button></div> -->
           <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes">配眼鏡處方</button></div>
           <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes">Record</button></div>
+          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="COPY">COPY 舊光</button></div>
           <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="ClearAdjustedRx">Clear Adjusted Rx</button></div>
         </div>
       </div>
