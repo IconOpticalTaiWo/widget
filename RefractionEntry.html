@@ -119,11 +119,8 @@
     function FillData(RefractionRecord) {
       $('[name="optometrist"]').val(RefractionRecord.optometrist)
       $('[name="Purposes"]').val(RefractionRecord.Purposes)
-      $('.rx-entry').each((unused, e) => {
+      $('.rx-entry, #supplementary_info input').each((unused, e) => {
         $(e).val(RefractionRecord[e.name])
-      })
-      $('#supplementary_info input').each((unused, e) => {
-        if (RefractionRecord[e.name]) $(e).val(RefractionRecord[e.name])
       })
     }
 
