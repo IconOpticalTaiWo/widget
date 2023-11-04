@@ -11,7 +11,7 @@
   <script>
     function LoadRequest(ID, Action) {
       let V = document.getElementById(ID).value
-      if (V) { window.location = "https://www.iconoptical.com/" + Action + V }
+      if (V) { window.location = `https://www.iconoptical.com/${Action}${V}&redirecttorx=1` }
     }
     function SearchUser() { LoadRequest("user-keyword", "wp-admin/users.php?s=") }
   </script>
