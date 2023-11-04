@@ -4,7 +4,8 @@
 <head>
   <title>Refraction Entry</title>
   <meta charset="UTF-8">
-  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport"
+    content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
   <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
   <link href="CSS/bootstrap.min.css" rel="stylesheet">
   <script src="JS/jquery-3.7.1.min.js"></script>
@@ -14,9 +15,8 @@
       padding: 0;
       max-width: 96vw;
       max-height: 94vh;
-      /* height: 100%; */
       overflow: hidden;
-      aspect-ratio: 4/3;
+      aspect-ratio: 4 / 3;
     }
 
     .f-lg {
@@ -156,17 +156,41 @@
     }
 
     function SaveData() {
+
+      // to do : make all required field handling centralized
+
       var Refraction = GatherData()
       if (Object.keys(Refraction).length === 0) return
+
+      var IncompleteForm = false
+
       if (!Refraction.tel) {
         $('input[name=tel]').attr('placeholder', '請輸入客入電話')
         $('input[name=tel]')[0].focus()
-        return
+        IncompleteForm = true
       }
+
       if (!Refraction.Purposes) {
         $('input[name=Purposes]').attr('placeholder', '請選擇用途')
         $('input[name=Purposes]')[0].focus()
-        return
+        IncompleteForm = true
+      }
+
+      for (let Side of ['R', 'L']) {
+        for (let Prefix of ['F_', '']) {
+          let Target = $(`input[name=${Prefix}PD_${Side}]`)
+          if (!Target.val()) {
+            Target.attr('placeholder', '請輸入')
+            Target[0].focus()
+            IncompleteForm = true
+          }
+        }
+      }
+
+      if (!Refraction.Purposes) {
+        $('input[name=Purposes]').attr('placeholder', '請選擇用途')
+        $('input[name=Purposes]')[0].focus()
+        IncompleteForm = true
       }
 
       if ($('input[name=Purposes]').val() !== 'COPY') {
@@ -175,14 +199,16 @@
           if (!Target.val()) {
             Target.attr('placeholder', '請輸入')
             Target[0].focus()
-            return
+            IncompleteForm = true
           }
         }
       }
 
+      if (IncompleteForm) return
+
       Refraction.create_date = new Date().toJSON().slice(0, 10)
       // Refraction.by = Refraction.optometrist
-      
+
       $('#save-complete-modal')[0].showModal()
       $('#save-processing-indicator').removeClass('hidden')
       $('#refraction_id_in_modal').html('');
@@ -254,6 +280,14 @@
     function SwitchFocus(Element) {
       FocusedCell = Element
       $('#CurrentFocus').html(FocusedCell.name)
+
+      // to do :  make switch purpose as input event listener
+      if (FocusedCell === $('#refraction_purposes_input')[0]) {
+        if (FocusedCell.value.length === 0) {
+          FocusedCell.value = "配眼鏡處方"
+          SwitchPurposes(FocusedCell.value)
+        }
+      }
       SwitchInputPanel()
       UpdateNumpadDisplay()
     }
@@ -278,6 +312,11 @@
       AssignValue(FocusedCell.value + Content)
     }
 
+    function AppendValueThenNextCell(Content) {
+      AssignValue(FocusedCell.value + Content)
+      NextCell()
+    }
+
     function PrependValue(Content) {
       AssignValue(Content + FocusedCell.value)
     }
@@ -292,7 +331,7 @@
     }
 
     function NextCell() {
-      const LastCellName = 'PD_L'
+      const LastCellName = 'VA_L'
       if (FocusedCell.name === LastCellName) {
         $('input[name=OR_Sphere_R]')[0].focus()
       } else {
@@ -494,6 +533,12 @@
       $('input[name*=ADD_]').on('focusout', e => {
         const This = e.target
         This.value = This.value.replaceAll(/[^\d]+/g, '')
+
+        if (This.name === 'F_ADD_R' && This.val()) This.dispatchEvent(new Event('input'))
+      })
+
+      $('input[name=F_ADD_R]').on('input', e => {
+        $('input[name=F_ADD_L]').val(e.target.value)[0].dispatchEvent(new Event('input'))
       })
 
       $('input[name*=Prism_]').on('focusout', e => {
@@ -509,7 +554,7 @@
         if (!isNaN(asFloat)) {
           if (asFloat > 45) {
             asFloat = (asFloat / 2).toFixed(2)
-            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
+            if (asFloat.endsWith('0')) { asFloat = asFloat.slice(0, -1) }
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
@@ -570,24 +615,31 @@
   <div style="padding-top: 10px;"></div>
   <div debug id="debug-mode-indicator" class="bg-danger text-center text-white mb-1">Debug Mode Enabled</div>
 
+
   <main class="container-fluid ps-0">
     <div class="row pt-1">
 
       <div class="col-8 rx-table">
-        <div class="row text-end mt-1">
+
+        <div class="row"><button class="btn btn-success w-100 p-4 f-lg" tabIndex="-1" onclick="SaveData()">Save 儲存 Save
+            儲存 Save 儲存</button>
+        </div>
+
+        <div class="row text-end mt-2">
           <!-- <label class="col-3 col-form-label text-truncate" for="refraction_id_input">Refraction ID :</label>
           <div class="col-6"><input class="form-control" id="refraction_id_input" type="text" name="refraction_id"></div>
 
           <div class="col"><button class="btn btn-success mt-1 p-2 w-100" onclick="LoadData()">Load Record</button></div> -->
           <label class="col-3 col-form-label text-truncate" for="customer_phone_input">Customer Phone :</label>
-          <div class="col-6"><input class="rx-entry form-control" id="customer_phone_input" type="text" name="tel"></div>
+          <div class="col-6"><input class="rx-entry form-control" id="customer_phone_input" type="text" name="tel">
+          </div>
         </div>
 
         <div class="row text-end">
           <label class="col-3 col-form-label text-truncate" for="optom_name_input">Optometrist :</label>
-          <div class="col-6"><input class="rx-entry form-control" id="optom_name_input" type="text" name="optometrist"></div>
-          <div class="col"><button class="btn btn-success mt-1 p-2 w-100" onclick="ClearAll()">Clear All</button></div>
-
+          <div class="col-6"><input class="rx-entry form-control" id="optom_name_input" type="text" name="optometrist">
+          </div>
+          <div class="col"><button class="btn btn-danger mt-1 p-2 w-100" onclick="ClearAll()">Clear All</button></div>
         </div>
 
         <div class="rx-group-header ps-2">Habbitual Rx</div>
@@ -668,9 +720,10 @@
           <div class="col">
             <div class="row">
               <!-- <label class="col-3 col-form-label text-truncate text-end f-lg" for="refraction_purposes_input">用途:</label> -->
-              <div class="col-8"><input id="refraction_purposes_input" name="Purposes" class="rx-entry rx-entry-purposes form-control text-center"></div>
-              <!-- <button class="btn-numpad" style="--aspect:2/1;" ontouch="SaveData">Save</button> -->
-              <div class="col"><button class="btn btn-success h-100 w-100" tabIndex="-1" onclick="SaveData()">Save</button></div>
+              <div class="col-8"><input id="refraction_purposes_input" name="Purposes"
+                  class="rx-entry rx-entry-purposes form-control text-center"></div>
+
+              <!-- <div class="col"><button class="btn btn-success h-100 w-100" tabIndex="-1" onclick="SaveData()">Save</button></div> -->
 
               <!-- <?> <div class="col"><button class="btn btn-success h-100" tabIndex="-1" onclick="SendTestData()">Test Data</button></div> -->
             </div>
@@ -726,9 +779,11 @@
         </div>
         <div class="row row-cols-4 g-0 text-center input-panel standard-numpad va-picker">
 
-          <div class="col-10"><input class="btn-numpad f-lg" style="--aspect:15/3;" disabled type="text" id="numpad-display-panel"></div>
+          <div class="col-10"><input class="btn-numpad f-lg" style="--aspect:15/3;" disabled type="text"
+              id="numpad-display-panel"></div>
           <div class="col-2"><button class="btn-numpad f-lg" style="--aspect:3/3;" ontouch="EraseBack">
-              <svg ontouch="EraseBack" width="28" height="28" fill="currentColor" class="bi bi-backspace" viewBox="0 0 16 16">
+              <svg ontouch="EraseBack" width="28" height="28" fill="currentColor" class="bi bi-backspace"
+                viewBox="0 0 16 16">
                 <path
                   d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z" />
                 <path
@@ -736,31 +791,33 @@
               </svg>
             </button></div>
 
-          <div class="col-4"><button class="btn-numpad f-lg" style="--aspect:3/2;" ontouch="SwitchMinus">-</button></div>
-          <div class="col-4"><button class="btn-numpad f-lg" style="--aspect:3/2;" ontouch="SwitchToPL">PL</button></div>
+          <div class="col-4"><button class="btn-numpad f-lg" style="--aspect:3/2;" ontouch="SwitchMinus">-</button>
+          </div>
+          <div class="col-4"><button class="btn-numpad f-lg" style="--aspect:3/2;" ontouch="SwitchToPL">PL</button>
+          </div>
           <div class="col-4"><button class="btn-numpad f-lg" style="--aspect:3/2;" ontouch="SwitchPlus">+</button></div>
 
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">7</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">8</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">9</button></div>
 
-          <div class="col"><button class="btn-numpad" ontouch="AppendValue">75</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValueThenNextCell">75</button></div>
 
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">4</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">5</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">6</button></div>
 
-          <div class="col"><button class="btn-numpad" ontouch="AppendValue">50</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValueThenNextCell">50</button></div>
 
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">1</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">2</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">3</button></div>
 
-          <div class="col"><button class="btn-numpad" ontouch="AppendValue">25</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValueThenNextCell">25</button></div>
 
           <div class="col-6"><button class="btn-numpad aspect-21" ontouch="AppendValue">0</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">.</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AppendValue">00</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValueThenNextCell">00</button></div>
         </div>
 
         <div class="row g-0 text-center mt-2 input-panel va-picker hidden">
@@ -771,11 +828,16 @@
         </div>
 
         <div class="row g-2 text-center input-panel optom-picker hidden">
-          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="COPY RX / GIVEN RX">客人提供度數<br>或 醫生處方</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="PickOptom" value="OP101012 LAW PUI LEUNG">OP101012<br>LAW PUI LEUNG</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="PickOptom" value="OP101026 YAN KA CHUN">OP101026<br>YAN KA CHUN</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="PickOptom" value="OP400195 CHEUNG SHIU WAH">OP400195<br>CHEUNG SHIU WAH</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="PickOptom" value="OP400281 HUI KAM POR">OP400281<br>HUI KAM POR</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="COPY RX / GIVEN RX">客人提供度數<br>或
+              醫生處方</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="PickOptom"
+              value="OP101012 LAW PUI LEUNG">OP101012<br>LAW PUI LEUNG</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="PickOptom"
+              value="OP101026 YAN KA CHUN">OP101026<br>YAN KA CHUN</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="PickOptom"
+              value="OP400195 CHEUNG SHIU WAH">OP400195<br>CHEUNG SHIU WAH</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="PickOptom"
+              value="OP400281 HUI KAM POR">OP400281<br>HUI KAM POR</button></div>
         </div>
 
         <div class="row g-0 text-center input-panel purposes-picker hidden">
@@ -788,8 +850,10 @@
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes">Contact Lens</button></div> -->
           <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes">配眼鏡處方</button></div>
           <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes">Record</button></div>
-          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="COPY">COPY 舊光</button></div>
-          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="ClearAdjustedRx">Clear Adjusted Rx</button></div>
+          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="COPY">COPY 舊光</button>
+          </div>
+          <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="ClearAdjustedRx">Clear
+              Adjusted Rx</button></div>
         </div>
       </div>
 
@@ -807,8 +871,10 @@
       <h1 id="refraction_id_in_modal" class="modal-title text-center" style="font-size: 160px;">Loading...</h1>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary m-auto p-4 w-50 h-100 f-lg" onclick="window.location='EasySearchForOptom'">新紀錄</button>
-      <button class="btn btn-secondary m-auto p-4 w-25 h-100 f-lg" onclick="$('#save-complete-modal')[0].close()">關閉</button>
+      <button class="btn btn-secondary m-auto p-4 w-50 h-100 f-lg"
+        onclick="window.location='EasySearchForOptom'">新紀錄</button>
+      <button class="btn btn-secondary m-auto p-4 w-25 h-100 f-lg"
+        onclick="$('#save-complete-modal')[0].close()">關閉</button>
     </div>
 
   </dialog>
