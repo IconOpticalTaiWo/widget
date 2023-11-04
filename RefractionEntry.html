@@ -306,6 +306,7 @@
 
     function AssignValue(NewContent) {
       FocusedCell.value = NewContent
+      FocusedCell.dispatchEvent(new Event('input'))
     }
 
     function AppendValue(Content) {
