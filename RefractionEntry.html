@@ -331,6 +331,24 @@
       AssignValue("")
     }
 
+    function AdjustLeadingZero(OldValue) {
+      if (!OldValue) return ""
+
+      var Prefix = OldValue[0]
+      if (!["+", "-"].includes(Prefix)) Prefix = ""
+
+      var MainValueBody = OldValue.replace(/^[^\d]*/i, '')
+      switch (MainValueBody) {
+        default: return OldValue
+        case "0": MainValueBody = "00"
+        case "00": Prefix = "+"
+        case "25":
+        case "50":
+        case "75":
+          return Prefix + "0" + MainValueBody
+      }
+    }
+
     function NextCell() {
       const LastCellName = 'VA_L'
       if (FocusedCell.name === LastCellName) {
@@ -496,6 +514,8 @@
       $('input[name*=Sphere_]').on('focusout', e => {
         const This = e.target
         This.value = This.value.replace(/^[\+\-]?p+l[^\d]*$/i, '+000').replaceAll(/[^\d\+\-]+/g, '')
+        This.value = AdjustLeadingZero(This.value)
+
       })
 
       $('input[name^=OR_]').on('input', e => {
@@ -510,13 +530,16 @@
         $(`input[name=${FieldNameSuffix}]`).val($(e.target).val())
       })
 
-
       $('input[name*=Cylinder_]').on('focusout', e => {
         const This = e.target
         This.value = This.value.replaceAll(/[^\d]+/g, '')
         if (This.value === "") return;
-        if (This.value === "25" || This.value === "50" || This.value === "75") This.value = '0' + This.value;
-        This.value = '-' + This.value
+        This.value = AdjustLeadingZero(This.value)
+        if (This.value.endsWith('000')) {
+          This.value = ""
+        } else {
+          This.value = '-' + This.value
+        }
       })
 
       $('input[name*=Axis_]').on('focusout', e => {
@@ -533,8 +556,7 @@
 
       $('input[name*=ADD_]').on('focusout', e => {
         const This = e.target
-        This.value = This.value.replaceAll(/[^\d]+/g, '')
-
+        This.value = AdjustLeadingZero(This.value.replaceAll(/[^\d]+/g, ''))
         if (This.name === 'F_ADD_R' && This.val()) This.dispatchEvent(new Event('input'))
       })
 
@@ -545,6 +567,11 @@
       $('input[name*=Prism_]').on('focusout', e => {
         const This = e.target
         This.value = This.value.replaceAll(/[^\d\.]+/g, '')
+      })
+
+      $('input[name*=VA_]').on('focusout', e => {
+        const This = e.target
+        if (This.value.startsWith(".")) return This.value = '0' + This.value
       })
 
       $('input[name*=PD_]').on('focusout', e => {
@@ -622,8 +649,8 @@
 
       <div class="col-8 rx-table">
 
-        <div class="row"><button class="btn btn-success w-100 p-4 f-lg" tabIndex="-1" onclick="SaveData()">Save 儲存 Save
-            儲存 Save 儲存</button>
+        <div class="row"><button class="btn btn-success w-100 p-4 f-lg" tabIndex="-1" onclick="SaveData()">Save 完成後按此儲存
+            Save</button>
         </div>
 
         <div class="row text-end mt-2">
