@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>人民幣支出入賬</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=(), user-id=()" />
+    <link rel="icon" href="data:," />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
+    <script src='JS/jquery-3.6.4.min.js'></script>
+    <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
+    <style>
+        .bounded-width {
+            max-width: 400px;
+            min-width: 360px;
+        }
+
+        .f-xlg {
+            font-weight: 900;
+            font-size: 24px;
+        }
+
+        .f-lg {
+            font-weight: 600;
+            font-size: 22px;
+        }
+
+        .f-norm {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container overflow-hidden bounded-width ">
+        <h2 class="f-xlg m-3">人民幣支出入賬</h2>
+
+        <form class="form-control f-lg needs-validation" novalidate id="Input_Form" onsubmit='FormSubmit(this); return false;'>
+
+            <input type="hidden" name="Action" value="NewEntry">
+            <input type="hidden" name="TableName" value="main">
+            <input type="hidden" name="SheetID" value="1DSJM8frss1Ws-5Lyy2_1JfPi0-pKGnJESwYCNQ5ltBI">
+            <input type="hidden" name="PaymentAmount" value="0">
+
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="Branch" id="Branch_TP" value="TP">
+                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_TP">大埔</label>
+
+                <input class="btn-check" type="radio" name="Branch" id="Branch_KC" value="KC">
+                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_KC">葵廣</label>
+
+                <input class="btn-check" type="radio" name="Branch" id="Branch_WT" value="WT">
+                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_WT">太和</label>
+            </div>
+            <input style="display: none;" type="radio" name="Branch" required>
+            <div class="invalid-feedback ">選擇分店</div>
+            <div class="mb-3"></div>
+
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_1" value="賓得">
+                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_1">賓得</label>
+
+                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_2" value="風格">
+                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_2">風格</label>
+
+                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_3" value="騰恩">
+                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_3">騰恩</label>
+            </div>
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_4" value="眾聯">
+                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_4">眾聯</label>
+
+                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_5" value="亞妮">
+                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_5">亞妮</label>
+
+                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_6" value="三泰">
+                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_6">三泰</label>
+            </div>
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_7" value="眼鏡盒">
+                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_7">眼鏡盒</label>
+
+                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_8" value="雜項">
+                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_8">雜項</label>
+            </div>
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_AddValue" value="增值">
+                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_AddValue">增值</label>
+            </div>
+            <input style="display: none;" type="radio" name="PaymentTo" required>
+            <div class="invalid-feedback ">選擇收款人</div>
+            <div class="mb-3"></div>
+
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-norm" id="Input_PaymentDate" type="date" placeholder=" " required name="PaymentDate" onclick="this.showPicker()">
+                <label class="form-label" for="Input_PaymentDate">付款日期</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required name="Blame">
+                <label class="form-label" for="Input_Blame">負責同事</label>
+                <datalist id="Staff_List">
+                    <option value="Dennis"></option>
+                    <option value="Darren"></option>
+                    <option value="Eva"></option>
+                    <option value="Sammy"></option>
+                    <option value="Nick"></option>
+                    <option value="Ango"></option>
+                    <option value="Lam"></option>
+                    <option value="Sam"></option>
+                    <option value="Cindy"></option>
+                </datalist>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
+                <div class="form-floating">
+                    <input class="form-control f-lg border border-start-0" id="Input_PaymentAmount" type="text" placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="ApparentPaymentAmount">
+                    <label class="form-label" for="Input_PaymentAmount">合計價錢</label>
+                </div>
+            </div>
+
+
+            <button class="col-12 f-xlg btn btn-lg btn-primary" style="height:80px;" type="submit">
+                <div id="Input_Submit" class="htmx-anti-indicator">遞交</div>
+                <div id="Input_Indicator" class="hidden spinner-border"></div>
+            </button>
+        </form>
+
+        <div class='center' style='margin-top: 2em;'>
+            <a href='https://docs.google.com/spreadsheets/d/1DSJM8frss1Ws-5Lyy2_1JfPi0-pKGnJESwYCNQ5ltBI/edit?usp=sharing' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+        </div>
+    </div>
+</body>
+<script>
+    function DatePickerInit() {
+        $('#Input_PaymentDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
+    }
+    DatePickerInit()
+
+    document.querySelectorAll("input").forEach((E) => {
+        E.style.height = "80px"
+        E.setAttribute("autocomplete", "off")
+    })
+
+    var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
+
+    function FormSubmit(Form) {
+        Form.classList.add('was-validated')
+        $('#Input_Submit').html("遞交")
+        if (Form.checkValidity()) {
+            $('#Input_Submit').addClass('hidden')
+            $('#Input_Indicator').removeClass('hidden')
+
+            if (Form.PaymentTo.value === '增值') {
+                Form.PaymentAmount.value = Form.ApparentPaymentAmount.value
+            } else {
+                Form.PaymentAmount.value = '-' + Form.ApparentPaymentAmount.value
+            }
+
+
+
+            $.get(ActionURL, $(Form).serialize()).then(() => {
+                $('#Input_Submit').html("已遞交").removeClass('hidden')
+                $('#Input_Indicator').addClass('hidden')
+                $('#Input_PaymentAmount').val("");
+                $('#Input_InvoiceNumber').val("");
+                Form.classList.remove('was-validated')
+            })
+        }
+    }
+</script>
+
+</html>
