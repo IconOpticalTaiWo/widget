@@ -165,13 +165,11 @@
                 Form.PaymentAmount.value = '-' + Form.ApparentPaymentAmount.value
             }
 
-
-
             $.get(ActionURL, $(Form).serialize()).then(() => {
                 $('#Input_Submit').html("已遞交").removeClass('hidden')
                 $('#Input_Indicator').addClass('hidden')
                 $('#Input_PaymentAmount').val("");
-                $('#Input_InvoiceNumber').val("");
+                $('#Input_ApparentPaymentAmount').val("");
                 Form.classList.remove('was-validated')
             })
         }
