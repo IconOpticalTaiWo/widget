@@ -56,8 +56,8 @@
         </form>
 
         <form class="input-group mb-5" autocomplete="off" onsubmit='SearchUser(); return false;'>
-          <input type="text" class="form-control shadow-none border-success f-lg ps-4" id="user-keyword"
-            placeholder="輸入電話/客人名">
+          <input type="text" inputmode="numeric" class="form-control shadow-none border-success f-lg ps-4" id="user-keyword"
+            placeholder="輸入電話">
           <button tabindex="-1" class="btn btn-success p-3" type="submit">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" version="2.0">
               <use href="#search-symbol" /> 
@@ -67,7 +67,7 @@
 
         <form class="input-group mb-4" autocomplete="off" onsubmit='SearchGeneral(); return false;'>
           <input type="text" class="form-control shadow-none border-success f-lg ps-4" id="general-keyword"
-            placeholder="後台查單">
+            placeholder="後台查單/客人名">
           <button tabindex="-1" class="btn btn-success p-3" type="submit">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" version="2.0">
               <use href="#search-symbol" />
