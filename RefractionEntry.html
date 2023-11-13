@@ -18,7 +18,7 @@
       aspect-ratio: 4 / 3;
     }
 
-    .w-40{
+    .w-40 {
       width: 40%;
     }
 
@@ -161,7 +161,7 @@
     function SaveData() {
 
       // to do : make all required field handling centralized
-      
+
       const TelField = $('.rx-table input[name=tel]')
       TelField.val(TelField.val().replaceAll(/\s+/g, ''))
 
@@ -476,7 +476,9 @@
 
     }
 
-    var QueryParam_Optometrist = QueryString.get('optometrist') || window.localStorage.optometrist_on_duty
+    var QueryParam_Optometrist = window.localStorage.optometrist_on_duty
+    // var QueryParam_Optometrist = QueryString.get('optometrist') || window.localStorage.optometrist_on_duty // deprecated
+    var QueryParam_BaseRefractionID = QueryString.get('base_refraction_id')
     var QueryParam_UserID = QueryString.get('userid') || QueryString.get('user_id')
     var QueryParam_RefractionType = QueryString.get('type') || 1
     var QueryParam_UserTel = QueryString.get('tel')
@@ -487,9 +489,14 @@
 
       $('input[name=user_id]').val(QueryParam_UserID)
       $('input[name=tel]').val(QueryParam_UserTel)
-      if (QueryParam_UserID || QueryParam_UserTel) LoadDataFromIconOptical(QueryParam_UserID, QueryParam_RefractionType)
 
-      $('#optom_name_input').val(QueryParam_Optometrist)
+      if (QueryParam_BaseRefractionID) {
+        $('input[name=refraction_id]').val(QueryParam_BaseRefractionID)
+        LoadData()
+      } else {
+        if (QueryParam_UserID) LoadDataFromIconOptical(QueryParam_UserID, QueryParam_RefractionType)
+        $('#optom_name_input').val(QueryParam_Optometrist)
+      }
 
       // input validation pattern
       $('input[name*=Sphere_]').attr("pattern", '^[\\+\\-][0-9]{1,2}(?:00|25|50|75)$')
@@ -563,7 +570,7 @@
       $('input[name*=ADD_]').on('focusout', e => {
         const This = e.target
         This.value = AdjustLeadingZero(This.value.replaceAll(/[^\d]+/g, ''))
-        if (This.name === 'F_ADD_R' && This.val()) This.dispatchEvent(new Event('input'))
+        if (This.name === 'F_ADD_R' && This.value) This.dispatchEvent(new Event('input'))
       })
 
       $('input[name=F_ADD_R]').on('input', e => {
@@ -588,7 +595,7 @@
         if (!isNaN(asFloat)) {
           if (asFloat > 45) {
             asFloat = (asFloat / 2).toFixed(2)
-            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
+            if (asFloat.endsWith('0')) { asFloat = asFloat.slice(0, -1) }
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
@@ -814,10 +821,8 @@
           <div class="col-10"><input class="btn-numpad f-lg" style="--aspect:15/3;" disabled type="text" id="numpad-display-panel"></div>
           <div class="col-2"><button class="btn-numpad f-lg" style="--aspect:3/3;" ontouch="EraseBack">
               <svg ontouch="EraseBack" width="28" height="28" fill="currentColor" class="bi bi-backspace" viewBox="0 0 16 16">
-                <path
-                  d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z" />
-                <path
-                  d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1h7.08zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-7.08z" />
+                <path d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z" />
+                <path d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1h7.08zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-7.08z" />
               </svg>
             </button></div>
 

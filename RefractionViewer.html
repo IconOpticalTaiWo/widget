@@ -14,7 +14,7 @@
       padding: 0;
       max-width: 100vw;
       max-height: 98vh;
-      /* height: 100%; */      
+      /* height: 100%; */
       aspect-ratio: 4/3;
     }
 
@@ -56,7 +56,7 @@
       /* width: 100%; */
       /* min-width: 500px; */
       /* height: 100%; */
-      overflow: hidden;
+      /* overflow: hidden; */
     }
 
     .btn-numpad {
@@ -113,6 +113,11 @@
       }).then(FillData);
     }
 
+    function RedirectToEditEntry() {
+      const BaseRxID = $('input[name=refraction_id]').val()
+      if (BaseRxID) window.location = `RefractionEntry?base_refraction_id=${BaseRxID}`
+    }
+
 
     var QueryParam_Optometrist = QueryString.get('optometrist')
     var QueryParam_UserID = QueryString.get('userid') || QueryString.get('user_id')
@@ -143,7 +148,7 @@
 
   <main class="container-fluid ps-0">
     <div id="supplementary_info" class="row">
-      <div class="col-10">
+      <div class="col-8">
         <div class="row text-end m-1">
           <label class="col-5 col-form-label text-truncate" for="refraction_id_input">Refraction ID :</label>
           <div class="col"><input class="form-control" id="refraction_id_input" type="text" inputmode="numeric" name="refraction_id"></div>
@@ -162,16 +167,17 @@
 
       </div>
 
-      <div class="col-2"><button class="btn btn-success p-2 h-100 w-100" onclick="LoadData()" type="submit">Load<br>Record</button></div>
+      <div class="col-2"><button class="btn btn-danger p-2 h-100 w-100 fw-bold" onclick="RedirectToEditEntry()">Edit</button></div>
+      <div class="col-2"><button class="btn btn-success p-2 h-100 w-100 fw-bold" onclick="LoadData()">Load<br>Record</button></div>
 
     </div>
     <div class="row pt-2">
 
       <div class="col-12 rx-table">
-        <div class="row text-end m-1">
-          <label class="col-4 col-form-label m-2" for="optom_name_input">Optometrist :</label>
-          <div class="col"><input class="rx-entry form-control" id="optom_name_input" type="text" name="optometrist"></div>
-        </div>
+
+        <div class="rx-group-header ps-2 pt-3">Optometrist</div>
+        <input class="rx-entry form-control ms-2 w-50" id="optom_name_input" type="text" name="optometrist">
+
 
         <div class="rx-group-header ps-2 pt-3">Habbitual Rx</div>
         <div id="habbitual_rx_group">
