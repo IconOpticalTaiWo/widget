@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html>
@@ -42,7 +41,8 @@
     <div class="container overflow-hidden bounded-width ">
         <h2 class="f-xlg m-3">分店支出入賬</h2>
 
-        <form class="form-control f-lg needs-validation" novalidate id="Input_Form" onsubmit='FormSubmit(this); return false;'>
+        <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
+            onsubmit='FormSubmit(this); return false;'>
 
             <input type="hidden" name="Action" value="NewEntry">
             <input type="hidden" name="TableName" value="main">
@@ -67,11 +67,11 @@
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Lens" value="Lens">
                 <label class="btn btn-outline-success p-3 f-xlg" for="ExpenseCategory_Lens">鏡片</label>
 
-                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Frame" value="Frame">
-                <label class="btn btn-outline-success p-3 f-xlg" for="ExpenseCategory_Frame">鏡框</label>
-
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_ContactLens" value="ContactLens">
                 <label class="btn btn-outline-success p-3 f-xlg" for="ExpenseCategory_ContactLens">隱形眼鏡</label>
+
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Frame" value="Frame">
+                <label class="btn btn-outline-success p-3 f-xlg" for="ExpenseCategory_Frame">鏡框</label>
 
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Operational" value="Operational">
                 <label class="btn btn-outline-success p-3 f-xlg" for="ExpenseCategory_Operational">營運支出</label>
@@ -79,50 +79,188 @@
             <input style="display: none;" type="radio" name="ExpenseCategory" required>
             <div class="invalid-feedback ">選擇支出類型</div>
             <div class="mb-3"></div>
-            
-            <div class="btn-group btn-group-lg col-12" role="group">
-                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_1" value="賓得">
-                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_1">賓得</label>
 
-                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_2" value="風格">
-                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_2">風格</label>
+            <div expense_category="Lens">
+                <div class="btn-group btn-group-lg col-12" role="group">
 
-                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_3" value="騰恩">
-                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_3">騰恩</label>
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_11" value="賓得">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_11">賓得</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_12" value="亞利安">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_12">亞利安</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_13" value="GIA">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_13">GIA</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_14" value="朝陽">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_14">朝陽</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_15" value="快達">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_15">快達</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_16" value="依視路">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_16">依視路</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_17" value="HOYA">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_17">HOYA</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_18" value="瑞士寶">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_18">瑞士寶</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_19" value="偉光">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_19">偉光</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_110" value="Signeo lifestyle">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_110">Signeo lifestyle</label>
+                
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_111" value="中南">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_111">中南</label>
+                </div>
             </div>
-            <div class="btn-group btn-group-lg col-12" role="group">
-                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_4" value="眾聯">
-                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_4">眾聯</label>
 
-                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_5" value="亞妮">
-                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_5">亞妮</label>
+            <div expense_category="Frame">
+                <div class="btn-group btn-group-lg col-12" role="group">
 
-                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_6" value="三泰">
-                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_6">三泰</label>
-            </div>
-            <div class="btn-group btn-group-lg col-12" role="group">
-                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_7" value="眼鏡盒">
-                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_7">眼鏡盒</label>
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_21" value="風格">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_21">風格</label>
 
-                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_8" value="雜項">
-                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_8">雜項</label>
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_22" value="騰恩">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_22">騰恩</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_23" value="眾聯">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_23">眾聯</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_24" value="亞妮">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_24">亞妮</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_25" value="三泰">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_25">三泰</label>
+                </div>
             </div>
-            <div class="btn-group btn-group-lg col-12" role="group">
-                <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_AddValue" value="增值">
-                <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_AddValue">增值</label>
+
+            <div expense_category="ContactLens">
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_31" value="康明">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_31">康明</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_32" value="博士倫">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_32">博士倫</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_33" value="協域">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_33">協域</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_34" value="clalen">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_34">clalen</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_35" value="oculus">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_35">oculus</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_36" value="日通">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_36">日通</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_37" value="晶亮">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_37">晶亮</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_38" value="偉光">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_38">偉光</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_39" value="快達">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_39">快達</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_310" value="銳視">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_310">銳視</label>
+
+                </div>
             </div>
+
+            <div expense_category="Operational">
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_1" value="租金A">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_1">租金A</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_2" value="租金B">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_2">租金B</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_3" value="管理費">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_3">管理費</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_4" value="電費A">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_4">電費A</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_5" value="電費B">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_5">電費B</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_6" value="電話費">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_6">電話費</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_7" value="淘寶">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_7">淘寶</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_8" value="寬頻">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_8">寬頻</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_9" value="強積金">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_9">強積金</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_10" value="網站服務">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_10">網站服務</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_11" value="SLEEKFLOW">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_11">SLEEKFLOW</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_12" value="雜費">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_12">雜費</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_13" value="視光師">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_13">視光師</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_14" value="飛虎">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_14">飛虎</label>
+                </div>
+                <div class="btn-group btn-group-lg col-12" role="group">
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_15" value="員工薪金">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_15">員工薪金</label>
+
+                    <input class="btn-check" type="radio" name="PaymentTo" id="PaymentTo_Operational_16" value="EPS">
+                    <label class="btn btn-outline-secondary p-2 f-xlg" for="PaymentTo_Operational_16">EPS</label>
+
+                </div>
+            </div>
+
             <input style="display: none;" type="radio" name="PaymentTo" required>
             <div class="invalid-feedback ">選擇收款人</div>
             <div class="mb-3"></div>
 
-
             <div class="form-floating mb-3">
-                <input class="form-control f-norm" id="Input_PaymentDate" type="date" placeholder=" " required name="PaymentDate" onclick="this.showPicker()">
+                <input class="form-control f-norm" id="Input_PaymentDate" type="date" placeholder=" " required
+                    name="PaymentDate" onclick="this.showPicker()">
                 <label class="form-label" for="Input_PaymentDate">付款日期</label>
             </div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required name="Blame">
+                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required
+                    name="Blame">
                 <label class="form-label" for="Input_Blame">負責同事</label>
                 <datalist id="Staff_List">
                     <option value="Dennis"></option>
@@ -140,7 +278,8 @@
             <div class="input-group mb-3">
                 <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
                 <div class="form-floating">
-                    <input class="form-control f-lg border border-start-0" id="Input_PaymentAmount" type="text" placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="PaymentAmount">
+                    <input class="form-control f-lg border border-start-0" id="Input_PaymentAmount" type="text"
+                        placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="PaymentAmount">
                     <label class="form-label" for="Input_PaymentAmount">合計價錢</label>
                 </div>
             </div>
@@ -153,7 +292,8 @@
         </form>
 
         <div class='center' style='margin-top: 2em;'>
-            <a href='https://docs.google.com/spreadsheets/d/1DSJM8frss1Ws-5Lyy2_1JfPi0-pKGnJESwYCNQ5ltBI/edit?usp=sharing' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+            <a href='https://docs.google.com/spreadsheets/d/1DSJM8frss1Ws-5Lyy2_1JfPi0-pKGnJESwYCNQ5ltBI/edit?usp=sharing'
+                target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
         </div>
     </div>
 </body>
