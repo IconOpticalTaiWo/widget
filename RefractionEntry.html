@@ -528,7 +528,7 @@
 
       $('input[name*=Sphere_]').on('focusout', e => {
         const This = e.target
-        This.value = This.value.replace(/^[\+\-]?p+l[^\d]*$/i, '+000').replaceAll(/[^\d\+\-]+/g, '')
+        This.value = This.value.replace(/^[\+\-]?p+l[^\d]*$/i, '+000').replaceAll(/[^\d\+\-]+/g, '').replace(/^\-?0+$/i,'+000')
         $(This)
           .val(AdjustLeadingZero(This.value))
           .trigger('input')
@@ -589,7 +589,7 @@
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
-            $(`input[name*=${This.name.slice(0, -1)}]`).each((i, e) => {
+            $(`input[name^=${This.name.slice(0, -1)}]`).each((i, e) => {
               e.value = asFloat
               e.dispatchEvent(new Event('input'))
             })
