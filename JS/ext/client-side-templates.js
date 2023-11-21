@@ -63,18 +63,6 @@ htmx.defineExtension('client-side-templates', {
             }
         }
 
-        var nunjucksArrayTemplate = htmx.closest(elt, "[nunjucks-array-template]");
-        if (nunjucksArrayTemplate) {
-            var data = JSON.parse(text);
-            var templateName = nunjucksArrayTemplate.getAttribute('nunjucks-array-template');
-            var template = htmx.find('#' + templateName);
-            if (template) {
-                return nunjucks.renderString(template.innerHTML,{DataArray : data});
-            } else {
-                return nunjucks.render(templateName, {DataArray : data});
-            }
-        }
-
         var xsltTemplate = htmx.closest(elt, "[xslt-template]");
         if (xsltTemplate) {
             var templateId = xsltTemplate.getAttribute('xslt-template');
