@@ -109,7 +109,7 @@
     // to do list
     // add copy from habbitual to full function
     // make fine tune / adjustment easier
-    // turn input display panel too suggestion list?
+    // turn input display panel to suggestion list?
 
     var HashTag = window.location.hash?.substring(1)
     var DebugMode = HashTag.match(/debug/i)
@@ -213,7 +213,7 @@
 
       if (IncompleteForm) return
 
-      Refraction.create_date = new Date().toJSON().slice(0, 10)
+      Refraction.create_date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)
       // Refraction.by = Refraction.optometrist
 
       $('#save-complete-modal')[0].showModal()
@@ -528,7 +528,7 @@
 
       $('input[name*=Sphere_]').on('focusout', e => {
         const This = e.target
-        This.value = This.value.replace(/^[\+\-]?p+l[^\d]*$/i, '+000').replaceAll(/[^\d\+\-]+/g, '').replace(/^\-?0+$/i,'+000')
+        This.value = This.value.replace(/^[\+\-]?p+l[^\d]*$/i, '+000').replaceAll(/[^\d\+\-]+/g, '').replace(/^[\+\-]?0+$/i,'+000')
         $(This)
           .val(AdjustLeadingZero(This.value))
           .trigger('input')
