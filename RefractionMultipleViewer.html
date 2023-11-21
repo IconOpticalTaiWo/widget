@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Refraction Viewer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=0.8, maximum-scale=1.1">
+  <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
+  <link href="CSS/bootstrap.min.css" rel="stylesheet">
+  <script src="JS/jquery-3.7.1.min.js"></script>
+  <script src="JS/htmx.min.js"></script>
+  <script src="JS/nunjucks.min.js"></script>
+  <script src="JS/ext/client-side-templates.js"></script>
+
+  <style>
+
+  </style>
+  <script>
+
+    var HashTag = window.location.hash?.substring(1)
+    var DebugMode = HashTag.match(/debug/i)
+    var QueryString = new URLSearchParams(window.location.search)
+
+    window.onload = function () {
+      $('input[name=date]').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
+      $('main form input[type=submit]').click()
+    }
+  </script>
+</head>
+
+<body>
+
+  <div style="padding-top: 10px;"></div>
+
+  <main>
+    <div hx-ext="client-side-templates">
+      <form class="text-center" hx-get="https://samyankc.site/cgi/icon_load_refraction_experimental" hx-target="#DisplayResult" nunjucks-array-template="RxEntryTemplate">
+        <input name="date" type="date" value>
+        <input name="expect" type="hidden" value="all">
+        <input type="submit" value="Load">
+      </form>
+    </div>
+
+    <div id="DisplayResult">empty</div>
+
+    <template id="RxEntryTemplate">
+      <div class="m-auto" style="min-width:500px; max-width:600px;">
+        {% for Rx in DataArray %}
+        <div class="card m-3">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-auto">
+                <div class="fs-2 fw-bold">#{{Rx.refraction_id}}</div>
+                {% if Rx.user_id %} User ID: {{Rx.user_id}}<br>{% endif %} Tel: {{Rx.tel}}
+              </div>
+              <div class="col text-end">Created on {{Rx.create_date}}<br>By {{Rx.optometrist}}</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row" style="margin-left: -7%;">
+              <div class="col"> </div>
+              {% for ComponentLabel in ['Sph','Cyl','Axis','ADD','PD','VA'] %}
+              <div class="col text-center fw-light">{{ComponentLabel}}</div>
+              {% endfor %}
+            </div>
+            {% for GroupName, Prefix in [['Habbitual','OR_'],['Full','F_'],['Adjusted','']] %}
+            <div class="row">{{GroupName}}</div>
+            {% for Side in ['R','L'] %}
+            <div class="row font-monospace" style="margin-left: -7%;">
+              <div class="col text-end">{{Side}})</div>
+              {% for Component in ['Sphere_','Cylinder_','Axis_','ADD_','PD_','VA_'] %}
+              {% set ComponentValue = Rx[ Prefix+Component+Side ] %}
+              <div class="col text-center">
+                {% if ComponentValue %} {{ComponentValue}} {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+            {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </template>
+  </main>
+
+
+</body>
+
+</html>
