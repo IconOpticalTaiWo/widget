@@ -8,7 +8,7 @@
     <meta http-equiv="Permissions-Policy" content="interest-cohort=(), user-id=()" />
     <link rel="icon" href="data:," />
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
-    <script src='JS/jquery-3.6.4.min.js'></script>
+    <script src='JS/jquery-3.7.1.min.js'></script>
     <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
     <style>
         .bounded-width {
@@ -83,6 +83,7 @@
         <form class="form-control f-lg needs-validation" novalidate id="Input_Form" onsubmit='FormSubmit(this); return false;'>
 
             <input type="hidden" name="Action" value="NewEntry">
+            <input type="hidden" name="PaymentStatus" value="Pending">
             <input type="hidden" name="TableName" value="main">
             <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
 
@@ -134,8 +135,8 @@
             <div class="mb-3"></div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-norm" id="Input_PaymentDate" type="date" placeholder=" " required name="PaymentDate" onclick="this.showPicker()">
-                <label class="form-label" for="Input_PaymentDate">付款日期</label>
+                <input class="form-control f-norm" id="Input_InvoiceDate" type="date" placeholder=" " required name="InvoiceDate" onclick="this.showPicker()">
+                <label class="form-label" for="Input_InvoiceDate">帳單日期</label>
             </div>
 
             <div class="form-floating mb-3">
@@ -158,19 +159,14 @@
                 <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
                 <div class="form-floating">
                     <input class="form-control f-lg border border-start-0" id="Input_PaymentAmount" type="text" placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="PaymentAmount">
-                    <label class="form-label" for="Input_PaymentAmount">合計價錢</label>
+                    <label class="form-label" for="Input_PaymentAmount">帳單總價錢</label>
                 </div>
             </div>
+
             <div class="input-group mb-3">
                 <div class="form-floating">
-                    <input class="form-control f-lg" id="Input_PaymentMethod" type="text" placeholder=" " required name="PaymentMethod">
-                    <label class="form-label" for="Input_PaymentMethod">付款方式</label>
-                </div>
-            </div>
-            <div class="input-group mb-3">
-                <div class="form-floating">
-                    <input class="form-control f-lg" id="Input_PaymentRefNumber" type="text" placeholder=" " required name="PaymentRefNumber">
-                    <label class="form-label" for="Input_PaymentRefNumber">參考編號</label>
+                    <input class="form-control f-lg" id="Input_InvoiceRefNumber" type="text" placeholder=" " required name="InvoiceRefNumber">
+                    <label class="form-label" for="Input_InvoiceRefNumber">帳單編號</label>
                 </div>
             </div>
             <button class="col-12 f-xlg btn btn-lg btn-primary" style="height:80px;" type="submit">
@@ -186,7 +182,7 @@
 </body>
 <script>
     function DatePickerInit() {
-        $('#Input_PaymentDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
+        $('#Input_InvoiceDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
     }
     DatePickerInit()
 
@@ -208,6 +204,7 @@
                 $('#Input_Submit').html("已遞交").removeClass('hidden')
                 $('#Input_Indicator').addClass('hidden')
                 $('#Input_PaymentAmount').val("");
+                $('#Input_InvoiceRefNumber').val("");
                 Form.classList.remove('was-validated')
             })
         }

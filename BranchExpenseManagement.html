@@ -3,13 +3,18 @@
 <html>
 
 <head>
-    <title>HCV Referral</title>
+    <title>分店賬單付款紀錄</title>
     <meta charset='UTF-8'>
-    <meta name='viewport'
-        content='width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0'>
+    <meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0'>
     <script src='JS/jquery-3.7.1.min.js'></script>
     <script src='JS/public-google-sheets-parser-1.3.2.js'></script>
+    <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
     <style>
+        .bounded-width {
+            max-width: 400px;
+            min-width: 360px;
+        }
+
         body {
             width: 100%;
             border: 0;
@@ -53,12 +58,12 @@
             background-color: rgb(118, 224, 91);
         }
 
-        .card[data-status="待覆驗"],
+        .card[data-status="Pending"],
         .colour-blue {
             background-color: rgb(98, 201, 236);
         }
 
-        .card[data-status="已覆驗"],
+        .card[data-status="Paid"],
         .colour-yellow {
             background-color: rgb(235, 235, 88);
         }
@@ -123,38 +128,35 @@
 </head>
 
 <body>
+    <h2 class="f-xlg m-3 text-center">分店賬單付款紀錄</h2>
 
     <div id='card-template' class='hidden card'></div>
 
-    <dialog id='registration-form'>
-        <form onsubmit='Register(this); return false;' class='center flex-container'>
-            <input type="hidden" name='action' value='register'>
-            <input type='text' name='name' placeholder='姓名' required>
-            <input type='text' name='phone' placeholder='電話' required>
-            <input type='text' name='claim' placeholder='HCV金額' required>
-            <input type='text' name='invoice' placeholder='單號' required>
-            <input type='text' name='pickup' placeholder='取貨分店' required>
-            <input type='text' name='remark' placeholder='備註(可不填)'>
-            <div style='width:60vw;'></div>
-            <button class='colour-green' type='submit'>登記</button>
-            <button class='colour-grey' type='button' onclick='CloseModal(this)'>取消</button>
-        </form>
-    </dialog>
-
     <dialog id='done-form'>
-        <form onsubmit='SetStatus(this,"已覆驗"); return false;' class='center flex-container'>
-            <input type="hidden" name='action' value='done'>
-            <input type="hidden" name='key' class='key-holder'>
-            <button class='button-done colour-yellow' type='submit'>完成覆驗</button>
-            <button class='colour-grey' type='button' onclick='CloseModal(this)'>取消</button>
-        </form>
-    </dialog>
+        <form onsubmit='SetStatus(this,"Paid"); return false;' class='center flex-container'>
+            <input type="hidden" name='Action' value='Update'>
+            <input type="hidden" name='PaymentStatus' value="Paid">
+            <input type="hidden" name='KeyField' value='InvoiceRefNumber'>
+            <input type="hidden" name='KeyValue' value>
 
-    <dialog id='undo-form'>
-        <form onsubmit='SetStatus(this,"待覆驗"); return false;' class='center flex-container'>
-            <input type="hidden" name='action' value='undo'>
-            <input type="hidden" name='key' class='key-holder'>
-            <button class='button-undo colour-blue' type='submit'>回復待覆驗</button>
+
+            <label for="Input_PaymentDate">付款日期</label>
+            <input id="Input_PaymentDate" type="date" placeholder=" " required name="PaymentDate" onclick="this.showPicker()">
+            <br>
+
+            <label for="Input_PaymentAmount">付款金額</label>
+            <input id="Input_PaymentAmount" type="text" placeholder=" " required name="PaymentAmount">
+            <br>
+
+            <label for="Input_PaymentMethod">付款方式</label>
+            <input id="Input_PaymentMethod" type="text" placeholder=" " required name="PaymentMethod">
+            <br>
+            
+            <label for="Input_PaymentRefNumber">參考編號</label>
+            <input id="Input_PaymentRefNumber" type="text" placeholder=" " required name="PaymentRefNumber">
+            <br>
+
+            <button class='button-done colour-yellow' type='submit'>確認付款紀錄</button>
             <button class='colour-grey' type='button' onclick='CloseModal(this)'>取消</button>
         </form>
     </dialog>
@@ -167,10 +169,10 @@
 
     <div style='height: 20px'></div>
     <div class="center flex-container">
-        <button class="colour-green" onclick="$('#registration-form')[0].showModal()">登記</button>
+        <button class="colour-green" onclick="window.location='BranchExpenseEntry.html'">登記</button>
         <button class="colour-pink" id='button-check-all' onclick='CardShowAll()'>查看全部</button>
-        <button class="colour-blue" onclick='CardOnlyShow("待覆驗")'>待覆驗</button>
-        <button class="colour-yellow" onclick='CardOnlyShow("已覆驗")'>已覆驗</button>
+        <button class="colour-blue" onclick='CardOnlyShow("Pending")'>Pending</button>
+        <button class="colour-yellow" onclick='CardOnlyShow("Paid")'>Paid</button>
         <input autofocus id='keyword-searcher' type='text' placeholder='搜尋' oninput='SearchAmongVisibleCard()'>
     </div>
 
@@ -179,14 +181,18 @@
     </div>
     <div id='output' class="center flex-container"></div>
     <div class='center' style='margin-top: 2em;'>
-        <a href='https://docs.google.com/spreadsheets/d/1Kfv_AOscXF1e8sjHO1Yg-cDzM4J5ScV1B8HsUV5EfQo/edit?usp=sharing'
-            target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+        <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit#gid=0' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
     </div>
 </body>
 
 <script>
 
-    var ActionURL = 'https://script.google.com/macros/s/AKfycbxerZk_XKvlMP818IMUNK9elOhSEMObsW2HqiCzvgXrAUJHCw5ac_wqH9ArqkvVX0Sg/exec'
+    function DatePickerInit() {
+        $('#Input_PaymentDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
+    }
+    DatePickerInit()
+
+    var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
 
     var LoaderWidget = $('#loader-widget')
     function Loading(isLoading) {
@@ -216,7 +222,7 @@
 
     var DataBase = null
 
-    const Parser = new PublicGoogleSheetsParser("1Kfv_AOscXF1e8sjHO1Yg-cDzM4J5ScV1B8HsUV5EfQo", "main");
+    const Parser = new PublicGoogleSheetsParser("1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4", "main");
 
     function ReloadDataBase() {
         return Parser.parse().then((R) => { DataBase = R })
@@ -243,7 +249,7 @@
         if (e.Remark != null && e.Remark != '') CardContent += `<br>!! Remark:<br>${e.Remark}`
         NewCard.html(CardContent)
 
-        var StatusFormName = { '待覆驗': 'done', '已覆驗': 'undo' }[e.Status] ?? 'empty'
+        var StatusFormName = { 'Pending': 'done', 'Paid': 'undo' }[e.Status] ?? 'empty'
 
         NewCard.on('click', () => {
             $(`#${StatusFormName}-form .key-holder`).attr('value', e.Key)
