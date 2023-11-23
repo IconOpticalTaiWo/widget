@@ -229,8 +229,11 @@
 
     function ReloadDataBase() {
 
-        return fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRzlws_3XdzGoMtUiaAudwhrnO4-BD6oIGHLulz2tUG89KDFqhU9WTNz7Q1Aon2g-jqc6g0waL3oqcW/pub?gid=0&output=csv', { mode: 'no-cors' })
-            .then(console.log)
+
+        const sheetId = "1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4";
+        const sheetURL = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=0`;
+
+        return fetch(sheetURL).then( r => console.log(r.text()))
 
         return Parser.parse().then((R) => { DataBase = R })
         // return $.get(ActionURL, { action: 'list' }, (R) => { DataBase = ConvertToMapArray(R) })
