@@ -292,7 +292,7 @@
 
     function SetStatus(that, NewStatus) {
         AsyncSubmit(that)
-        var Key = $(that).children('input[name=PaymentRefNumber]').val()
+        var Key = $(that).children('input[name=KeyValue]').val()
         for (const Entry of DataBase) if (Entry.PaymentRefNumber === Key) Entry.PaymentStatus = NewStatus
         ReloadCards()
     }
