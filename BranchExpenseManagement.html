@@ -94,7 +94,13 @@
         }
 
         dialog {
-            max-width: 400px;
+            max-width: 440px;
+            overflow: hidden;
+        }
+
+        dialog form, dialog input{
+            margin: 10px;
+            min-width: 250px;
         }
 
         .loader {
@@ -136,27 +142,29 @@
     <dialog id='done-form'>
         <form onsubmit='SetStatus(this,"Paid"); return false;' class='center flex-container'>
             <input type="hidden" name='Action' value='Update'>
+            <input type="hidden" name="TableName" value="main">
+            <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
             <input type="hidden" name='PaymentStatus' value="Paid">
             <input type="hidden" name='KeyField' value='InvoiceRefNumber'>
             <input type="hidden" name='KeyValue' value>
 
-
-            <label for="Input_PaymentDate">付款日期</label>
-            <input id="Input_PaymentDate" type="date" placeholder=" " required name="PaymentDate"
-                onclick="this.showPicker()">
-            <br>
-
-            <label for="Input_PaymentAmount">付款金額</label>
-            <input id="Input_PaymentAmount" type="text" placeholder=" " required name="PaymentAmount">
-            <br>
-
-            <label for="Input_PaymentMethod">付款方式</label>
-            <input id="Input_PaymentMethod" type="text" placeholder=" " required name="PaymentMethod">
-            <br>
-
-            <label for="Input_PaymentRefNumber">參考編號</label>
-            <input id="Input_PaymentRefNumber" type="text" placeholder=" " required name="PaymentRefNumber">
-            <br>
+            <div>
+                <label for="Input_PaymentDate">付款日期</label>
+                <input id="Input_PaymentDate" type="date" required name="PaymentDate"
+                    onclick="this.showPicker()">
+            </div>
+            <div>
+                <label for="Input_PaymentAmount">付款金額</label>
+                <input id="Input_PaymentAmount" type="text" value required name="PaymentAmount">
+            </div>
+            <div>
+                <label for="Input_PaymentMethod">付款方式</label>
+                <input id="Input_PaymentMethod" type="text" required name="PaymentMethod" autofocus>
+            </div>
+            <div>
+                <label for="Input_PaymentRefNumber">參考編號</label>
+                <input id="Input_PaymentRefNumber" type="text" required name="PaymentRefNumber">
+            </div>
 
             <button class='button-done colour-yellow' type='submit'>確認付款紀錄</button>
             <button class='colour-grey' type='button' onclick='CloseModal(this)'>取消</button>
@@ -251,13 +259,15 @@
 
     function MakeCard(Entry) {
         var NewCard = CardClone().attr('data-key', Entry.InvoiceRefNumber).attr('data-status', Entry.PaymentStatus)
-        var CardContent = `${Entry.InvoiceRefNumber}<br>${Entry.InvoiceDate}<br>${Entry.Branch}<br>${Entry.ExpenseCategory}<br>$&nbsp;${Entry.PaymentTo}<br>${Entry.PaymentAmount}`
+        var CardContent = `${Entry.InvoiceRefNumber}<br>${Entry.InvoiceDate}<br>${Entry.Branch}<br>${Entry.ExpenseCategory}<br>${Entry.PaymentTo}<br>$&nbsp;${Entry.PaymentAmount}`
         NewCard.html(CardContent)
 
-        var StatusFormName = { 'Pending': 'done', 'Paid': 'undo' }[Entry.Status] ?? 'empty'
+        var StatusFormName = { 'Pending': 'done', 'Paid__': 'undo' }[Entry.PaymentStatus] ?? 'empty'
 
         NewCard.on('click', () => {
-            $(`#${StatusFormName}-form .key-holder`).attr('value', Entry.Key)
+            $(`#${StatusFormName}-form .key-holder`).attr('value', Entry.InvoiceRefNumber)
+            $(`#${StatusFormName}-form input[name=KeyValue]`).attr('value', Entry.InvoiceRefNumber)
+            $(`#${StatusFormName}-form input[name=PaymentAmount]`).attr('value', Entry.PaymentAmount)
             $(`#${StatusFormName}-form`)[0].showModal()
         })
 
@@ -286,8 +296,8 @@
 
     function SetStatus(that, NewStatus) {
         AsyncSubmit(that)
-        var Key = $(that).children('input[name="key"]').val()
-        for (const Entry of DataBase) if (Entry.Key == Key) Entry.Status = NewStatus
+        var Key = $(that).children('input[name=PaymentStatus]').val()
+        for (const Entry of DataBase) if (Entry.PaymentStatus == Key) Entry.PaymentStatus = NewStatus
         ReloadCards()
     }
 
