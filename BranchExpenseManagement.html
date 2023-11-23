@@ -229,14 +229,10 @@
 
     function ReloadDataBase() {
 
-
-        const sheetId = "1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4";
-        const sheetURL = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=0`;
-
-        return fetch(sheetURL).then( r => console.log(r.text()))
+        // const sheetId = "1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4";
+        // const sheetURL = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=0`;
 
         return Parser.parse().then((R) => { DataBase = R })
-        // return $.get(ActionURL, { action: 'list' }, (R) => { DataBase = ConvertToMapArray(R) })
     }
 
     Loading(true)
@@ -253,16 +249,15 @@
         return $('#card-template').clone(true).removeClass('hidden').removeAttr('id')
     }
 
-    function MakeCard(e) {
-        var NewCard = CardClone().attr('data-key', e.Key).attr('data-status', e.Status)
-        var CardContent = `${e.Name}<br>${e.Phone}<br>$&nbsp;${e.Claim}<br>${e.Invoice}<br>${e.PickUp}取`
-        if (e.Remark != null && e.Remark != '') CardContent += `<br>!! Remark:<br>${e.Remark}`
+    function MakeCard(Entry) {
+        var NewCard = CardClone().attr('data-key', Entry.InvoiceRefNumber).attr('data-status', Entry.PaymentStatus)
+        var CardContent = `${Entry.InvoiceRefNumber}<br>${Entry.InvoiceDate}<br>${Entry.Branch}<br>${Entry.ExpenseCategory}<br>$&nbsp;${Entry.PaymentTo}<br>${Entry.PaymentAmount}`
         NewCard.html(CardContent)
 
-        var StatusFormName = { 'Pending': 'done', 'Paid': 'undo' }[e.Status] ?? 'empty'
+        var StatusFormName = { 'Pending': 'done', 'Paid': 'undo' }[Entry.Status] ?? 'empty'
 
         NewCard.on('click', () => {
-            $(`#${StatusFormName}-form .key-holder`).attr('value', e.Key)
+            $(`#${StatusFormName}-form .key-holder`).attr('value', Entry.Key)
             $(`#${StatusFormName}-form`)[0].showModal()
         })
 
