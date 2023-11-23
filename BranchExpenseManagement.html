@@ -5,7 +5,8 @@
 <head>
     <title>分店賬單付款紀錄</title>
     <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0'>
+    <meta name='viewport'
+        content='width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0'>
     <script src='JS/jquery-3.7.1.min.js'></script>
     <script src='JS/public-google-sheets-parser-1.3.2.js'></script>
     <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
@@ -141,7 +142,8 @@
 
 
             <label for="Input_PaymentDate">付款日期</label>
-            <input id="Input_PaymentDate" type="date" placeholder=" " required name="PaymentDate" onclick="this.showPicker()">
+            <input id="Input_PaymentDate" type="date" placeholder=" " required name="PaymentDate"
+                onclick="this.showPicker()">
             <br>
 
             <label for="Input_PaymentAmount">付款金額</label>
@@ -151,7 +153,7 @@
             <label for="Input_PaymentMethod">付款方式</label>
             <input id="Input_PaymentMethod" type="text" placeholder=" " required name="PaymentMethod">
             <br>
-            
+
             <label for="Input_PaymentRefNumber">參考編號</label>
             <input id="Input_PaymentRefNumber" type="text" placeholder=" " required name="PaymentRefNumber">
             <br>
@@ -181,7 +183,8 @@
     </div>
     <div id='output' class="center flex-container"></div>
     <div class='center' style='margin-top: 2em;'>
-        <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit#gid=0' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+        <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit#gid=0'
+            target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
     </div>
 </body>
 
@@ -225,6 +228,10 @@
     const Parser = new PublicGoogleSheetsParser("1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4", "main");
 
     function ReloadDataBase() {
+
+        $.get('https://docs.google.com/spreadsheets/d/e/2PACX-1vRzlws_3XdzGoMtUiaAudwhrnO4-BD6oIGHLulz2tUG89KDFqhU9WTNz7Q1Aon2g-jqc6g0waL3oqcW/pub?gid=0&single=true&output=csv')
+            .then(console.log)
+
         return Parser.parse().then((R) => { DataBase = R })
         // return $.get(ActionURL, { action: 'list' }, (R) => { DataBase = ConvertToMapArray(R) })
     }
