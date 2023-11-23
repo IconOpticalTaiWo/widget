@@ -236,10 +236,6 @@
     const Parser = new PublicGoogleSheetsParser("1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4", "main");
 
     function ReloadDataBase() {
-
-        // const sheetId = "1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4";
-        // const sheetURL = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=0`;
-
         return Parser.parse().then((R) => { DataBase = R })
     }
 
@@ -296,8 +292,8 @@
 
     function SetStatus(that, NewStatus) {
         AsyncSubmit(that)
-        var Key = $(that).children('input[name=PaymentStatus]').val()
-        for (const Entry of DataBase) if (Entry.PaymentStatus == Key) Entry.PaymentStatus = NewStatus
+        var Key = $(that).children('input[name=PaymentRefNumber]').val()
+        for (const Entry of DataBase) if (Entry.PaymentRefNumber === Key) Entry.PaymentStatus = NewStatus
         ReloadCards()
     }
 
