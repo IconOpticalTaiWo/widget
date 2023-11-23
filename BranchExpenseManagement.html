@@ -229,7 +229,7 @@
 
     function ReloadDataBase() {
 
-        $.get('https://docs.google.com/spreadsheets/d/e/2PACX-1vRzlws_3XdzGoMtUiaAudwhrnO4-BD6oIGHLulz2tUG89KDFqhU9WTNz7Q1Aon2g-jqc6g0waL3oqcW/pub?gid=0&single=true&output=csv')
+        return fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRzlws_3XdzGoMtUiaAudwhrnO4-BD6oIGHLulz2tUG89KDFqhU9WTNz7Q1Aon2g-jqc6g0waL3oqcW/pub?gid=0&output=csv', { mode: 'no-cors' })
             .then(console.log)
 
         return Parser.parse().then((R) => { DataBase = R })
