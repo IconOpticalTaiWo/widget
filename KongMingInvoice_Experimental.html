@@ -45,6 +45,8 @@
             onsubmit='FormSubmit(this); return false;'>
 
             <input type="hidden" name="Action" value="NewEntry">
+            <input type="hidden" name="TableName" value="main">
+            <input type="hidden" name="SheetID" value="1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ">
 
             <div class="btn-group btn-group-lg col-12" role="group">
                 <input class="btn-check" type="radio" name="Branch" id="Branch_TP" value="TP">
@@ -127,7 +129,11 @@
         E.setAttribute("autocomplete", "off")
     })
 
-    var ActionURL = 'https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec'
+    // KM Controller
+    //var ActionURL = 'https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec'
+
+    // Common Controller, requires SheetID , TableName
+    var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
 
     function FormSubmit(Form) {
         Form.classList.add('was-validated')
