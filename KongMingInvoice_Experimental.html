@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>康明 - 登記收貨單</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=(), user-id=()" />
+    <link rel="icon" href="data:," />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
+    <script src='JS/jquery-3.6.4.min.js'></script>
+    <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
+    <style>
+        .bounded-width {
+            max-width: 400px;
+            min-width: 360px;
+        }
+
+        .f-xlg {
+            font-weight: 900;
+            font-size: 24px;
+        }
+
+        .f-lg {
+            font-weight: 600;
+            font-size: 22px;
+        }
+
+        .f-norm {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container overflow-hidden bounded-width ">
+        <h2 class="f-xlg m-3">康明 - 登記收貨單</h2>
+
+        <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
+            onsubmit='FormSubmit(this); return false;'>
+
+            <input type="hidden" name="Action" value="NewEntry">
+
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="Branch" id="Branch_TP" value="TP">
+                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_TP">大埔</label>
+
+                <input class="btn-check" type="radio" name="Branch" id="Branch_KC" value="KC">
+                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_KC">葵廣</label>
+
+                <input class="btn-check" type="radio" name="Branch" id="Branch_WT" value="WT">
+                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_WT">太和</label>
+            </div>
+            <input style="display: none;" type="radio" name="Branch" required>
+            <div class="invalid-feedback ">選擇收貨分店</div>
+            <div class="mb-3"></div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-norm" id="Input_InvoiceDate" type="date" placeholder=" " required
+                    name="InvoiceDate" onclick="this.showPicker()">
+                <label class="form-label" for="Input_InvoiceDate">單據日期</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required
+                    name="Blame">
+                <label class="form-label" for="Input_Blame">負責同事</label>
+                <datalist id="Staff_List">
+                    <option value="Dennis"></option>
+                    <option value="Darren"></option>
+                    <option value="Eva"></option>
+                    <option value="Sammy"></option>
+                    <option value="Nick"></option>
+                    <option value="Ango"></option>
+                    <option value="Lam"></option>
+                    <option value="Sam"></option>
+                    
+                </datalist>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-lg" id="Input_InvoiceNumber" type="text" placeholder=" " required
+                    pattern="[0-9]{7}" inputmode="numeric" name="InvoiceNumber">
+                <label class="form-label" for="Input_InvoiceNumber">單據編號</label>
+                <div class="invalid-feedback">輸入 7 位數字</div>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
+                <div class="form-floating">
+                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text"
+                        placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="InvoiceSum">
+                    <label class="form-label" for="Input_InvoiceSum">合計價錢</label>
+                </div>
+            </div>
+
+            <button class="col-12 f-xlg btn btn-lg btn-primary" style="height:80px;" type="submit">
+                <div id="Input_Submit" class="htmx-anti-indicator">遞交</div>
+                <div id="Input_Indicator" class="hidden spinner-border"></div>
+            </button>
+        </form>
+
+        <div class='center' style='margin-top: 2em;'>
+            <a href='https://docs.google.com/spreadsheets/d/1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ/edit?usp=sharing'
+                target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+        </div>
+    </div>
+</body>
+<script>
+    function DatePickerInit() {
+        $('#Input_InvoiceDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
+    }
+    DatePickerInit()
+
+    $('#Input_InvoiceNumber')
+        .on('change', function () {
+            $(this).val($(this).val().replace(/ /g, ''))
+        })
+
+    document.querySelectorAll("input").forEach((E) => {
+        E.style.height = "80px"
+        E.setAttribute("autocomplete", "off")
+    })
+
+    var ActionURL = 'https://script.google.com/macros/s/AKfycby2zTm5s_Pmegngd2ZZhsLBe44fu2irkp3OIpNdzZw0ORkIbPAaF1ZybBF0Vi7NUVgVNA/exec'
+
+    function FormSubmit(Form) {
+        Form.classList.add('was-validated')
+        $('#Input_Submit').html("遞交")
+        if (Form.checkValidity()) {
+            $('#Input_Submit').addClass('hidden')
+            $('#Input_Indicator').removeClass('hidden')
+
+            $.get(ActionURL, $(Form).serialize()).then(() => {
+                $('#Input_Submit').html("已遞交").removeClass('hidden')
+                $('#Input_Indicator').addClass('hidden')
+                $('#Input_InvoiceSum').val("");
+                $('#Input_InvoiceNumber').val("");
+                Form.classList.remove('was-validated')
+            })
+        }
+    }
+</script>
+
+</html>
