@@ -41,6 +41,20 @@
     <div class="container overflow-hidden bounded-width ">
         <h2 class="f-xlg m-3">康明 - 登記收貨單</h2>
 
+        <form id="ComplementaryForm" class="hidden">
+            <input type="hidden" name="Action" value="NewEntry">
+            <input type="hidden" name="TableName" value="main">
+            <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
+            <input type="hidden" name="Blame" value="">
+            <input type="hidden" name="Branch" value="">
+            <input type="hidden" name="ExpenseCategory" value="ContactLens">
+            <input type="hidden" name="InvoiceRefNumber" value="">
+            <input type="hidden" name="InvoiceDate" value="">
+            <input type="hidden" name="PaymentTo" value="康明">
+            <input type="hidden" name="PaymentAmount" value="">
+            <input type="hidden" name="PaymentStatus" value="Pending">
+        </form>
+
         <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
             onsubmit='FormSubmit(this); return false;'>
 
@@ -135,12 +149,24 @@
     // Common Controller, requires SheetID , TableName
     var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
 
+    function SetupComplementaryForm( InputForm ){
+        var Form = $('#ComplementaryForm')
+        Form.find('input[name=Blame]').val( InputForm.find('input[name=Blame]').val() )
+        Form.find('input[name=Branch]').val( InputForm.find('input[name=Branch]').val() )
+        Form.find('input[name=InvoiceRefNumber]').val( InputForm.find('input[name=InvoiceNumber]').val() )
+        Form.find('input[name=InvoiceDate]').val( InputForm.find('input[name=InvoiceDate]').val() )
+        Form.find('input[name=PaymentAmount]').val( InputForm.find('input[name=InvoiceSum]').val() )
+        return Form
+    }
+
     function FormSubmit(Form) {
         Form.classList.add('was-validated')
         $('#Input_Submit').html("遞交")
         if (Form.checkValidity()) {
             $('#Input_Submit').addClass('hidden')
             $('#Input_Indicator').removeClass('hidden')
+
+            $.get(ActionURL,SetupComplementaryForm($(Form)).serialize())
 
             $.get(ActionURL, $(Form).serialize()).then(() => {
                 $('#Input_Submit').html("已遞交").removeClass('hidden')
