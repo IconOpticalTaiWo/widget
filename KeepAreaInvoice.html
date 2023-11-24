@@ -8,7 +8,7 @@
     <link rel="icon" href="data:," />
     <meta http-equiv="Permissions-Policy" content="interest-cohort=(), user-id=()" />
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
-    <script src='JS/jquery-3.6.4.min.js'></script>
+    <script src='JS/jquery-3.7.1.min.js'></script>
     <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
     <style>
         .bounded-width {
@@ -41,10 +41,26 @@
     <div class="container overflow-hidden bounded-width ">
         <h2 class="f-xlg m-3">協域 - 登記收貨單</h2>
 
-        <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
+        <form id="ComplementaryForm" autocomplete="off" class="hidden">
+            <input type="hidden" name="Action" value="NewEntry">
+            <input type="hidden" name="TableName" value="main">
+            <input type="hidden" name="SheetID" value_source="SheetID">
+            <input type="hidden" name="Blame" value_source="Blame">
+            <input type="hidden" name="Branch" value_source="Branch">
+            <input type="hidden" name="ExpenseCategory" value="ContactLens">
+            <input type="hidden" name="InvoiceRefNumber" value_source="InvoiceNumber">
+            <input type="hidden" name="InvoiceDate" value_source="InvoiceDate">
+            <input type="hidden" name="PaymentTo" value="協域">
+            <input type="hidden" name="PaymentAmount" value_source="InvoiceSum">
+            <input type="hidden" name="PaymentStatus" value="Pending">
+        </form>
+
+        <form class="form-control f-lg needs-validation" autocomplete="off" novalidate id="Input_Form"
             onsubmit='FormSubmit(this); return false;'>
 
             <input type="hidden" name="Action" value="NewEntry">
+            <input type="hidden" name="TableName" value="main">
+            <input type="hidden" name="SheetID" value="1r2GfHbxoTYCz-LxNqR0rHCSg_Z_DXGA5XOWfcgGxH9w">
 
             <div class="btn-group btn-group-lg col-12" role="group">
                 <input class="btn-check" type="radio" name="Branch" id="Branch_TP" value="TP">
@@ -129,24 +145,40 @@
 
     document.querySelectorAll("input").forEach((E) => {
         E.style.height = "80px"
-        E.setAttribute("autocomplete", "off")
     })
 
-    var ActionURL = 'https://script.google.com/macros/s/AKfycbyyE74SsFH5e1ugb3S8LkZ239X_nKpxX1IYJh5nAySehdSu73BTdYcFo7R6p42GgHkaaQ/exec'
+    // KA Controller
+    // var ActionURL = 'https://script.google.com/macros/s/AKfycbyyE74SsFH5e1ugb3S8LkZ239X_nKpxX1IYJh5nAySehdSu73BTdYcFo7R6p42GgHkaaQ/exec'
 
-    function FormSubmit(Form) {
-        Form.classList.add('was-validated')
+    // Common Controller, requires SheetID , TableName
+    var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
+
+    function SetupComplementaryFormWith(InputForm) {
+        var Form = $('#ComplementaryForm')
+        Form.find('input[value_source]').each((i, e) => {
+            var SourceName = $(e).attr('value_source')
+            var SourceInput = $(InputForm).find(`input[name=${SourceName}]`)
+            if (SourceInput.attr('type') === 'radio') SourceInput = $(InputForm).find(`input[name=${SourceName}]:checked`)
+            e.value = SourceInput.val()
+        })
+        return Form
+    }
+
+    function FormSubmit(InputForm) {
+        InputForm.classList.add('was-validated')
         $('#Input_Submit').html("遞交")
-        if (Form.checkValidity()) {
+        if (InputForm.checkValidity()) {
             $('#Input_Submit').addClass('hidden')
             $('#Input_Indicator').removeClass('hidden')
 
-            $.get(ActionURL, $(Form).serialize()).then(() => {
+            $.get(ActionURL, SetupComplementaryFormWith(InputForm).serialize())
+
+            $.get(ActionURL, $(InputForm).serialize()).then(() => {
                 $('#Input_Submit').html("已遞交").removeClass('hidden')
                 $('#Input_Indicator').addClass('hidden')
                 $('#Input_InvoiceSum').val("");
                 $('#Input_InvoiceNumber').val("");
-                Form.classList.remove('was-validated')
+                InputForm.classList.remove('was-validated')
             })
         }
     }

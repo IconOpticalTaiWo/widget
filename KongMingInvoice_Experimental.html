@@ -41,22 +41,21 @@
     <div class="container overflow-hidden bounded-width ">
         <h2 class="f-xlg m-3">康明 - 登記收貨單</h2>
 
-        <form id="ComplementaryForm" class="hidden">
+        <form id="ComplementaryForm" autocomplete="off" class="hidden">
             <input type="hidden" name="Action" value="NewEntry">
             <input type="hidden" name="TableName" value="main">
             <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
-            <input type="hidden" name="Blame" value="">
-            <input type="hidden" name="Branch" value="">
+            <input type="hidden" name="Blame" value_source="Blame">
+            <input type="hidden" name="Branch" value_source="Branch">
             <input type="hidden" name="ExpenseCategory" value="ContactLens">
-            <input type="hidden" name="InvoiceRefNumber" value="">
-            <input type="hidden" name="InvoiceDate" value="">
+            <input type="hidden" name="InvoiceRefNumber" value_source="InvoiceNumber">
+            <input type="hidden" name="InvoiceDate" value_source="InvoiceDate">
             <input type="hidden" name="PaymentTo" value="康明">
-            <input type="hidden" name="PaymentAmount" value="">
+            <input type="hidden" name="PaymentAmount" value_source="InvoiceSum">
             <input type="hidden" name="PaymentStatus" value="Pending">
         </form>
 
-        <form class="form-control f-lg needs-validation" novalidate id="Input_Form"
-            onsubmit='FormSubmit(this); return false;'>
+        <form class="form-control f-lg needs-validation" autocomplete="off" novalidate id="Input_Form" onsubmit='FormSubmit(this); return false;'>
 
             <input type="hidden" name="Action" value="NewEntry">
             <input type="hidden" name="TableName" value="main">
@@ -77,14 +76,12 @@
             <div class="mb-3"></div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-norm" id="Input_InvoiceDate" type="date" placeholder=" " required
-                    name="InvoiceDate" onclick="this.showPicker()">
+                <input class="form-control f-norm" id="Input_InvoiceDate" type="date" placeholder=" " required name="InvoiceDate" onclick="this.showPicker()">
                 <label class="form-label" for="Input_InvoiceDate">單據日期</label>
             </div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required
-                    name="Blame">
+                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required name="Blame">
                 <label class="form-label" for="Input_Blame">負責同事</label>
                 <datalist id="Staff_List">
                     <option value="Dennis"></option>
@@ -95,13 +92,12 @@
                     <option value="Ango"></option>
                     <option value="Lam"></option>
                     <option value="Sam"></option>
-                    
+
                 </datalist>
             </div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-lg" id="Input_InvoiceNumber" type="text" placeholder=" " required
-                    pattern="[0-9]{7}" inputmode="numeric" name="InvoiceNumber">
+                <input class="form-control f-lg" id="Input_InvoiceNumber" type="text" placeholder=" " required pattern="[0-9]{7}" inputmode="numeric" name="InvoiceNumber">
                 <label class="form-label" for="Input_InvoiceNumber">單據編號</label>
                 <div class="invalid-feedback">輸入 7 位數字</div>
             </div>
@@ -109,8 +105,7 @@
             <div class="input-group mb-3">
                 <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
                 <div class="form-floating">
-                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text"
-                        placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="InvoiceSum">
+                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text" placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="InvoiceSum">
                     <label class="form-label" for="Input_InvoiceSum">合計價錢</label>
                 </div>
             </div>
@@ -122,8 +117,7 @@
         </form>
 
         <div class='center' style='margin-top: 2em;'>
-            <a href='https://docs.google.com/spreadsheets/d/1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ/edit?usp=sharing'
-                target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+            <a href='https://docs.google.com/spreadsheets/d/1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ/edit?usp=sharing' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
         </div>
     </div>
 </body>
@@ -140,7 +134,6 @@
 
     document.querySelectorAll("input").forEach((E) => {
         E.style.height = "80px"
-        E.setAttribute("autocomplete", "off")
     })
 
     // KM Controller
@@ -149,31 +142,32 @@
     // Common Controller, requires SheetID , TableName
     var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
 
-    function SetupComplementaryForm( InputForm ){
+    function SetupComplementaryFormWith(InputForm) {
         var Form = $('#ComplementaryForm')
-        Form.find('input[name=Blame]').val( InputForm.find('input[name=Blame]').val() )
-        Form.find('input[name=Branch]').val( InputForm.find('input[name=Branch]:checked').val() )
-        Form.find('input[name=InvoiceRefNumber]').val( InputForm.find('input[name=InvoiceNumber]').val() )
-        Form.find('input[name=InvoiceDate]').val( InputForm.find('input[name=InvoiceDate]').val() )
-        Form.find('input[name=PaymentAmount]').val( InputForm.find('input[name=InvoiceSum]').val() )
+        Form.find('input[value_source]').each((i, e) => {
+            var SourceName = $(e).attr('value_source')
+            var SourceInput = $(InputForm).find(`input[name=${SourceName}]`)
+            if (SourceInput.attr('type') === 'radio') SourceInput = $(InputForm).find(`input[name=${SourceName}]:checked`)
+            e.value = SourceInput.val()
+        })
         return Form
     }
 
-    function FormSubmit(Form) {
-        Form.classList.add('was-validated')
+    function FormSubmit(InputForm) {
+        InputForm.classList.add('was-validated')
         $('#Input_Submit').html("遞交")
-        if (Form.checkValidity()) {
+        if (InputForm.checkValidity()) {
             $('#Input_Submit').addClass('hidden')
             $('#Input_Indicator').removeClass('hidden')
 
-            $.get(ActionURL,SetupComplementaryForm($(Form)).serialize())
+            $.get(ActionURL, SetupComplementaryFormWith(InputForm).serialize())
 
-            $.get(ActionURL, $(Form).serialize()).then(() => {
+            $.get(ActionURL, $(InputForm).serialize()).then(() => {
                 $('#Input_Submit').html("已遞交").removeClass('hidden')
                 $('#Input_Indicator').addClass('hidden')
                 $('#Input_InvoiceSum').val("");
                 $('#Input_InvoiceNumber').val("");
-                Form.classList.remove('was-validated')
+                InputForm.classList.remove('was-validated')
             })
         }
     }
