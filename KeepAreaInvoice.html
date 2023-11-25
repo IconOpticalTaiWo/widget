@@ -55,8 +55,7 @@
             <input type="hidden" name="PaymentStatus" value="Pending">
         </form>
 
-        <form class="form-control f-lg needs-validation" autocomplete="off" novalidate id="Input_Form"
-            onsubmit='FormSubmit(this); return false;'>
+        <form class="form-control f-lg needs-validation" autocomplete="off" novalidate id="Input_Form" onsubmit='FormSubmit(this); return false;'>
 
             <input type="hidden" name="Action" value="NewEntry">
             <input type="hidden" name="TableName" value="main">
@@ -77,14 +76,12 @@
             <div class="mb-3"></div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-norm" id="Input_InvoiceDate" type="date" placeholder=" " required
-                    name="InvoiceDate" onclick="this.showPicker()">
+                <input class="form-control f-norm" id="Input_InvoiceDate" type="date" placeholder=" " required name="InvoiceDate" onclick="this.showPicker()">
                 <label class="form-label" for="Input_InvoiceDate">單據日期</label>
             </div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required
-                    name="Blame">
+                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required name="Blame">
                 <label class="form-label" for="Input_Blame">負責同事</label>
                 <datalist id="Staff_List">
                     <option value="Dennis"></option>
@@ -95,13 +92,12 @@
                     <option value="Ango"></option>
                     <option value="Lam"></option>
                     <option value="Sam"></option>
-                    
+
                 </datalist>
             </div>
 
             <div class="form-floating mb-3">
-                <input class="form-control f-lg" id="Input_InvoiceNumber" type="text" placeholder=" " required
-                    pattern="[Ss][0-9]{11}" name="InvoiceNumber">
+                <input class="form-control f-lg" id="Input_InvoiceNumber" type="text" placeholder=" " required pattern="[Ss][0-9]{11}" name="InvoiceNumber">
                 <label class="form-label" for="Input_InvoiceNumber">單據編號</label>
                 <div class="invalid-feedback">輸入 S 接 11 位數字</div>
             </div>
@@ -109,8 +105,7 @@
             <div class="input-group mb-3">
                 <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
                 <div class="form-floating">
-                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text"
-                        placeholder=" " required pattern="[\+\-]?[0-9]+" name="InvoiceSum">
+                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text" placeholder=" " required pattern="[\+\-]?[0-9]+" name="InvoiceSum">
                     <label class="form-label" for="Input_InvoiceSum">合計價錢</label>
                 </div>
             </div>
@@ -122,8 +117,7 @@
         </form>
 
         <div class='center' style='margin-top: 2em;'>
-            <a href='https://docs.google.com/spreadsheets/d/1r2GfHbxoTYCz-LxNqR0rHCSg_Z_DXGA5XOWfcgGxH9w/edit?usp=sharing'
-                target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+            <a href='https://docs.google.com/spreadsheets/d/1r2GfHbxoTYCz-LxNqR0rHCSg_Z_DXGA5XOWfcgGxH9w/edit?usp=sharing' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
         </div>
     </div>
 </body>
@@ -135,12 +129,12 @@
 
     $('#Input_InvoiceNumber')
         .on('input', function () {
-            const CurrentStrValue = $(this).val()
-            if (CurrentStrValue === "" || CurrentStrValue.toUpperCase().startsWith('S') ) return
-            $(this).val('S' + CurrentStrValue)
+            const CurrentStrValue = this.value.toUpperCase()
+            if (CurrentStrValue === "" || CurrentStrValue.startsWith('S')) return
+            this.value = 'S' + CurrentStrValue
         })
         .on('change', function () {
-            $(this).val($(this).val().replace(/ /g, ''))
+            this.value = 'S' + this.value.replaceAll(/[^\d]+/g, '')
         })
 
     document.querySelectorAll("input").forEach((E) => {
