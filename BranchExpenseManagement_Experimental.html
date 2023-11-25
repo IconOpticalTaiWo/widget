@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>分店賬單待付款紀錄</title>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0'>
+    <script src='JS/jquery-3.7.1.min.js'></script>
+    <script src='JS/public-gsheet-parser.js'></script>
+    <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
+    <style>
+        .bounded-width {
+            max-width: 400px;
+            min-width: 360px;
+        }
+
+        .invisible {
+            visibility: hidden;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h2 class="f-xlg m-3 text-center">分店賬單​待付款紀錄</h2>
+
+    <div id='card-template' class='hidden card'></div>
+
+    <dialog id='done-form'>
+        <form onsubmit='SetStatus(this,"Paid"); return false;' class='center flex-container'>
+            <input type="hidden" name='Action' value='Update'>
+            <input type="hidden" name="TableName" value="main">
+            <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
+            <input type="hidden" name='PaymentStatus' value="Paid">
+            <input type="hidden" name='KeyField' value='InvoiceRefNumber'>
+            <input type="hidden" name='KeyValue' value>
+
+            <div>
+                <label for="Input_PaymentDate">付款日期</label>
+                <input id="Input_PaymentDate" type="date" required name="PaymentDate" onclick="this.showPicker()">
+            </div>
+            <div>
+                <label for="Input_PaymentAmount">付款金額</label>
+                <input id="Input_PaymentAmount" type="text" value required name="PaymentAmount">
+            </div>
+            <div>
+                <label for="Input_PaymentMethod">付款方式</label>
+                <input id="Input_PaymentMethod" type="text" required name="PaymentMethod" autofocus>
+            </div>
+            <div>
+                <label for="Input_PaymentRefNumber">參考編號</label>
+                <input id="Input_PaymentRefNumber" type="text" required name="PaymentRefNumber">
+            </div>
+
+            <button class='button-done colour-yellow' type='submit'>確認付款紀錄</button>
+            <button class='colour-grey' type='button' onclick='CloseModal(this)'>取消</button>
+        </form>
+    </dialog>
+
+    <dialog id='empty-form'>
+        <form class='center flex-container'>
+            <button class='colour-grey' type='submit' formmethod='dialog'>取消</button>
+        </form>
+    </dialog>
+
+    <div style='height: 20px'></div>
+    <div class="center flex-container">
+        <button class="colour-green" onclick="window.location='BranchExpenseEntry.html'">登記</button>
+        <button class="colour-pink" id='button-check-all' onclick='CardShowAll()'>查看全部</button>
+        <button class="colour-blue" onclick='CardOnlyShow("Pending")'>Pending</button>
+        <button class="colour-yellow" onclick='CardOnlyShow("Paid")'>Paid</button>
+        <input autofocus id='keyword-searcher' type='text' placeholder='搜尋' oninput='SearchAmongVisibleCard()'>
+    </div>
+
+    <div class='loader hidden' style='position:relative; left:50%; top:1vh; translate: -50%;' id='loader-widget'></div>
+
+    </div>
+    <div id='output' class="center flex-container"></div>
+    <div class='center' style='margin-top: 2em;'>
+        <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit#gid=0' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+    </div>
+</body>
+
+<script>
+
+    function DatePickerInit() {
+        $('#Input_PaymentDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
+    }
+    DatePickerInit()
+
+    var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
+
+    var LoaderWidget = $('#loader-widget')
+    function Loading(isLoading) {
+        if (isLoading) LoaderWidget.removeClass('hidden'); else LoaderWidget.addClass('hidden')
+    }
+
+    var OutputDevice = $('#output')
+    function Output(Content) { OutputDevice.html(Content) }
+
+    function ConvertToMapArray(CSV) {
+        const HeaderRow = CSV[0]
+        var MapArray = []
+        var MapElement = {}
+        for (const FieldName of HeaderRow) MapElement[FieldName] = {}
+
+        for (const Row in CSV) {
+            if (Row > 0) {
+                var ResultantMap = structuredClone(MapElement)
+                for (const Col in HeaderRow) ResultantMap[HeaderRow[Col]] = CSV[Row][Col]
+                MapArray.push(ResultantMap)
+            }
+        }
+        return MapArray
+    }
+
+    function ReloadDataBase() {
+        return ReadGoogleSheet('1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4', 'main', 'select C,D,E,F,G,I where L="Pending"')
+    }
+
+    Loading(true)
+    ReloadDataBase().then((DB) => {
+        ReloadCards(DB)
+        Loading(false)
+    })
+
+    function CloseModal(that) {
+        $(that).parents('dialog').last()[0].close()
+    }
+
+    function CardClone() {
+        return $('#card-template').clone(true).removeClass('hidden').removeAttr('id')
+    }
+
+    function MakeCard(Entry) {
+        var NewCard = CardClone().attr('data-key', Entry.InvoiceRefNumber).attr('data-status', Entry.PaymentStatus)
+        var CardContent = `${Entry.InvoiceRefNumber}<br>${Entry.InvoiceDate}<br>${Entry.Branch}<br>${Entry.ExpenseCategory}<br>${Entry.PaymentTo}<br>$&nbsp;${Entry.PaymentAmount}`
+        NewCard.html(CardContent)
+
+        var StatusFormName = { 'Pending': 'done', 'Paid__': 'undo' }[Entry.PaymentStatus] ?? 'empty'
+
+        NewCard.on('click', () => {
+            $(`#${StatusFormName}-form .key-holder`).attr('value', Entry.InvoiceRefNumber)
+            $(`#${StatusFormName}-form input[name=KeyValue]`).attr('value', Entry.InvoiceRefNumber)
+            $(`#${StatusFormName}-form input[name=PaymentAmount]`).attr('value', Entry.PaymentAmount)
+            $(`#${StatusFormName}-form`)[0].showModal()
+        })
+
+        NewCard.appendTo(OutputDevice)
+    }
+
+    function ReloadCards(DataBase) {
+        console.log(DataBase)
+        Output('')
+        for (const Entry of DataBase) MakeCard(Entry)
+    }
+
+    function AsyncSubmit(Form) {
+        CloseModal(Form)
+        return $.get(ActionURL, $(Form).serialize())
+    }
+
+    function Register(that) {
+        Loading(true)
+        AsyncSubmit(that).then(() => {
+            ReloadDataBase().then((DB) => {
+                ReloadCards(DB)
+                Loading(false)
+            })
+        })
+    }
+
+    function SetStatus(that, NewStatus) {
+        AsyncSubmit(that)
+        var Key = $(that).children('input[name=KeyValue]').val()
+        // for (const Entry of DataBase) if (Entry.InvoiceRefNumber === Key) Entry.PaymentStatus = NewStatus
+        // ReloadCards()
+    }
+
+    function CardClearFilter() {
+        $('.card').not('#card-template').removeClass('hidden')
+    }
+
+    function CardShowAll() {
+        CardClearFilter()
+        $('#keyword-searcher').val('')
+    }
+
+    function SearchAmongVisibleCard() {
+        CardClearFilter()
+        var Keyword = $('#keyword-searcher').val()
+        $('.card').not(`:contains(${Keyword})`).addClass('hidden')
+    }
+
+    function CardOnlyShow(Status) {
+        //CardClearFilter()
+        SearchAmongVisibleCard()
+        $('.card').not(`[data-status='${Status}']`).addClass('hidden')
+
+    }
+
+
+</script>
+
+</html>
