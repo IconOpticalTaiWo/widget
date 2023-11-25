@@ -3,14 +3,17 @@ function SloppyRemoveQuote(Text) {
   return Text.replaceAll('"', '')
 }
 
-function ZipAsObject(Keys, Values) {
-  return Keys.reduce((R, K, I) => { R[K] = Values[I]; return R; }, {})
+function ZipAsObject(Keys) {
+  return V => Keys.reduce((R, K, I) => {
+    R[K] = V[I]
+    return R
+  }, {})
 }
 
 function SloppyParseCSV(CSV) {
   const Arr2D = CSV.split('\n').map(row => row.split(',').map(SloppyRemoveQuote))
   const HeaderRow = Arr2D[0]
-  return Arr2D.slice(1).map(ContentRow => ZipAsObject(HeaderRow, ContentRow))
+  return Arr2D.slice(1).map(ZipAsObject(HeaderRow))
 }
 
 async function ReadGoogleSheet(SheetID, TableName, Query) {
