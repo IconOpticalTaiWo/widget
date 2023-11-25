@@ -11,7 +11,8 @@
     <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
     <style>
         .bounded-width {
-            max-width: 400px;
+            max-width: 100vw;
+            width: 100vw;
             min-width: 360px;
         }
 
@@ -22,17 +23,42 @@
         .hidden {
             display: none;
         }
+
+        .ticket {
+            margin-bottom: 20px;
+        }
+
+        .ticket [name=PaymentAmount]::before {
+            content: " $";
+        }
     </style>
 </head>
 
-<body>
+<body class="bg-body-tertiary">
     <h2 class="f-xlg m-3 text-center">分店賬單​待付款紀錄</h2>
 
-    <div id='card-template' class='hidden card'></div>
+    <main id="ticket-container" class="container bounded-width"></main>
 
-    <dialog id='done-form'>
-        <form onsubmit='SetStatus(this,"Paid"); return false;' class='center flex-container'>
-            <input type="hidden" name='Action' value='Update'>
+    <template id="ticket-template">
+        <div class="card ticket shadow text-center">
+            <div class="card-header bg-success-subtle text-success-emphasis fw-bolder">
+                <span name="PaymentTo"></span>
+                <span name="PaymentAmount" class="float-end"></span>
+            </div>
+            <div class="card-body">
+                <span name="InvoiceRefNumber" class="float-start"></span>
+                <span name="InvoiceDate" class="float-end"></span>
+            </div>
+            <div class="card-footer">
+                <span name="Branch" class="float-start"></span>
+                <span name="ExpenseCategory" class="float-end"></span>
+            </div>
+        </div>
+    </template>
+
+    <dialog id='SetPaidDialog' width="400px" height="400px">
+        <form onsubmit='SetPaid(this); return false;' class='center form-control'>
+            <input type="hidden" name='Action' value='BatchUpdate'>
             <input type="hidden" name="TableName" value="main">
             <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
             <input type="hidden" name='PaymentStatus' value="Paid">
@@ -41,45 +67,34 @@
 
             <div>
                 <label for="Input_PaymentDate">付款日期</label>
-                <input id="Input_PaymentDate" type="date" required name="PaymentDate" onclick="this.showPicker()">
+                <input class="form-control mb-3" id="Input_PaymentDate" type="date" required name="PaymentDate" onclick="this.showPicker()">
             </div>
+            
+            <div>賬單編號</div>
+            <div id="KeyValueContainer" class="form-control mb-3"></div>
+
+
             <div>
                 <label for="Input_PaymentAmount">付款金額</label>
-                <input id="Input_PaymentAmount" type="text" value required name="PaymentAmount">
+                <input class="form-control mb-3" id="Input_PaymentAmount" type="text" value required name="PaymentAmount">
             </div>
+
             <div>
                 <label for="Input_PaymentMethod">付款方式</label>
-                <input id="Input_PaymentMethod" type="text" required name="PaymentMethod" autofocus>
+                <input class="form-control mb-3" id="Input_PaymentMethod" type="text" required name="PaymentMethod" autofocus>
             </div>
             <div>
-                <label for="Input_PaymentRefNumber">參考編號</label>
-                <input id="Input_PaymentRefNumber" type="text" required name="PaymentRefNumber">
+                <label for="Input_PaymentRefNumber">付款參考編號</label>
+                <input class="form-control mb-3" id="Input_PaymentRefNumber" type="text" required name="PaymentRefNumber">
             </div>
 
-            <button class='button-done colour-yellow' type='submit'>確認付款紀錄</button>
-            <button class='colour-grey' type='button' onclick='CloseModal(this)'>取消</button>
+            <button class='btn btn-success mb-3' type='submit'>確認付款紀錄</button>
+            <button class='btn btn-secondary mb-3' type='button' onclick='CloseModal(this)'>取消</button>
         </form>
     </dialog>
 
-    <dialog id='empty-form'>
-        <form class='center flex-container'>
-            <button class='colour-grey' type='submit' formmethod='dialog'>取消</button>
-        </form>
-    </dialog>
+    <div class='spinner-border hidden' style='position:relative; left:50%; top:1vh; translate: -50%;' id='loader-widget'></div>
 
-    <div style='height: 20px'></div>
-    <div class="center flex-container">
-        <button class="colour-green" onclick="window.location='BranchExpenseEntry.html'">登記</button>
-        <button class="colour-pink" id='button-check-all' onclick='CardShowAll()'>查看全部</button>
-        <button class="colour-blue" onclick='CardOnlyShow("Pending")'>Pending</button>
-        <button class="colour-yellow" onclick='CardOnlyShow("Paid")'>Paid</button>
-        <input autofocus id='keyword-searcher' type='text' placeholder='搜尋' oninput='SearchAmongVisibleCard()'>
-    </div>
-
-    <div class='loader hidden' style='position:relative; left:50%; top:1vh; translate: -50%;' id='loader-widget'></div>
-
-    </div>
-    <div id='output' class="center flex-container"></div>
     <div class='center' style='margin-top: 2em;'>
         <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit#gid=0' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
     </div>
@@ -99,34 +114,42 @@
         if (isLoading) LoaderWidget.removeClass('hidden'); else LoaderWidget.addClass('hidden')
     }
 
-    var OutputDevice = $('#output')
+    var OutputDevice = $('#ticket-container')
     function Output(Content) { OutputDevice.html(Content) }
 
-    function ConvertToMapArray(CSV) {
-        const HeaderRow = CSV[0]
-        var MapArray = []
-        var MapElement = {}
-        for (const FieldName of HeaderRow) MapElement[FieldName] = {}
-
-        for (const Row in CSV) {
-            if (Row > 0) {
-                var ResultantMap = structuredClone(MapElement)
-                for (const Col in HeaderRow) ResultantMap[HeaderRow[Col]] = CSV[Row][Col]
-                MapArray.push(ResultantMap)
-            }
-        }
-        return MapArray
+    async function MockData() {
+        return [{
+            "Branch": "WT",
+            "ExpenseCategory": "ContactLens",
+            "InvoiceRefNumber": "s20230046221",
+            "InvoiceDate": "2023-11-25",
+            "PaymentTo": "協域",
+            "PaymentAmount": "128"
+        }, {
+            "Branch": "WT",
+            "ExpenseCategory": "ContactLens",
+            "InvoiceRefNumber": "s2990230046231",
+            "InvoiceDate": "2023-11-24",
+            "PaymentTo": "what",
+            "PaymentAmount": "11232123"
+        }, {
+            "Branch": "WT",
+            "ExpenseCategory": "ContactLens",
+            "InvoiceRefNumber": "s20230046231",
+            "InvoiceDate": "2023-11-24",
+            "PaymentTo": "協域",
+            "PaymentAmount": "12123"
+        }]
     }
 
     function ReloadDataBase() {
+        // return MockData()
         return ReadGoogleSheet('1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4', 'main', 'select C,D,E,F,G,I where L="Pending"')
     }
 
-    ReadGoogleSheet('10WDbAPAY7Xl5DT36VuMheTPTTpqx9x0C5sDCnh4BGps').then(console.log)
-
     Loading(true)
     ReloadDataBase().then((DB) => {
-        ReloadCards(DB)
+        ReloadTickets(DB)
         Loading(false)
     })
 
@@ -134,31 +157,49 @@
         $(that).parents('dialog').last()[0].close()
     }
 
-    function CardClone() {
-        return $('#card-template').clone(true).removeClass('hidden').removeAttr('id')
+    function TicketClone() {
+        return $($('#ticket-template').clone()[0].content.firstElementChild)
     }
 
-    function MakeCard(Entry) {
-        var NewCard = CardClone().attr('data-key', Entry.InvoiceRefNumber).attr('data-status', Entry.PaymentStatus)
-        var CardContent = `${Entry.InvoiceRefNumber}<br>${Entry.InvoiceDate}<br>${Entry.Branch}<br>${Entry.ExpenseCategory}<br>${Entry.PaymentTo}<br>$&nbsp;${Entry.PaymentAmount}`
-        NewCard.html(CardContent)
+    function AddTicket(Ticket) {
+        var NewTicket = TicketClone()
 
-        var StatusFormName = { 'Pending': 'done', 'Paid__': 'undo' }[Entry.PaymentStatus] ?? 'empty'
+        var ExistingTicket = OutputDevice.find(`div:has([name=PaymentTo]:contains(${Ticket.PaymentTo}))~div:has([name=Branch]:contains(${Ticket.Branch}))`).parents('.ticket')
+        if (ExistingTicket.length) {
+            var NewAmount = parseInt(ExistingTicket.find('[name=PaymentAmount]').html()) + parseInt(Ticket.PaymentAmount)
+            ExistingTicket.find('[name=PaymentAmount]').html(NewAmount)
+            ExistingTicket.find('[name=InvoiceRefNumber]')[0].innerHTML += `<br>${Ticket.InvoiceRefNumber}`
+            ExistingTicket.find('[name=InvoiceDate]')[0].innerHTML += `<br>${Ticket.InvoiceDate}`
+        } else {
+            Object.keys(Ticket).forEach(Key => {
+                NewTicket.find(`[name=${Key}]`).html(Ticket[Key])
+            })
 
-        NewCard.on('click', () => {
-            $(`#${StatusFormName}-form .key-holder`).attr('value', Entry.InvoiceRefNumber)
-            $(`#${StatusFormName}-form input[name=KeyValue]`).attr('value', Entry.InvoiceRefNumber)
-            $(`#${StatusFormName}-form input[name=PaymentAmount]`).attr('value', Entry.PaymentAmount)
-            $(`#${StatusFormName}-form`)[0].showModal()
-        })
+            NewTicket
+                .on('click', e => {
+                    var This = $(e.target).parents('.ticket')
+                    // console.log(This)
 
-        NewCard.appendTo(OutputDevice)
+                    //fill data to form on modal 
+                    $('#Input_PaymentAmount').val(This.find('[name=PaymentAmount]').html())
+
+                    var KeyValueList = This.find('[name=InvoiceRefNumber]').html().split('<br>')
+
+                    $('#KeyValueContainer').html(
+                        KeyValueList.map(R => `<input class="form-check-input" type="checkbox" id="UniqueID_KeyValue_${R}" value="${R}" checked /><label class="ps-3 form-check-label" for="UniqueID_KeyValue_${R}">${R}</label><br>`).join('\n')
+                    )
+
+                    $('#SetPaidDialog')[0].showModal()
+                })
+                .appendTo(OutputDevice)
+        }
     }
 
-    function ReloadCards(DataBase) {
-        console.log(DataBase)
+    function ReloadTickets(DataBase) {
         Output('')
-        for (const Entry of DataBase) MakeCard(Entry)
+        // extract KM & KA as a single ticket
+
+        DataBase.forEach(AddTicket)
     }
 
     function AsyncSubmit(Form) {
@@ -170,39 +211,20 @@
         Loading(true)
         AsyncSubmit(that).then(() => {
             ReloadDataBase().then((DB) => {
-                ReloadCards(DB)
+                ReloadTickets(DB)
                 Loading(false)
             })
         })
     }
 
-    function SetStatus(that, NewStatus) {
+    function SetPaid(that) {
+        var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().reduce((R, E, I) => R + E.value + ',', '')
+        console.log(KeyValueList)
+        $(that).find('[name=KeyValue]').val(KeyValueList)
         AsyncSubmit(that)
-        var Key = $(that).children('input[name=KeyValue]').val()
+        // var Key = $(that).children('input[name=KeyValue]').val()
         // for (const Entry of DataBase) if (Entry.InvoiceRefNumber === Key) Entry.PaymentStatus = NewStatus
         // ReloadCards()
-    }
-
-    function CardClearFilter() {
-        $('.card').not('#card-template').removeClass('hidden')
-    }
-
-    function CardShowAll() {
-        CardClearFilter()
-        $('#keyword-searcher').val('')
-    }
-
-    function SearchAmongVisibleCard() {
-        CardClearFilter()
-        var Keyword = $('#keyword-searcher').val()
-        $('.card').not(`:contains(${Keyword})`).addClass('hidden')
-    }
-
-    function CardOnlyShow(Status) {
-        //CardClearFilter()
-        SearchAmongVisibleCard()
-        $('.card').not(`[data-status='${Status}']`).addClass('hidden')
-
     }
 
 

@@ -17,7 +17,7 @@ function SloppyParseCSV(CSV) {
 }
 
 async function ReadGoogleSheet(SheetID, TableName, Query) {
-  var URL = `https://docs.google.com/spreadsheets/d/${SheetID}/gviz/tq?tqx=out:csv`
+  var URL = `https://docs.google.com/spreadsheets/d/${SheetID}/gviz/tq?tqx=out:csv&headers=1`
   if (TableName) URL += `&sheet=${encodeURIComponent(TableName)}`
   if (Query) URL += `&tq=${encodeURIComponent(Query)}`
   return fetch(URL)
