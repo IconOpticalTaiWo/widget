@@ -15,6 +15,14 @@
             max-width: 600px;
             min-width: 360px;
         }
+
+        .f-xlg {
+            font-size: 24px;
+        }
+
+        .f-sm {
+            font-size: 10px;
+        }
         
         .invisible {
             visibility: hidden;
@@ -41,12 +49,12 @@
 
     <template id="ticket-template">
         <div class="card ticket shadow text-center">
-            <div class="card-header bg-success-subtle text-success-emphasis fw-bold fs-3">
+            <div class="card-header bg-success-subtle text-success-emphasis fw-bold fs-4">
                 <span name="PaymentTo"></span>
                 <span name="PaymentAmount" class="float-end"></span>
             </div>
             <div class="card-body">
-                <span name="InvoiceRefNumber" class="float-start"></span>
+                <span name="InvoiceRefNumber" class="float-start f-sm"></span>
                 <span name="InvoiceDate" class="float-end"></span>
             </div>
             <div class="card-footer">
@@ -57,7 +65,7 @@
     </template>
 
     <dialog id='SetPaidDialog' width="400px" height="400px">
-        <form onsubmit='SetPaid(this); return false;' class='center form-control fs-2' autocomplete='off'>
+        <form onsubmit='SetPaid(this); return false;' class='center form-control fs-4' autocomplete='off'>
             <input type="hidden" name='Action' value='BatchUpdate'>
             <input type="hidden" name="TableName" value="main">
             <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
@@ -71,8 +79,7 @@
             </div>
             
             <div>賬單編號</div>
-            <div id="KeyValueContainer" class="form-control mb-3"></div>
-
+            <div id="KeyValueContainer" class="form-control mb-3 fs-3"></div>
 
             <div>
                 <label for="Input_PaymentAmount">付款金額</label>
@@ -116,34 +123,8 @@
 
     var OutputDevice = $('#ticket-container')
     function Output(Content) { OutputDevice.html(Content) }
-
-    async function MockData() {
-        return [{
-            "Branch": "WT",
-            "ExpenseCategory": "ContactLens",
-            "InvoiceRefNumber": "s20230046221",
-            "InvoiceDate": "2023-11-25",
-            "PaymentTo": "協域",
-            "PaymentAmount": "128"
-        }, {
-            "Branch": "WT",
-            "ExpenseCategory": "ContactLens",
-            "InvoiceRefNumber": "s2990230046231",
-            "InvoiceDate": "2023-11-24",
-            "PaymentTo": "what",
-            "PaymentAmount": "11232123"
-        }, {
-            "Branch": "WT",
-            "ExpenseCategory": "ContactLens",
-            "InvoiceRefNumber": "s20230046231",
-            "InvoiceDate": "2023-11-24",
-            "PaymentTo": "協域",
-            "PaymentAmount": "12123"
-        }]
-    }
-
+ 
     function ReloadDataBase() {
-        // return MockData()
         return ReadGoogleSheet('1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4', 'main', 'select C,D,E,F,G,I where L="Pending"')
     }
 
@@ -197,7 +178,7 @@
 
     function ReloadTickets(DataBase) {
         Output('')
-        // extract KM & KA as a single ticket
+        // should extract KM & KA as a single ticket
 
         DataBase.forEach(AddTicket)
     }
