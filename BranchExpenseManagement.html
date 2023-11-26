@@ -202,8 +202,7 @@
         DataBase.forEach(AddTicket)
     }
 
-    function AsyncSubmit(Form) {
-        CloseModal(Form)
+    function AsyncSubmit(Form) {        
         return $.get(ActionURL, $(Form).serialize())
     }
 
@@ -218,18 +217,19 @@
     }
 
     function SetPaid(that) {
-        // var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().reduce((R, E, I) => R + E.value + ',', '')
         var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().map(e=>e.value).join(',')
         console.log(KeyValueList)
         $(that).find('[name=KeyValue]').val(KeyValueList)
         
-        // AsyncSubmit(that)
-        
-        // var Key = $(that).children('input[name=KeyValue]').val()
-        // for (const Entry of DataBase) if (Entry.InvoiceRefNumber === Key) Entry.PaymentStatus = NewStatus
-        // ReloadCards()
+        AsyncSubmit(that).then(()=>{
+            CloseModal(that)
+            Loading(true)
+            ReloadDataBase().then((DB) => {
+                ReloadTickets(DB)
+                Loading(false)
+            })
+        })
     }
-
 
 </script>
 
