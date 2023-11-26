@@ -218,10 +218,13 @@
     }
 
     function SetPaid(that) {
-        var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().reduce((R, E, I) => R + E.value + ',', '')
+        // var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().reduce((R, E, I) => R + E.value + ',', '')
+        var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').map((i,e)=>e.value).join(',')
         console.log(KeyValueList)
         $(that).find('[name=KeyValue]').val(KeyValueList)
-        AsyncSubmit(that)
+        
+        // AsyncSubmit(that)
+        
         // var Key = $(that).children('input[name=KeyValue]').val()
         // for (const Entry of DataBase) if (Entry.InvoiceRefNumber === Key) Entry.PaymentStatus = NewStatus
         // ReloadCards()
