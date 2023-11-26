@@ -57,7 +57,7 @@
     </template>
 
     <dialog id='SetPaidDialog' width="400px" height="400px">
-        <form onsubmit='SetPaid(this); return false;' class='center form-control'>
+        <form onsubmit='SetPaid(this); return false;' class='center form-control' autocomplete='off'>
             <input type="hidden" name='Action' value='BatchUpdate'>
             <input type="hidden" name="TableName" value="main">
             <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
@@ -219,7 +219,7 @@
 
     function SetPaid(that) {
         // var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().reduce((R, E, I) => R + E.value + ',', '')
-        var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').map((i,e)=>e.value).join(',')
+        var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().map(e=>e.value).join(',')
         console.log(KeyValueList)
         $(that).find('[name=KeyValue]').val(KeyValueList)
         
