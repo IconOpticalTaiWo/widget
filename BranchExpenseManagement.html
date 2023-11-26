@@ -55,8 +55,8 @@
             </div>
             <div class="card-body">
                 <span class="ps-4"></span>
-                <span name="InvoiceRefNumber" class="float-start f-sm"></span>
-                <span name="InvoiceDate" class="float-end f-sm"></span>
+                <span name="InvoiceRefNumber" class="text-start f-sm"></span>
+                <span name="InvoiceDate" class="text-end f-sm"></span>
                 <span class="ps-4"></span>
             </div>
             <div class="card-footer">
@@ -187,16 +187,6 @@
 
     function AsyncSubmit(Form) {        
         return $.get(ActionURL, $(Form).serialize())
-    }
-
-    function Register(that) {
-        Loading(true)
-        AsyncSubmit(that).then(() => {
-            ReloadDataBase().then((DB) => {
-                ReloadTickets(DB)
-                Loading(false)
-            })
-        })
     }
 
     function SetPaid(that) {
