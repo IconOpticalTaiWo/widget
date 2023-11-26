@@ -41,7 +41,7 @@
 
     <template id="ticket-template">
         <div class="card ticket shadow text-center">
-            <div class="card-header bg-success-subtle text-success-emphasis fw-bold">
+            <div class="card-header bg-success-subtle text-success-emphasis fw-bold fs-3">
                 <span name="PaymentTo"></span>
                 <span name="PaymentAmount" class="float-end"></span>
             </div>
@@ -57,7 +57,7 @@
     </template>
 
     <dialog id='SetPaidDialog' width="400px" height="400px">
-        <form onsubmit='SetPaid(this); return false;' class='center form-control fs-3' autocomplete='off'>
+        <form onsubmit='SetPaid(this); return false;' class='center form-control fs-2' autocomplete='off'>
             <input type="hidden" name='Action' value='BatchUpdate'>
             <input type="hidden" name="TableName" value="main">
             <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
