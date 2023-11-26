@@ -60,7 +60,7 @@
         </div>
     </template>
 
-    <dialog id='SetPaidDialog' class="p-4 w-auto h-75 overflow-y-scroll">
+    <dialog id='SetPaidDialog' class="p-4 bounded-width h-75 overflow-y-scroll">
         <form onsubmit='SetPaid(this); return false;' class='form-control p-2 fs-4' autocomplete='off'>
             <input type="hidden" name='Action' value='BatchUpdate'>
             <input type="hidden" name="TableName" value="main">
@@ -124,6 +124,10 @@
         return ReadGoogleSheet('1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4', 'main', 'select C,D,E,F,G,I where L="Pending"')
     }
 
+    function GetInvoiceSumByInvoiceNumber(RefNumber){
+        return 0;
+    }
+    
     Loading(true)
     ReloadDataBase().then((DB) => {
         ReloadTickets(DB)
