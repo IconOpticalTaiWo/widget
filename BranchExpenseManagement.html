@@ -12,16 +12,12 @@
     <style>
         .bounded-width {
             width: 100vw;
-            max-width: 600px;
+            max-width: 500px;
             min-width: 360px;
         }
 
         .f-xlg {
             font-size: 24px;
-        }
-
-        .f-sm {
-            font-size: 12px;
         }
         
         .invisible {
@@ -95,8 +91,8 @@
                 <input class="form-control mb-3" id="Input_PaymentRefNumber" type="text" required name="PaymentRefNumber">
             </div>
 
-            <button class='btn btn-success mb-3' type='submit'>確認付款紀錄</button>
-            <button class='btn btn-secondary mb-3' type='button' onclick='CloseModal(this)'>取消</button>
+            <button class='btn btn-success f-xlg mb-3' type='submit'>確認付款紀錄</button>
+            <button class='btn btn-secondary f-xlg mb-3' type='button' onclick='CloseModal(this)'>取消</button>
         </form>
     </dialog>
 
