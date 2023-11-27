@@ -25,11 +25,6 @@
             font-size: 16px;
         }
 
-        input[type=checkbox] {
-            min-width: 18px;
-            min-height: 18px;
-        }
-
         .invisible {
             visibility: hidden;
         }
@@ -58,10 +53,10 @@
     <main id="ticket-container" class="container bounded-width"></main>
 
     <template id="invoice-entry-template">
-        <div class="row ps-1">
-            <input type="checkbox" id class="col-auto" onchange="CalculateTicketTotalAmount(this)" value sum checked>
-            <label class="col" for>
-                <div class="row text-center">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id onchange="CalculateTicketTotalAmount(this)" value sum checked>
+            <label class="form-check-label w-100" for>
+                <div class="row text-center ">
                     <span name="InvoiceDate" class="col"></span>
                     <span name="InvoiceNumber" class="col"></span>
                     <span name="InvoiceSum" class="col"></span>
@@ -99,9 +94,9 @@
                 <input class="col form-control" id="Input_PaymentDate" type="date" required name="PaymentDate" onclick="this.showPicker()">
             </div>
 
-            <div class="row mb-2">
+            <div class="row mb-2 ms-0 me-0">
                 <div>賬單編號</div>
-                <div class="form-control" InvoiceCheckboxListing></div>
+                <div class="border rounded" InvoiceCheckboxListing></div>
             </div>
 
             <div class="row mb-2 me-0">
