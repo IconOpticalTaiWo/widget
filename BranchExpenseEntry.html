@@ -158,15 +158,15 @@
             <div class="input-group mb-3">
                 <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
                 <div class="form-floating">
-                    <input class="form-control f-lg border border-start-0" id="Input_PaymentAmount" type="text" placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="PaymentAmount">
-                    <label class="form-label" for="Input_PaymentAmount">帳單總價錢</label>
+                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text" placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="InvoiceSum">
+                    <label class="form-label" for="Input_InvoiceSum">帳單總價錢</label>
                 </div>
             </div>
 
             <div class="input-group mb-3">
                 <div class="form-floating">
-                    <input class="form-control f-lg" id="Input_InvoiceRefNumber" type="text" placeholder=" " required name="InvoiceRefNumber">
-                    <label class="form-label" for="Input_InvoiceRefNumber">帳單編號</label>
+                    <input class="form-control f-lg" id="Input_InvoiceNumber" type="text" placeholder=" " required name="InvoiceNumber">
+                    <label class="form-label" for="Input_InvoiceNumber">帳單編號</label>
                 </div>
             </div>
             <button class="col-12 f-xlg btn btn-lg btn-primary" style="height:80px;" type="submit">
@@ -203,8 +203,8 @@
             $.get(ActionURL, $(Form).serialize()).then(() => {
                 $('#Input_Submit').html("已遞交").removeClass('hidden')
                 $('#Input_Indicator').addClass('hidden')
-                $('#Input_PaymentAmount').val("");
-                $('#Input_InvoiceRefNumber').val("");
+                $('#Input_InvoiceSum').val("");
+                $('#Input_InvoiceNumber').val("");
                 Form.classList.remove('was-validated')
             })
         }

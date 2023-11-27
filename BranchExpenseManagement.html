@@ -22,9 +22,9 @@
         }
 
         .f-sm {
-            font-size: 12px;
+            /* font-size: 14px; */
         }
-        
+
         .invisible {
             visibility: hidden;
         }
@@ -35,6 +35,10 @@
 
         .ticket {
             margin-bottom: 20px;
+        }
+
+        .ticket [name=InvoiceSum]::before {
+            content: " $";
         }
 
         .ticket [name=PaymentAmount]::before {
@@ -48,15 +52,21 @@
 
     <main id="ticket-container" class="container bounded-width"></main>
 
+    <template id="invoice-entry-template">
+        <div class="row f-sm">
+            <span name="InvoiceDate" class="col"></span>
+            <span name="InvoiceNumber" class="col"></span>
+            <span name="InvoiceSum" class="col"></span>
+        </div>
+    </template>
+
     <template id="ticket-template">
         <div class="card ticket shadow text-center">
             <div class="card-header bg-success-subtle text-success-emphasis fw-bold fs-4">
                 <span name="PaymentTo"></span>
                 <span name="PaymentAmount" class="float-end"></span>
             </div>
-            <div class="card-body">
-                <span name="InvoiceRefNumber" class="float-start ps-4 f-sm"></span>
-                <span name="InvoiceDate" class="float-end pe-4 f-sm"></span>
+            <div class="card-body" InvoiceGroupListing>
             </div>
             <div class="card-footer">
                 <span name="Branch" class="float-start"></span>
@@ -71,14 +81,14 @@
             <input type="hidden" name="TableName" value="main">
             <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
             <input type="hidden" name='PaymentStatus' value="Paid">
-            <input type="hidden" name='KeyField' value='InvoiceRefNumber'>
+            <input type="hidden" name='KeyField' value='InvoiceNumber'>
             <input type="hidden" name='KeyValue' value>
 
             <div>
                 <label for="Input_PaymentDate">付款日期</label>
                 <input class="form-control mb-3" id="Input_PaymentDate" type="date" required name="PaymentDate" onclick="this.showPicker()">
             </div>
-            
+
             <div>賬單編號</div>
             <div id="KeyValueContainer" class="form-control mb-3 fs-4"></div>
 
@@ -92,8 +102,8 @@
                 <input class="form-control mb-3" id="Input_PaymentMethod" type="text" required name="PaymentMethod">
             </div>
             <div>
-                <label for="Input_PaymentRefNumber">付款參考編號</label>
-                <input class="form-control mb-3" id="Input_PaymentRefNumber" type="text" required name="PaymentRefNumber">
+                <label for="Input_PaymentNumber">付款參考編號</label>
+                <input class="form-control mb-3" id="Input_PaymentNumber" type="text" required name="PaymentNumber">
             </div>
 
             <button class='btn btn-success f-xlg mb-3' type='submit'>確認付款紀錄</button>
@@ -103,7 +113,7 @@
 
     <div class='spinner-border hidden' style='position:relative; left:50%; top:1vh; translate: -50%;' id='loader-widget'></div>
 
-    <div class='center' style='margin-top: 2em;'>
+    <div class='text-center' style='margin-top: 2em;'>
         <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit#gid=0' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
     </div>
 </body>
@@ -124,15 +134,37 @@
 
     var OutputDevice = $('#ticket-container')
     function Output(Content) { OutputDevice.html(Content) }
- 
-    function ReloadDataBase() {
-        return ReadGoogleSheet('1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4', 'main', 'select C,D,E,F,G,I where L="Pending"')
+
+    function CollapseAsInvoiceGroup(DB) {
+        var NewDB = {}
+        DB.forEach(E => {
+            var Key = `${E.Branch}|${E.PaymentTo}|${E.ExpenseCategory}`
+            NewDB[Key] ??= {}
+            var CurrentTicket = NewDB[Key]
+            CurrentTicket.Branch ??= E.Branch
+            CurrentTicket.PaymentTo ??= E.PaymentTo
+            CurrentTicket.ExpenseCategory ??= E.ExpenseCategory
+            CurrentTicket.PaymentAmount ??= 0
+            CurrentTicket.PaymentAmount += parseInt(E.InvoiceSum)
+
+            CurrentTicket.InvoiceGroup ??= {}
+            CurrentTicket.InvoiceGroup[E.InvoiceNumber] = {}
+
+            var NewEntry = CurrentTicket.InvoiceGroup[E.InvoiceNumber]
+            NewEntry.InvoiceNumber = E.InvoiceNumber
+            NewEntry.InvoiceSum = E.InvoiceSum
+            NewEntry.InvoiceDate = E.InvoiceDate
+        })
+        return Object.values(NewDB)
     }
 
-    function GetInvoiceSumByInvoiceNumber(RefNumber){
-        return 0;
+    var DataBase
+    function ReloadDataBase() {
+        return ReadGoogleSheet('1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4', 'main', 'select C,D,E,F,G,H where M="Pending"')
+            .then(CollapseAsInvoiceGroup)
+            .then(R => DataBase = R)
     }
-    
+
     Loading(true)
     ReloadDataBase().then((DB) => {
         ReloadTickets(DB)
@@ -143,61 +175,66 @@
         $(that).parents('dialog').last()[0].close()
     }
 
-    function TicketClone() {
-        return $($('#ticket-template').clone()[0].content.firstElementChild)
+    function TemplateClone(IDSelector) {
+        return $($(IDSelector).clone()[0].content.firstElementChild)
     }
+    function TicketClone() {
+        return TemplateClone('#ticket-template')
+    }
+    function InvoiceEntryClone() {
+        return TemplateClone('#invoice-entry-template')
+    }
+
 
     function AddTicket(Ticket) {
         var NewTicket = TicketClone()
 
-        var ExistingTicket = OutputDevice.find(`div:has([name=PaymentTo]:contains(${Ticket.PaymentTo}))~div:has([name=Branch]:contains(${Ticket.Branch}))`).parents('.ticket')
-        if (ExistingTicket.length) {
-            var NewAmount = parseInt(ExistingTicket.find('[name=PaymentAmount]').html()) + parseInt(Ticket.PaymentAmount)
-            ExistingTicket.find('[name=PaymentAmount]').html(NewAmount)
-            ExistingTicket.find('[name=InvoiceRefNumber]')[0].innerHTML += `<br>${Ticket.InvoiceRefNumber}`
-            ExistingTicket.find('[name=InvoiceDate]')[0].innerHTML += `<br>${Ticket.InvoiceDate}`
-        } else {
-            Object.keys(Ticket).forEach(Key => {
-                NewTicket.find(`[name=${Key}]`).html(Ticket[Key])
+        Object.keys(Ticket).forEach(Key => {
+            NewTicket.find(`[name=${Key}]`).html(Ticket[Key])
+        })
+
+        var InvoiceGroupContainer = NewTicket.find('[InvoiceGroupListing]')[0]
+        Object.values(Ticket.InvoiceGroup).forEach(InvoiceDetail => {
+            var NewInvoiceEntry = InvoiceEntryClone().appendTo(InvoiceGroupContainer)
+            Object.keys(InvoiceDetail).forEach(Key => {
+                NewInvoiceEntry.find(`[name=${Key}]`).html(InvoiceDetail[Key])
             })
+        })
 
-            NewTicket
-                .on('click', e => {
-                    var This = $(e.target).parents('.ticket')
-                    // console.log(This)
+        NewTicket
+            .on('click', e => {
+                var This = $(e.target).parents('.ticket')
 
-                    //fill data to form on modal 
-                    $('#Input_PaymentAmount').val(This.find('[name=PaymentAmount]').html())
+                //fill data to form on modal
+                $('#Input_PaymentAmount').val(This.find('[name=PaymentAmount]').html())
 
-                    var KeyValueList = This.find('[name=InvoiceRefNumber]').html().split('<br>')
+                var KeyValueList = This.find('[name=InvoiceNumber]').html().split('<br>')
 
-                    $('#KeyValueContainer').html(
-                        KeyValueList.map(R => `<input class="form-check-input" type="checkbox" id="UniqueID_KeyValue_${R}" value="${R}" checked /><label class="ps-3 form-check-label" for="UniqueID_KeyValue_${R}">${R}</label><br>`).join('\n')
-                    )
+                $('#KeyValueContainer').html(
+                    KeyValueList.map(R => `<input class="form-check-input" type="checkbox" id="UniqueID_KeyValue_${R}" value="${R}" checked /><label class="ps-3 form-check-label" for="UniqueID_KeyValue_${R}">${R}</label><br>`).join('\n')
+                )
 
-                    $('#SetPaidDialog')[0].showModal()
-                })
-                .appendTo(OutputDevice)
-        }
+                $('#SetPaidDialog')[0].showModal()
+            })
+            .appendTo(OutputDevice)
+
     }
 
-    function ReloadTickets(DataBase) {
+    function ReloadTickets(DB) {
         Output('')
-        // should extract KM & KA as a single ticket
-
-        DataBase.forEach(AddTicket)
+        DB.forEach(AddTicket)
     }
 
-    function AsyncSubmit(Form) {        
+    function AsyncSubmit(Form) {
         return $.get(ActionURL, $(Form).serialize())
     }
 
     function SetPaid(that) {
-        var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().map(e=>e.value).join(',')
+        var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().map(e => e.value).join(',')
         console.log(KeyValueList)
         $(that).find('[name=KeyValue]').val(KeyValueList)
         
-        AsyncSubmit(that).then(()=>{
+        AsyncSubmit(that).then(() => {
             CloseModal(that)
             Loading(true)
             ReloadDataBase().then((DB) => {
