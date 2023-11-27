@@ -22,7 +22,7 @@
         }
 
         .f-sm {
-            /* font-size: 14px; */
+            font-size: 16px;
         }
 
         .invisible {
@@ -38,11 +38,11 @@
         }
 
         .ticket [name=InvoiceSum]::before {
-            content: " $";
+            content: "$";
         }
 
         .ticket [name=PaymentAmount]::before {
-            content: " $";
+            content: "$";
         }
     </style>
 </head>
@@ -53,11 +53,14 @@
     <main id="ticket-container" class="container bounded-width"></main>
 
     <template id="invoice-entry-template">
-        <div class="row f-sm">
-            <span name="InvoiceDate" class="col"></span>
-            <span name="InvoiceNumber" class="col"></span>
-            <span name="InvoiceSum" class="col"></span>
-        </div>
+        <label class="w-100">
+            <div class="row f-sm">
+                <input type="checkbox" class="col" onchange="CalculateTicketTotalAmount(this)" value sum checked>
+                <span name="InvoiceDate" class="col"></span>
+                <span name="InvoiceNumber" class="col"></span>
+                <span name="InvoiceSum" class="col"></span>
+            </div>
+        </label>
     </template>
 
     <template id="ticket-template">
@@ -90,7 +93,7 @@
             </div>
 
             <div>賬單編號</div>
-            <div id="KeyValueContainer" class="form-control mb-3 fs-4"></div>
+            <div class="form-control mb-3" InvoiceCheckboxListing></div>
 
             <div>
                 <label for="Input_PaymentAmount">付款金額</label>
@@ -99,7 +102,12 @@
 
             <div>
                 <label for="Input_PaymentMethod">付款方式</label>
-                <input class="form-control mb-3" id="Input_PaymentMethod" type="text" required name="PaymentMethod">
+                <input class="form-control mb-3" id="Input_PaymentMethod" type="text" required name="PaymentMethod" list="PaymentMethodList">
+
+                <datalist id="PaymentMethodList">
+                    <option value="支票"></option>
+                    <option value="FPS"></option>
+                </datalist>
             </div>
             <div>
                 <label for="Input_PaymentNumber">付款參考編號</label>
@@ -153,7 +161,7 @@
             var NewEntry = CurrentTicket.InvoiceGroup[E.InvoiceNumber]
             NewEntry.InvoiceNumber = E.InvoiceNumber
             NewEntry.InvoiceSum = E.InvoiceSum
-            NewEntry.InvoiceDate = E.InvoiceDate
+            NewEntry.InvoiceDate = E.InvoiceDate.substring(5)
         })
         return Object.values(NewDB)
     }
@@ -185,6 +193,12 @@
         return TemplateClone('#invoice-entry-template')
     }
 
+    function CalculateTicketTotalAmount(that) {
+        var This = $(that).parentsUntil('[InvoiceCheckboxListing]').parent()
+        $('#Input_PaymentAmount').val(
+            This.find('input[type=checkbox]:checked').toArray().reduce((R, V) => R + parseInt($(V).attr('sum')), 0)
+        )
+    }
 
     function AddTicket(Ticket) {
         var NewTicket = TicketClone()
@@ -193,28 +207,33 @@
             NewTicket.find(`[name=${Key}]`).html(Ticket[Key])
         })
 
-        var InvoiceGroupContainer = NewTicket.find('[InvoiceGroupListing]')[0]
+        var InvoiceGroupContainer = NewTicket.find('[InvoiceGroupListing]').html('')[0]
         Object.values(Ticket.InvoiceGroup).forEach(InvoiceDetail => {
             var NewInvoiceEntry = InvoiceEntryClone().appendTo(InvoiceGroupContainer)
+            NewInvoiceEntry.find('input[type=checkbox]').remove()
             Object.keys(InvoiceDetail).forEach(Key => {
                 NewInvoiceEntry.find(`[name=${Key}]`).html(InvoiceDetail[Key])
             })
         })
 
         NewTicket
-            .on('click', e => {
-                var This = $(e.target).parents('.ticket')
+            .on('click', () => {
+                // var This = $(e.target).parents('.ticket')
+                var SetPaidDialog = $('#SetPaidDialog')
 
-                //fill data to form on modal
-                $('#Input_PaymentAmount').val(This.find('[name=PaymentAmount]').html())
-
-                var KeyValueList = This.find('[name=InvoiceNumber]').html().split('<br>')
-
-                $('#KeyValueContainer').html(
-                    KeyValueList.map(R => `<input class="form-check-input" type="checkbox" id="UniqueID_KeyValue_${R}" value="${R}" checked /><label class="ps-3 form-check-label" for="UniqueID_KeyValue_${R}">${R}</label><br>`).join('\n')
-                )
-
-                $('#SetPaidDialog')[0].showModal()
+                var InvoiceCheckboxContainer = SetPaidDialog.find('[InvoiceCheckboxListing]').html('')[0]
+                Object.values(Ticket.InvoiceGroup).forEach(InvoiceDetail => {
+                    var NewInvoiceEntry = InvoiceEntryClone().appendTo(InvoiceCheckboxContainer)
+                    NewInvoiceEntry
+                        .find('input[type=checkbox]')
+                        .attr('sum', InvoiceDetail.InvoiceSum)
+                        .val(InvoiceDetail.InvoiceNumber)
+                    Object.keys(InvoiceDetail).forEach(Key => {
+                        NewInvoiceEntry.find(`[name=${Key}]`).html(InvoiceDetail[Key])
+                    })
+                })
+                $('#Input_PaymentAmount').val(Ticket.PaymentAmount)
+                SetPaidDialog[0].showModal()
             })
             .appendTo(OutputDevice)
 
@@ -230,11 +249,13 @@
     }
 
     function SetPaid(that) {
-        var KeyValueList = $('#KeyValueContainer').find('input[type=checkbox]:checked').toArray().map(e => e.value).join(',')
+        var KeyValueList = $('[InvoiceCheckboxListing]').find('input[type=checkbox]:checked').toArray().map(E => E.value).join(',')
         console.log(KeyValueList)
         $(that).find('[name=KeyValue]').val(KeyValueList)
-        
+
         AsyncSubmit(that).then(() => {
+            $('#Input_PaymentNumber').val('')
+            $('#Input_PaymentMethod').val('')
             CloseModal(that)
             Loading(true)
             ReloadDataBase().then((DB) => {
