@@ -13,7 +13,16 @@
   <script src="JS/ext/client-side-templates.js"></script>
 
   <style>
+    body {
+      margin: auto;
+      width: 100vw;
+      max-width: 600px;
+      min-width: 460px;
+    }
 
+    .hidden {
+      display: none;
+    }
   </style>
   <script>
 
@@ -24,6 +33,9 @@
     window.onload = function () {
       $('input[name=date]').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
       $('main form input[type=submit]').click()
+    }
+    function KeywordSearch() {
+      $(this).val().split(' ').reduce((R, V) => R.filter((i, e) => $(e).text().toUpperCase().includes(V.toUpperCase())), $('div.card').addClass('hidden')).removeClass('hidden')
     }
   </script>
 </head>
@@ -39,6 +51,10 @@
         <input name="expect" type="hidden" value="all">
         <input type="submit" value="Load">
       </form>
+    </div>
+
+    <div id="ResultFilter" class="p-3">
+      <input type="text" class="w-100 input-group text-center fs-3" placeholder="Keyword Search" oninput="KeywordSearch.call(this)">
     </div>
 
     <div id="DisplayResult">empty</div>
