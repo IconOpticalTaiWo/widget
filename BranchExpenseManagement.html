@@ -194,7 +194,7 @@
     }
 
     function CalculateTicketTotalAmount(that) {
-        var This = $(that).parentsUntil('[InvoiceCheckboxListing]').parent()
+        var This = $(that).parentsUntil('[InvoiceCheckboxListing]')
         $('#Input_PaymentAmount').val(
             This.find('input[type=checkbox]:checked').toArray().reduce((R, V) => R + parseInt($(V).attr('sum')), 0)
         )
@@ -218,7 +218,6 @@
 
         NewTicket
             .on('click', () => {
-                // var This = $(e.target).parents('.ticket')
                 var SetPaidDialog = $('#SetPaidDialog')
 
                 var InvoiceCheckboxContainer = SetPaidDialog.find('[InvoiceCheckboxListing]').html('')[0]
@@ -250,7 +249,6 @@
 
     function SetPaid(that) {
         var KeyValueList = $('[InvoiceCheckboxListing]').find('input[type=checkbox]:checked').toArray().map(E => E.value).join(',')
-        console.log(KeyValueList)
         $(that).find('[name=KeyValue]').val(KeyValueList)
 
         Output('')
