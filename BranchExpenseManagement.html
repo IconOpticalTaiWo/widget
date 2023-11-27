@@ -253,11 +253,11 @@
         console.log(KeyValueList)
         $(that).find('[name=KeyValue]').val(KeyValueList)
 
+        CloseModal(that)
+        Loading(true)
         AsyncSubmit(that).then(() => {
             $('#Input_PaymentNumber').val('')
             $('#Input_PaymentMethod').val('')
-            CloseModal(that)
-            Loading(true)
             ReloadDataBase().then((DB) => {
                 ReloadTickets(DB)
                 Loading(false)
