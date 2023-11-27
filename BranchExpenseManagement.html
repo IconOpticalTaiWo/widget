@@ -78,8 +78,8 @@
         </div>
     </template>
 
-    <dialog id='SetPaidDialog' class="p-4 bounded-width h-75 overflow-y-scroll">
-        <form onsubmit='SetPaid(this); return false;' class='form-control p-2 fs-4' autocomplete='off'>
+    <dialog id='SetPaidDialog' class="bounded-width overflow-y-scroll">
+        <form onsubmit='SetPaid(this); return false;' class='form-control fs-4' autocomplete='off'>
             <input type="hidden" name='Action' value='BatchUpdate'>
             <input type="hidden" name="TableName" value="main">
             <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
@@ -87,35 +87,41 @@
             <input type="hidden" name='KeyField' value='InvoiceNumber'>
             <input type="hidden" name='KeyValue' value>
 
-            <div>
-                <label for="Input_PaymentDate">付款日期</label>
-                <input class="form-control mb-3" id="Input_PaymentDate" type="date" required name="PaymentDate" onclick="this.showPicker()">
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentDate">付款日期</label>
+                <input class="col form-control" id="Input_PaymentDate" type="date" required name="PaymentDate" onclick="this.showPicker()">
             </div>
 
-            <div>賬單編號</div>
-            <div class="form-control mb-3" InvoiceCheckboxListing></div>
-
-            <div>
-                <label for="Input_PaymentAmount">付款金額</label>
-                <input class="form-control mb-3" id="Input_PaymentAmount" type="text" value required name="PaymentAmount">
+            <div class="row mb-2">
+                <div>賬單編號</div>
+                <div class="form-control pe-0 m-0" InvoiceCheckboxListing></div>
             </div>
 
-            <div>
-                <label for="Input_PaymentMethod">付款方式</label>
-                <input class="form-control mb-3" id="Input_PaymentMethod" type="text" required name="PaymentMethod" list="PaymentMethodList">
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentAmount">付款金額</label>
+                <input class="col form-control" id="Input_PaymentAmount" type="text" value required name="PaymentAmount">
+            </div>
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentMethod">付款方式</label>
+                <input class="col form-control" id="Input_PaymentMethod" type="text" required name="PaymentMethod" list="PaymentMethodList">
 
                 <datalist id="PaymentMethodList">
                     <option value="支票"></option>
                     <option value="FPS"></option>
                 </datalist>
             </div>
-            <div>
-                <label for="Input_PaymentNumber">付款參考編號</label>
-                <input class="form-control mb-3" id="Input_PaymentNumber" type="text" required name="PaymentNumber">
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentNumber">參考編號</label>
+                <input class="col form-control" id="Input_PaymentNumber" type="text" required name="PaymentNumber">
             </div>
 
-            <button class='btn btn-success f-xlg mb-3' type='submit'>確認付款紀錄</button>
-            <button class='btn btn-secondary f-xlg mb-3' type='button' onclick='CloseModal(this)'>取消</button>
+            <div class="row ps-2 pe-2">
+                <button class='col-7 btn btn-success f-xlg h-100' type='submit'>確認付款紀錄</button>
+                <div class='col-1'></div>
+                <button class='col-4 btn btn-secondary f-xlg h-100' type='button' onclick='CloseModal(this)'>取消</button>
+            </div>
         </form>
     </dialog>
 
