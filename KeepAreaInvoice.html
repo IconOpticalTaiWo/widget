@@ -147,34 +147,37 @@
     // Common Controller, requires SheetID , TableName
     var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
 
-    function SetupComplementaryFormWith(InputForm) {
-        var Form = $('#ComplementaryForm')
-        Form.find('input[value_source]').each((i, e) => {
-            var SourceName = $(e).attr('value_source')
-            var SourceInput = $(InputForm).find(`input[name=${SourceName}]`)
-            if (SourceInput.attr('type') === 'radio') SourceInput = $(InputForm).find(`input[name=${SourceName}]:checked`)
-            e.value = SourceInput.val()
-        })
-        return Form
+    function InvoiceNumberConflit(InvoiceNumber) {
+        return ReadGoogleSheet('1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ', 'main', `select E where E like "${InvoiceNumber}"`)
+            .then(r => r.length > 0)
     }
 
-    function FormSubmit(InputForm) {
-        InputForm.classList.add('was-validated')
+    async function FormSubmit(InputForm) {
+        $('#Input_Submit').parent().prop('disabled', true)
         $('#Input_Submit').html("遞交")
+        InputForm.classList.add('was-validated')
+
         if (InputForm.checkValidity()) {
             $('#Input_Submit').addClass('hidden')
             $('#Input_Indicator').removeClass('hidden')
+            if (await InvoiceNumberConflit($('#Input_InvoiceNumber').val())) {
+                alert(`單號重覆, 請重新輸入`)
+                $('#Input_InvoiceNumber')[0].value += '*'
+                $('#Input_InvoiceNumber').focus()
+            } else {
+                $.get(ActionURL, SetupComplementaryFormWith(InputForm).serialize())
 
-            $.get(ActionURL, SetupComplementaryFormWith(InputForm).serialize())
+                await $.get(ActionURL, $(InputForm).serialize())
 
-            $.get(ActionURL, $(InputForm).serialize()).then(() => {
-                $('#Input_Submit').html("已遞交").removeClass('hidden')
-                $('#Input_Indicator').addClass('hidden')
+                $('#Input_Submit').html("已遞交")
                 $('#Input_InvoiceSum').val("");
                 $('#Input_InvoiceNumber').val("");
                 InputForm.classList.remove('was-validated')
-            })
+            }
+            $('#Input_Submit').removeClass('hidden')
+            $('#Input_Indicator').addClass('hidden')
         }
+        $('#Input_Submit').parent().prop('disabled', false)
     }
 </script>
 

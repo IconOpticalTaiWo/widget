@@ -9,6 +9,7 @@
     <link rel="icon" href="data:," />
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=0">
     <script src='JS/jquery-3.7.1.min.js'></script>
+    <script src='JS/public-gsheet-parser.js'></script>
     <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
     <style>
         .bounded-width {
@@ -119,9 +120,11 @@
         <div class='center' style='margin-top: 2em;'>
             <a href='https://docs.google.com/spreadsheets/d/1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ/edit?usp=sharing' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
         </div>
+
     </div>
 </body>
 <script>
+
     function DatePickerInit() {
         $('#Input_InvoiceDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
     }
@@ -153,23 +156,37 @@
         return Form
     }
 
-    function FormSubmit(InputForm) {
-        InputForm.classList.add('was-validated')
+    function InvoiceNumberConflit(InvoiceNumber) {
+        return ReadGoogleSheet('1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ', 'main', `select E where E like "${InvoiceNumber}"`)
+            .then(r => r.length > 0)
+    }
+
+    async function FormSubmit(InputForm) {
+        $('#Input_Submit').parent().prop('disabled', true)
         $('#Input_Submit').html("遞交")
+        InputForm.classList.add('was-validated')
+
         if (InputForm.checkValidity()) {
             $('#Input_Submit').addClass('hidden')
             $('#Input_Indicator').removeClass('hidden')
+            if (await InvoiceNumberConflit($('#Input_InvoiceNumber').val())) {
+                alert(`單號重覆, 請重新輸入`)
+                $('#Input_InvoiceNumber')[0].value += '*'
+                $('#Input_InvoiceNumber').focus()
+            } else {
+                $.get(ActionURL, SetupComplementaryFormWith(InputForm).serialize())
 
-            $.get(ActionURL, SetupComplementaryFormWith(InputForm).serialize())
+                await $.get(ActionURL, $(InputForm).serialize())
 
-            $.get(ActionURL, $(InputForm).serialize()).then(() => {
-                $('#Input_Submit').html("已遞交").removeClass('hidden')
-                $('#Input_Indicator').addClass('hidden')
+                $('#Input_Submit').html("已遞交")
                 $('#Input_InvoiceSum').val("");
                 $('#Input_InvoiceNumber').val("");
                 InputForm.classList.remove('was-validated')
-            })
+            }
+            $('#Input_Submit').removeClass('hidden')
+            $('#Input_Indicator').addClass('hidden')
         }
+        $('#Input_Submit').parent().prop('disabled', false)
     }
 </script>
 
