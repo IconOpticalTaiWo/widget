@@ -194,7 +194,7 @@
     }
 
     function CalculateTicketTotalAmount(that) {
-        var This = $(that).parentsUntil('[InvoiceCheckboxListing]')
+        var This = $(that).parents('[InvoiceCheckboxListing]')
         $('#Input_PaymentAmount').val(
             This.find('input[type=checkbox]:checked').toArray().reduce((R, V) => R + parseInt($(V).attr('sum')), 0)
         )
