@@ -25,6 +25,11 @@
             font-size: 16px;
         }
 
+        input[type=checkbox] {
+            min-width: 18px;
+            min-height: 18px;
+        }
+
         .invisible {
             visibility: hidden;
         }
@@ -53,14 +58,16 @@
     <main id="ticket-container" class="container bounded-width"></main>
 
     <template id="invoice-entry-template">
-        <label class="w-100">
-            <div class="row f-sm">
-                <input type="checkbox" class="col" onchange="CalculateTicketTotalAmount(this)" value sum checked>
-                <span name="InvoiceDate" class="col"></span>
-                <span name="InvoiceNumber" class="col"></span>
-                <span name="InvoiceSum" class="col"></span>
-            </div>
-        </label>
+        <div class="row ps-1">
+            <input type="checkbox" id class="col-auto" onchange="CalculateTicketTotalAmount(this)" value sum checked>
+            <label class="col" for>
+                <div class="row text-center">
+                    <span name="InvoiceDate" class="col"></span>
+                    <span name="InvoiceNumber" class="col"></span>
+                    <span name="InvoiceSum" class="col"></span>
+                </div>
+            </label>
+        </div>
     </template>
 
     <template id="ticket-template">
@@ -94,7 +101,7 @@
 
             <div class="row mb-2">
                 <div>賬單編號</div>
-                <div class="form-control pe-0 m-0" InvoiceCheckboxListing></div>
+                <div class="form-control" InvoiceCheckboxListing></div>
             </div>
 
             <div class="row mb-2 me-0">
@@ -118,9 +125,9 @@
             </div>
 
             <div class="row ps-2 pe-2">
-                <button class='col-7 btn btn-success f-xlg h-100' type='submit'>確認付款紀錄</button>
+                <button class='col-8 btn btn-success f-xlg h-100' type='submit' autofocus>確認付款紀錄</button>
                 <div class='col-1'></div>
-                <button class='col-4 btn btn-secondary f-xlg h-100' type='button' onclick='CloseModal(this)'>取消</button>
+                <button class='col-3 btn btn-secondary f-xlg h-100' type='button' onclick='CloseModal(this)'>取消</button>
             </div>
         </form>
     </dialog>
@@ -231,8 +238,12 @@
                     var NewInvoiceEntry = InvoiceEntryClone().appendTo(InvoiceCheckboxContainer)
                     NewInvoiceEntry
                         .find('input[type=checkbox]')
+                        .attr('id', `checkbox_${InvoiceDetail.InvoiceNumber}`)
                         .attr('sum', InvoiceDetail.InvoiceSum)
                         .val(InvoiceDetail.InvoiceNumber)
+                    NewInvoiceEntry
+                        .find('label')
+                        .attr('for', `checkbox_${InvoiceDetail.InvoiceNumber}`)
                     Object.keys(InvoiceDetail).forEach(Key => {
                         NewInvoiceEntry.find(`[name=${Key}]`).html(InvoiceDetail[Key])
                     })
