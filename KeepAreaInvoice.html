@@ -148,8 +148,19 @@
     // Common Controller, requires SheetID , TableName
     var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
 
+    function SetupComplementaryFormWith(InputForm) {
+        var Form = $('#ComplementaryForm')
+        Form.find('input[value_source]').each((i, e) => {
+            var SourceName = $(e).attr('value_source')
+            var SourceInput = $(InputForm).find(`input[name=${SourceName}]`)
+            if (SourceInput.attr('type') === 'radio') SourceInput = $(InputForm).find(`input[name=${SourceName}]:checked`)
+            e.value = SourceInput.val()
+        })
+        return Form
+    }
+
     function InvoiceNumberConflit(InvoiceNumber) {
-        return ReadGoogleSheet('1i7O4CLxF-yN2XGtaMHpILUf-x928rMVuocR7E2ufMyQ', 'main', `select E where E like "${InvoiceNumber}"`)
+        return ReadGoogleSheet('1r2GfHbxoTYCz-LxNqR0rHCSg_Z_DXGA5XOWfcgGxH9w', 'main', `select E where E like "${InvoiceNumber}"`)
             .then(r => r.length > 0)
     }
 
@@ -180,6 +191,7 @@
         }
         $('#Input_Submit').parent().prop('disabled', false)
     }
+
 </script>
 
 </html>
