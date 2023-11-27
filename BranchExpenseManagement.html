@@ -253,6 +253,7 @@
         console.log(KeyValueList)
         $(that).find('[name=KeyValue]').val(KeyValueList)
 
+        Output('')
         CloseModal(that)
         Loading(true)
         AsyncSubmit(that).then(() => {
