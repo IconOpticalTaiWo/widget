@@ -174,9 +174,9 @@
                 $('#Input_InvoiceNumber')[0].value += '*'
                 $('#Input_InvoiceNumber').focus()
             } else {
-                $.get(ActionURL, SetupComplementaryFormWith(InputForm).serialize())
+                await $.get(ActionURL, SetupComplementaryFormWith(InputForm).serialize())
 
-                await $.get(ActionURL, $(InputForm).serialize())
+                $.get(ActionURL, $(InputForm).serialize())
 
                 $('#Input_Submit').html("已遞交")
                 $('#Input_InvoiceSum').val("");
