@@ -242,6 +242,8 @@
           } else {
             if (!TargetCyl.val()) {
               TargetCyl.attr('placeholder', '==>')
+              Target[0].focus()
+              IncompleteForm = true
             } else {
               IncompleteForm |= InvalidValue(Target, AxisValidation)
             }
