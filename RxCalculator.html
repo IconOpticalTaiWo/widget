@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>度數計算機</title>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=0.8, maximum-scale=1.1">
+  <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="></script>
+  <style>
+    body {
+      margin: auto;
+      padding: 0;
+      max-width: 500px;
+      width: 100vw;
+      max-height: 98dvh;
+
+      /* height: 100%; */
+    }
+
+    .f-lg {
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    .f-medium {
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .rx-group-header {
+      font-weight: 600;
+      font-size: 20px;
+    }
+
+    .rx-table input {
+      text-align: center;
+      font-weight: 600;
+      font-size: 20px;
+      padding: 10px 0;
+      margin-bottom: 4px;
+    }
+
+    .rx-table input:invalid {
+      background-color: rgba(255, 20, 20, 0.6);
+    }
+
+    .rx-table {
+      /* max-width: 600px ; */
+      /* width: 100%; */
+      /* min-width: 500px; */
+      /* height: 100%; */
+      /* overflow: hidden; */
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+  <script>
+
+    var HashTag = window.location.hash?.substring(1)
+    var DebugMode = HashTag.match(/debug/i)
+    var QueryString = new URLSearchParams(window.location.search)
+
+    window.onload = function () {
+
+      // if (!DebugMode) $('#Debug_Info_Display').addClass('hidden')
+    }
+
+    function FillDataToSource(Rx) {
+      $('#original_rx_group').find('input.rx-entry').each((i, e) => {
+        $(e).val(Rx[e.name] ?? '')
+      })
+      $('#modified_remark').html('')
+    }
+
+    function FillDataToResult(Rx) {
+      Rx = ForceMinusCyl(Rx)
+      $('#modified_rx_group').find('input.rx-entry').each((i, e) => {
+        $(e).val(Rx[e.name] ?? '')
+      })
+      $('#modified_remark').html('')
+    }
+
+    function GetOriginalRx() {
+      return $('#original_rx_group').find('input.rx-entry').toArray().reduce((R, E) => {
+        R[E.name] = E.value;
+        return R
+      }, {})
+    }
+
+    function ClearAllRx() {
+      $('input.rx-entry').each((i, e) => { e.value = '' })
+    }
+
+    function PaddedValueUnsigned(N) {
+      N = String(N)
+      switch (N.length) {
+        case 1: return '00' + N
+        case 2: return '0' + N
+        default: return N
+      }
+    }
+
+    function PaddedValue(N) {
+      if (N === 0) return '+000'
+      const Sign = N >= 0 ? '+' : '-'
+      return Sign + PaddedValueUnsigned(Math.abs(N))
+    }
+
+    function Rotate90(Deg) {
+      Deg = parseInt(Deg)
+      Deg += 90
+      if (Deg > 180) Deg -= 180
+      return PaddedValueUnsigned(Deg)
+    }
+
+    function ForceMinusCyl(Rx) {
+      if (Rx.Cylinder_R.startsWith('+')) {
+        if (Rx.Sphere_R) Rx.Sphere_R = PaddedValue(parseInt(Rx.Sphere_R) + parseInt(Rx.Cylinder_R))
+        if (Rx.Cylinder_R) Rx.Cylinder_R = PaddedValue(-1 * parseInt(Rx.Cylinder_R))
+        if (Rx.Axis_R) Rx.Axis_R = Rotate90(Rx.Axis_R)
+      }
+      if (Rx.Cylinder_L.startsWith('+')) {
+        if (Rx.Sphere_L) Rx.Sphere_L = PaddedValue(parseInt(Rx.Sphere_L) + parseInt(Rx.Cylinder_L))
+        if (Rx.Cylinder_L) Rx.Cylinder_L = PaddedValue(-1 * parseInt(Rx.Cylinder_L))
+        if (Rx.Axis_L) Rx.Axis_L = Rotate90(Rx.Axis_L)
+      }
+      return Rx
+    }
+
+    var RxTransform = {
+      Far: () => {
+        var Rx = GetOriginalRx()
+        delete Rx.ADD_R
+        delete Rx.ADD_L
+        FillDataToResult(Rx)
+      },
+      Near: () => {
+        var Rx = GetOriginalRx()
+
+        if (Rx.Sphere_R) Rx.Sphere_R = PaddedValue(parseInt(Rx.Sphere_R) + parseInt(Rx.ADD_R))
+
+        if (Rx.Sphere_L) Rx.Sphere_L = PaddedValue(parseInt(Rx.Sphere_L) + parseInt(Rx.ADD_L))
+
+        if (Rx.PD_R) Rx.PD_R = parseInt(Rx.PD_R) - 1
+        if (Rx.PD_L) Rx.PD_L = parseInt(Rx.PD_L) - 1
+
+        if (Rx.ADD_R) delete Rx.ADD_R; else Rx.Sphere_R = 'ADD?'
+        if (Rx.ADD_L) delete Rx.ADD_L; else Rx.Sphere_L = 'ADD?'
+        
+        FillDataToResult(Rx)
+      },
+      PAL: () => {
+        var Rx = GetOriginalRx()
+        if (!Rx.ADD_R) Rx.ADD_R = 'ADD?'
+        if (!Rx.ADD_L) Rx.ADD_L = 'ADD?'
+        FillDataToResult(Rx)
+        $('#modified_remark').html('漸進鏡必須量度高')
+      },
+      PlusCyl: () => {
+        var Rx = GetOriginalRx()
+
+        if (Rx.Sphere_R) Rx.Sphere_R = PaddedValue(parseInt(Rx.Sphere_R) + parseInt(Rx.Cylinder_R))
+        if (Rx.Cylinder_R) Rx.Cylinder_R = PaddedValue(-1 * parseInt(Rx.Cylinder_R))
+        if (Rx.Axis_R) Rx.Axis_R = Rotate90(Rx.Axis_R)
+
+        if (Rx.Sphere_L) Rx.Sphere_L = PaddedValue(parseInt(Rx.Sphere_L) + parseInt(Rx.Cylinder_L))
+        if (Rx.Cylinder_L) Rx.Cylinder_L = PaddedValue(-1 * parseInt(Rx.Cylinder_L))
+        if (Rx.Axis_L) Rx.Axis_L = Rotate90(Rx.Axis_L)
+
+        FillDataToSource(Rx)
+      }
+
+    }
+  </script>
+</head>
+
+<body>
+
+  <div style="padding-top: 10px;"></div>
+
+  <main class="container-fluid ps-0 rx-table">
+
+    <div class="row justify-content-end">
+      <div class="col-auto">
+        <button class="h-100 w-100 f-medium btn btn-danger" onclick="ClearAllRx()">清空度數</button>
+      </div>
+      <div class="col-auto"><button class="h-100 w-100 f-medium btn btn-secondary"
+          onclick="RxTransform.PlusCyl()">老散切換</button> </div>
+    </div>
+
+    <div class="rx-group-header ps-2 pt-3">原始度數</div>
+
+    <div id="original_rx_group">
+      <div class="row g-2 text-center">
+        <div class="col-1"> </div>
+        <div class="col">Sph</div>
+        <div class="col">Cyl</div>
+        <div class="col">Axis</div>
+        <div class="col">ADD</div>
+        <div class="col">PD</div>
+      </div>
+      <div id="original_r" class="row g-1">
+        <div class="col-1 col-form-label text-center">R</div>
+        <div class="col"><input name="Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
+        <div class="col"><input name="Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+        <div class="col"><input name="Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
+        <div class="col"><input name="ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
+        <div class="col"><input name="PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
+      </div>
+      <div id="original_l" class="row g-1">
+        <div class="col-1 col-form-label text-center">L</div>
+        <div class="col"><input name="Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
+        <div class="col"><input name="Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+        <div class="col"><input name="Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
+        <div class="col"><input name="ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
+        <div class="col"><input name="PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
+      </div>
+    </div>
+
+    <div class="rx-group-header ps-2 pt-3">選擇轉換:</div>
+    <div class="row p-2">
+      <div class="col-4"><button class="h-100 w-100 f-medium btn btn-success"
+          onclick="RxTransform.Far()">遠用<br>行街</button> </div>
+      <div class="col-4"><button class="h-100 w-100 f-medium btn btn-success"
+          onclick="RxTransform.Near()">近用<br>老花</button> </div>
+      <div class="col-4"><button class="h-100 w-100 f-medium btn btn-success" onclick="RxTransform.PAL()">漸進</button>
+      </div>
+    </div>
+
+    <div class="rx-group-header ps-2 pt-3">轉換後的度數</div>
+    <div id="modified_rx_group">
+      <div class="row g-2 text-center">
+        <div class="col-1"> </div>
+        <div class="col">Sph</div>
+        <div class="col">Cyl</div>
+        <div class="col">Axis</div>
+        <div class="col">ADD</div>
+        <div class="col">PD</div>
+      </div>
+      <div id="modified_r" class="row g-1">
+        <div class="col-1 col-form-label text-center">R</div>
+        <div class="col"><input name="Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
+        <div class="col"><input name="Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+        <div class="col"><input name="Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
+        <div class="col"><input name="ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
+        <div class="col"><input name="PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
+      </div>
+      <div id="modified_l" class="row g-1">
+        <div class="col-1 col-form-label text-center">L</div>
+        <div class="col"><input name="Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
+        <div class="col"><input name="Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+        <div class="col"><input name="Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
+        <div class="col"><input name="ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
+        <div class="col"><input name="PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
+      </div>
+      <div id="modified_remark" class="f-lg p-2"></div>
+    </div>
+
+
+    <div class="pb-4"></div>
+
+  </main>
+
+
+</body>
+
+</html>
