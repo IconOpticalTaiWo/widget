@@ -54,7 +54,8 @@
 
     <template id="invoice-entry-template">
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" id onchange="CalculateTicketTotalAmount(this)" value sum checked>
+            <!-- <input class="form-check-input" type="checkbox" id onchange="CalculateTicketTotalAmount(this)" value sum checked> -->
+            <input class="form-check-input" type="checkbox" id onchange="CalculateTicketTotalAmount(this)" value sum >
             <label class="form-check-label w-100" for>
                 <div class="row fs-6">
                     <span name="InvoiceDate" class="col text-start"></span>
@@ -246,7 +247,10 @@
                         NewInvoiceEntry.find(`[name=${Key}]`).html(InvoiceDetail[Key])
                     })
                 })
-                $('#Input_PaymentAmount').val(Ticket.PaymentAmount)
+                // $('#Input_PaymentAmount').val(Ticket.PaymentAmount)
+                // only enable if default checked
+                // current default is unchecked
+
                 SetPaidDialog[0].showModal()
             })
             .appendTo(OutputDevice)
