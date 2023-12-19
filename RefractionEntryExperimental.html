@@ -585,7 +585,7 @@
         FocusedCell?.focus()
         const This = e.target
         const Func = window[This.getAttribute('ontouch')]
-        CheckThenInvoke(Func, This.value || This.textContents)
+        CheckThenInvoke(Func, This.value || This.textContent)
       })
       $('.input-panel button, .input-panel-common button').attr("tabIndex", "-1")
 
