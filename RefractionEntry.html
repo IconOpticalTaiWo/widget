@@ -648,7 +648,7 @@
         if (!isNaN(asFloat)) {
           if (asFloat > 45) {
             asFloat = (asFloat / 2).toFixed(2)
-            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
+            if (asFloat.endsWith('0')) { asFloat = asFloat.slice(0, -1) }
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
@@ -884,6 +884,7 @@
 
           <div class="col-12 pb-3"></div>
         </div>
+
         <div class="row row-cols-4 g-0 text-center input-panel standard-numpad va-picker">
 
           <div class="col-10"><input class="btn-numpad f-lg" style="--aspect:15/3;" disabled type="text" id="numpad-display-panel"></div>
@@ -901,7 +902,9 @@
           <div class="col-4"><button class="btn-numpad f-lg" style="--aspect:3/2;" ontouch="SwitchToPL">PL</button>
           </div>
           <div class="col-4"><button class="btn-numpad f-lg" style="--aspect:3/2;" ontouch="SwitchPlus">+</button></div>
+        </div>
 
+        <div class="row row-cols-4 g-0 text-center input-panel standard-numpad">
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">7</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">8</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">9</button></div>
@@ -924,12 +927,28 @@
           <div class="col"><button class="btn-numpad" ontouch="AppendValue">.</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AppendValueThenNextCell">00</button></div>
         </div>
+        
+        <div class="row row-cols-4 g-0 text-center mt-2 input-panel va-picker hidden">
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.7</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.8</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.9</button></div>
 
-        <div class="row g-0 text-center mt-2 input-panel va-picker hidden">
-          <div class="col-6"><button class="btn-picker aspect-31" ontouch="AssignValue">FC</button></div>
-          <div class="col-6"><button class="btn-picker aspect-31" ontouch="AssignValue">BAL</button></div>
-          <div class="col-6"><button class="btn-picker aspect-31" ontouch="AssignValue">LP</button></div>
-          <div class="col-6"><button class="btn-picker aspect-31" ontouch="AssignValue">NLP</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">FC</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.4</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.5</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.6</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">BAL</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.1</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.2</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.3</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">LP</button></div>
+
+          <div class="col-9"><button class="btn-numpad aspect-21" ontouch="AssignValue">1.0</button></div>          
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">NLP</button></div>
         </div>
 
         <div class="row g-2 text-center input-panel optom-picker hidden">
