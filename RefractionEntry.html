@@ -463,7 +463,7 @@
 
     function SwitchMinus() {
       if (Focusing('VA')) {
-        if (/^0.\d[+-]?$/.test(FocusedCell.value)) return ChangeSuffix('-', '+')
+        if (/^(?:0.\d|1.0)[+-]?$/.test(FocusedCell.value)) return ChangeSuffix('-', '+')
       }
 
       if (Focusing('Sphere') || Focusing('Cylinder')) {
@@ -474,7 +474,7 @@
 
     function SwitchPlus() {
       if (Focusing('VA')) {
-        if (/^0.\d[+-]?$/.test(FocusedCell.value)) return ChangeSuffix('+', '-')
+        if (/^(?:0.\d|1.0)[+-]?$/.test(FocusedCell.value)) return ChangeSuffix('+', '-')
       }
 
       if (Focusing('Sphere')) {
@@ -663,7 +663,7 @@
 
       $('input[name*=VA_]').on('focusout', e => {
         const This = e.target
-        if (This.value.startsWith(".")) return This.value = '0' + This.value
+        This.value = This.value.toUpperCase()
       })
 
       $('input[name*=PD_]').on('focusout', e => {
