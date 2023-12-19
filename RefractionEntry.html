@@ -462,7 +462,9 @@
     }
 
     function SwitchMinus() {
-      if (Focusing('VA')) return ChangeSuffix('-', '+')
+      if (Focusing('VA')) {
+        if (/^0.\d[+-]?$/.test(FocusedCell.value)) return ChangeSuffix('-', '+')
+      }
 
       if (Focusing('Sphere') || Focusing('Cylinder')) {
         if (FocusedCell.value === '+000') return;
@@ -471,7 +473,9 @@
     }
 
     function SwitchPlus() {
-      if (Focusing('VA')) return ChangeSuffix('+', '-')
+      if (Focusing('VA')) {
+        if (/^0.\d[+-]?$/.test(FocusedCell.value)) return ChangeSuffix('+', '-')
+      }
 
       if (Focusing('Sphere')) {
         ChangePrefix('+', '-')
