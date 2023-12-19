@@ -585,7 +585,7 @@
         FocusedCell?.focus()
         const This = e.target
         const Func = window[This.getAttribute('ontouch')]
-        CheckThenInvoke(Func, This.value || This.innerHTML)
+        CheckThenInvoke(Func, This.value || This.textContents)
       })
       $('.input-panel button, .input-panel-common button').attr("tabIndex", "-1")
 
@@ -929,25 +929,25 @@
         </div>
         
         <div class="row row-cols-4 g-0 text-center mt-2 input-panel va-picker hidden">
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.7</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.8</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.9</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>7</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>8</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>9</button></div>
 
           <div class="col"><button class="btn-numpad" ontouch="AssignValue">FC</button></div>
 
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.4</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.5</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.6</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>4</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>5</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>6</button></div>
 
           <div class="col"><button class="btn-numpad" ontouch="AssignValue">BAL</button></div>
 
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.1</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.2</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue">0.3</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>1</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>2</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>3</button></div>
 
           <div class="col"><button class="btn-numpad" ontouch="AssignValue">LP</button></div>
 
-          <div class="col-9"><button class="btn-numpad aspect-21" ontouch="AssignValue">1.0</button></div>          
+          <div class="col-9"><button class="btn-numpad aspect-31" ontouch="AssignValue">1.0</button></div>          
           <div class="col"><button class="btn-numpad" ontouch="AssignValue">NLP</button></div>
         </div>
 
