@@ -500,7 +500,7 @@
         case 'Mono Vision':
           CopyFromFullRx('PD')
         case '老花 近用':
-        case '中距離 睇電腦 打麻雀':
+        case 'Intermediate | 中距離':
           CopyFromFullRx('Cylinder', 'Axis', 'VA', 'PD')
         default: break;
         case 'COPY':
@@ -510,37 +510,37 @@
 
       // Phase 2 Adjustment
 
-      // if (['老花 近用', '中距離 睇電腦 打麻雀'].includes(Content)) {
-      //   // Sphere Adjustment
-      //   for (var Side of ['R', 'L']) {
-      //     var S = parseInt($(`input[name=F_Sphere_${Side}]`).val())
-      //     var A = parseInt($(`input[name=F_ADD_${Side}]`).val())
+      if (['老花 近用', 'Intermediate | 中距離'].includes(Content)) {
+        // Sphere Adjustment
+        for (var Side of ['R', 'L']) {
+          var S = parseInt($(`input[name=F_Sphere_${Side}]`).val())
+          var A = parseInt($(`input[name=F_ADD_${Side}]`).val())
 
-      //     if (Content === '中距離 睇電腦 打麻雀') A -= 50
+          if (Content === 'Intermediate | 中距離') A /= 2
 
-      //     if (isNaN(A)) A = 0 // return $(`input[name=F_ADD_${Side}]`).focus()
+          if (isNaN(A)) A = 0 // return $(`input[name=F_ADD_${Side}]`).focus()
 
-      //     var Result = (S + A).toString()
-      //     var Sign = Result.startsWith('-') ? '-' : '+';
+          var Result = (S + A).toString()
+          var Sign = Result.startsWith('-') ? '-' : '+';
 
-      //     Result = Result.match(/\d+/)[0]
+          Result = Result.match(/\d+/)[0]
 
-      //     switch (Result.length) {
-      //       case 1: Result = '00' + Result; break
-      //       case 2: Result = '0' + Result; break
-      //     }
+          switch (Result.length) {
+            case 1: Result = '00' + Result; break
+            case 2: Result = '0' + Result; break
+          }
 
-      //     $(`input[name=Sphere_${Side}]`).val(Sign + Result)
-      //   }
+          $(`input[name=Sphere_${Side}]`).val(Sign + Result)
+        }
 
-      //   //PD Adjustment
-      //   for (var Side of ['R', 'L']) {
-      //     var P = parseFloat($(`input[name=F_PD_${Side}]`).val()) - 1.0
-      //     // if (isNaN(P)) P = 100.0 // return $(`input[name=F_PD_${Side}]`).focus()
-      //     if (Content === '中距離 睇電腦 打麻雀') P += 0.5
-      //     $(`input[name=PD_${Side}]`).val(isNaN(P) ? "" : P.toString())
-      //   }
-      // }
+        //PD Adjustment
+        for (var Side of ['R', 'L']) {
+          var P = parseFloat($(`input[name=F_PD_${Side}]`).val()) - 1.0
+          // if (isNaN(P)) P = 100.0 // return $(`input[name=F_PD_${Side}]`).focus()
+          if (Content === 'Intermediate | 中距離') P += 0.5
+          $(`input[name=PD_${Side}]`).val(isNaN(P) ? "" : P.toString())
+        }
+      }
 
       // } catch (err) { }
 
@@ -968,12 +968,12 @@
         <div class="row g-0 text-center input-panel purposes-picker hidden">
           <!-- <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="遠用">遠用</button></div>
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="老花 近用">近用</button></div>
-          <div class="col-12"><button class="btn-picker" ontouch="SwitchPurposes" value="中距離 睇電腦 打麻雀">中距離</button></div>
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="漸進式">漸進式</button></div>
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="雙光">雙光</button></div>
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes">Mono Vision</button></div>
           <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes">Contact Lens</button></div> -->
           <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes">配眼鏡處方</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="SwitchPurposes" value="Intermediate | 中距離">中距離</button></div>
           <!-- <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes">Record</button></div> -->
           <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="COPY">COPY 舊光</button></div>
           <!-- <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="ClearAdjustedRx">Clear Adjusted Rx</button></div> -->
