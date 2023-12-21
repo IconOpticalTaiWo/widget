@@ -47,33 +47,25 @@
             // 隱形眼鏡供應商
             ContactLens: ["康明", "博士倫", "協域", "clalen", "oculus", "日通", "晶亮", "偉光", "快達", "銳視"],
 
-            // 營運支出
-            // Operational: ["租金", "管理費", "電費", "電話費", "淘寶", "寬頻", "強積金", "網站服務", "SLEEKFLOW", "雜費", "視光師", "飛虎", "員工薪金", "EPS"],
-
             // 網站服務
-            WebService: ["網站服務", "SLEEKFLOW"],
+            WebService: ["SLEEKFLOW", "WebWave Ltd"],
 
             // 固定支出
-            FixedCost: ["租金", "管理費"],
+            FixedCost: ["EPS", "電話費", "電費", "管理費", "寬頻", "租金"],
 
             // 非固定支出
-            VariableCost: ["電費", "淘寶"],
+            VariableCost: ["淘寶", "物流費用", "廣告支出"],
 
             // 員工薪金
-            StaffSalary: ["視光師", "飛虎", "員工薪金"]
+            StaffSalary: ["視光師", "飛虎", "Sales"]
 
         }
-
-        // if 營運支出="租金" 
-        // NEW FIELD 
-        //  Operational: { To: ["租金", "管理費", "電費", "電話費", "淘寶", "寬頻", "強積金", "網站服務", "SLEEKFLOW", "雜費", "視光師", "飛虎", "員工薪金", "EPS"] }
-
 
         window.onload = function () {
 
             $('input[name=ExpenseCategory]').on('change', (e) => {
-                var ChosenCategory = e.target.value                
-                
+                var ChosenCategory = e.target.value
+
                 var SelectPaymentTo = $('select[name=PaymentTo]')
                 SelectPaymentTo.html('<option value="" selected disabled>請選擇...</option>')
 
@@ -118,16 +110,16 @@
 
             <div class="btn-group btn-group-lg col-12" role="group">
                 <input class="btn-check" type="radio" name="Branch" id="Branch_TP" value="TP">
-                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_TP">大埔</label>
+                <label class="btn btn-outline-success p-3 f-lg" for="Branch_TP">大埔</label>
 
                 <input class="btn-check" type="radio" name="Branch" id="Branch_KC" value="KC">
-                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_KC">葵廣</label>
+                <label class="btn btn-outline-success p-3 f-lg" for="Branch_KC">葵廣</label>
 
                 <input class="btn-check" type="radio" name="Branch" id="Branch_WT" value="WT">
-                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_WT">太和</label>
+                <label class="btn btn-outline-success p-3 f-lg" for="Branch_WT">太和</label>
 
                 <input class="btn-check" type="radio" name="Branch" id="Branch_Other" value="Other">
-                <label class="btn btn-outline-success p-3 f-xlg" for="Branch_Other">其他</label>
+                <label class="btn btn-outline-success p-3 f-lg" for="Branch_Other">其他</label>
             </div>
             <input style="display: none;" type="radio" name="Branch" required>
             <div class="invalid-feedback ">選擇分店</div>
