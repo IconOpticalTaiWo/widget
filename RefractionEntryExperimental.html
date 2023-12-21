@@ -531,37 +531,37 @@
 
       // Phase 2 Adjustment
 
-      // if (['老花 近用', 'Intermediate | 中距離'].includes(Content)) {
-      //   // Sphere Adjustment
-      //   for (var Side of ['R', 'L']) {
-      //     var S = parseInt($(`input[name=F_Sphere_${Side}]`).val())
-      //     var A = parseInt($(`input[name=F_ADD_${Side}]`).val())
+      if (['老花 近用', 'Intermediate | 中距離'].includes(Content)) {
+        // Sphere Adjustment
+        for (var Side of ['R', 'L']) {
+          var S = parseInt($(`input[name=F_Sphere_${Side}]`).val())
+          var A = parseInt($(`input[name=F_ADD_${Side}]`).val())
 
-      //     if (Content === 'Intermediate | 中距離') A -= 50
+          if (Content === 'Intermediate | 中距離') A /= 2
 
-      //     if (isNaN(A)) A = 0 // return $(`input[name=F_ADD_${Side}]`).focus()
+          if (isNaN(A)) A = 0 // return $(`input[name=F_ADD_${Side}]`).focus()
 
-      //     var Result = (S + A).toString()
-      //     var Sign = Result.startsWith('-') ? '-' : '+';
+          var Result = (S + A).toString()
+          var Sign = Result.startsWith('-') ? '-' : '+';
 
-      //     Result = Result.match(/\d+/)[0]
+          Result = Result.match(/\d+/)[0]
 
-      //     switch (Result.length) {
-      //       case 1: Result = '00' + Result; break
-      //       case 2: Result = '0' + Result; break
-      //     }
+          switch (Result.length) {
+            case 1: Result = '00' + Result; break
+            case 2: Result = '0' + Result; break
+          }
 
-      //     $(`input[name=Sphere_${Side}]`).val(Sign + Result)
-      //   }
+          $(`input[name=Sphere_${Side}]`).val(Sign + Result)
+        }
 
-      //   //PD Adjustment
-      //   for (var Side of ['R', 'L']) {
-      //     var P = parseFloat($(`input[name=F_PD_${Side}]`).val()) - 1.0
-      //     // if (isNaN(P)) P = 100.0 // return $(`input[name=F_PD_${Side}]`).focus()
-      //     if (Content === 'Intermediate | 中距離') P += 0.5
-      //     $(`input[name=PD_${Side}]`).val(isNaN(P) ? "" : P.toString())
-      //   }
-      // }
+        //PD Adjustment
+        for (var Side of ['R', 'L']) {
+          var P = parseFloat($(`input[name=F_PD_${Side}]`).val()) - 1.0
+          // if (isNaN(P)) P = 100.0 // return $(`input[name=F_PD_${Side}]`).focus()
+          if (Content === 'Intermediate | 中距離') P += 0.5
+          $(`input[name=PD_${Side}]`).val(isNaN(P) ? "" : P.toString())
+        }
+      }
 
       // } catch (err) { }
 
