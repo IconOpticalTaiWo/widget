@@ -78,7 +78,7 @@
                 SelectPaymentTo.html('<option value="" selected disabled>請選擇...</option>')
 
                 for (let P of ExpenseCategory[ChosenCategory]) {
-                    SelectPaymentTo.append(`<option value='${P}'>${P}</option>`)
+                    SelectPaymentTo.append(`<option value='${P}'><b>${P}</b></option>`)
                 }
             })
 
