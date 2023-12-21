@@ -39,16 +39,29 @@
         var ExpenseCategory = {
 
             // 鏡片供應商
-            Lens: ["賓得", "亞利安", "GIA", "朝陽", "快達", "依視路", "HOYA", "瑞士寶", "偉光", "Signeo lifestyle", "中南"] ,
+            Lens: ["賓得", "亞利安", "GIA", "朝陽", "快達", "依視路", "HOYA", "瑞士寶", "偉光", "Signeo lifestyle", "中南"],
 
             // 鏡框供應商
-            Frame: ["風格", "騰恩", "眾聯", "亞妮", "三泰", "中南"] ,
+            Frame: ["風格", "騰恩", "眾聯", "亞妮", "三泰", "中南"],
 
             // 隱形眼鏡供應商
-            ContactLens: ["康明", "博士倫", "協域", "clalen", "oculus", "日通", "晶亮", "偉光", "快達", "銳視"] ,
+            ContactLens: ["康明", "博士倫", "協域", "clalen", "oculus", "日通", "晶亮", "偉光", "快達", "銳視"],
 
             // 營運支出
-            Operational: ["租金", "管理費", "電費", "電話費", "淘寶", "寬頻", "強積金", "網站服務", "SLEEKFLOW", "雜費", "視光師", "飛虎", "員工薪金", "EPS"] 
+            // Operational: ["租金", "管理費", "電費", "電話費", "淘寶", "寬頻", "強積金", "網站服務", "SLEEKFLOW", "雜費", "視光師", "飛虎", "員工薪金", "EPS"],
+
+            // 網站服務
+            WebService: ["網站服務", "SLEEKFLOW"],
+
+            // 固定支出
+            FixedCost: ["租金", "管理費"],
+
+            // 非固定支出
+            VariableCost: ["電費", "淘寶"],
+
+            // 員工薪金
+            StaffSalary: ["視光師", "飛虎", "員工薪金"]
+
         }
 
         // if 營運支出="租金" 
@@ -59,14 +72,13 @@
         window.onload = function () {
 
             $('input[name=ExpenseCategory]').on('change', (e) => {
-                var ChosenCategory = e.target.value
-                console.log('ChosenCategory ',ChosenCategory);
-                var PaymentToList = ExpenseCategory[ChosenCategory];
+                var ChosenCategory = e.target.value                
+                
                 var SelectPaymentTo = $('select[name=PaymentTo]')
                 SelectPaymentTo.html('')
                 
-                for ( let P of PaymentToList ){
-                    SelectPaymentTo.append(`<option>${P}</option>`)
+                for (let P of ExpenseCategory[ChosenCategory]) {
+                    SelectPaymentTo.append(`<option value='${P}'>${P}</option>`)
                 }
             })
 
@@ -129,13 +141,13 @@
                 <label class="btn btn-outline-success p-3 f-lg col-4" for="ExpenseCategory_Frame">供應商-鏡框</label>
             </div>
             <div class="btn-group btn-group-lg col-12" role="group">
-                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Operational" value="Operational">
-                <label class="btn btn-outline-success p-3 f-lg col-3" for="ExpenseCategory_Operational">網站服務</label>
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_WebService" value="WebService">
+                <label class="btn btn-outline-success p-3 f-lg col-3" for="ExpenseCategory_WebService">網站服務</label>
 
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_FixedCost" value="FixedCost">
                 <label class="btn btn-outline-success p-3 f-lg col-3" for="ExpenseCategory_FixedCost">固定支出</label>
 
-                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_VariableCost" value="VariableCost">
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_VariableCost" value="c">
                 <label class="btn btn-outline-success p-3 f-lg col-3" for="ExpenseCategory_VariableCost">非固定支出</label>
 
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_StaffSalary" value="StaffSalary">
