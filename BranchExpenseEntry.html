@@ -75,7 +75,7 @@
                 var ChosenCategory = e.target.value                
                 
                 var SelectPaymentTo = $('select[name=PaymentTo]')
-                SelectPaymentTo.html('')
+                SelectPaymentTo.html('<option value="" disabled>請選擇...</option>')
 
                 for (let P of ExpenseCategory[ChosenCategory]) {
                     SelectPaymentTo.append(`<option value='${P}'>${P}</option>`)
