@@ -57,24 +57,39 @@
 
 
         window.onload = function () {
-            const OptionTemplate = $('#PaymentToOptions')[0].content
+
+            $('.input[name=ExpenseCategory]').on('change', (e) => {
+                var ChosenCategory = e.target.value
+                console.log(ChosenCategory);
+                var PaymentToList = ExpenseCategory[ChosenCategory].To;
+                var SelectPaymentTo = $('select[name=PaymentTo]')
+                SelectPaymentTo.html('')
+                for (let P of PaymentToList) {
+                    SelectPaymentTo.append(`<option>${P}</option>`)
+                }
+            })
 
             for (let Cat in ExpenseCategory) {
-                var CatBlock = $(`div[expense_category=${Cat}]`).addClass('hidden')[0]
-
-                ExpenseCategory[Cat].To.forEach((Value, Index) => {
-                    var NewNode = $(OptionTemplate.cloneNode(true))
-                    var NewID = `UniqueID_${Cat}_${Index}`
-                    NewNode.find('input').val(Value).attr('id', NewID)
-                    NewNode.find('label').html(Value).attr('for', NewID)
-                    CatBlock.appendChild(NewNode[0])
-                })
+                $('select[name=PaymentTo]').append
             }
 
-            $('input[type=radio][name=ExpenseCategory]').on('change', e => {
-                $('[expense_category]').addClass('hidden')
-                $(`[expense_category=${e.target.value}]`).removeClass('hidden')
-            })
+            // const OptionTemplate = $('#PaymentToOptions')[0].content
+            // for (let Cat in ExpenseCategory) {
+            //     var CatBlock = $(`div[expense_category=${Cat}]`).addClass('hidden')[0]
+
+            //     ExpenseCategory[Cat].To.forEach((Value, Index) => {
+            //         var NewNode = $(OptionTemplate.cloneNode(true))
+            //         var NewID = `UniqueID_${Cat}_${Index}`
+            //         NewNode.find('input').val(Value).attr('id', NewID)
+            //         NewNode.find('label').html(Value).attr('for', NewID)
+            //         CatBlock.appendChild(NewNode[0])
+            //     })
+            // }
+
+            // $('input[type=radio][name=ExpenseCategory]').on('change', e => {
+            //     $('[expense_category]').addClass('hidden')
+            //     $(`[expense_category=${e.target.value}]`).removeClass('hidden')
+            // })
 
         }
 
@@ -138,16 +153,20 @@
                     <input class="btn-check" type="radio" name="PaymentTo" id="" value="">
                     <label class="btn btn-outline-secondary p-2 f-xlg" for=""></label>
                 </span> -->
-                <option value="" ></option>
+                <option></option>
             </template>
 
-            <div expense_category="Lens"></div>
+            <select calss="form-select" name="PaymentTo" value="" required></select>
+            <div class="invalid-feedback ">選擇收款人</div>
+
+            <!-- <div expense_category="Lens"></div>
             <div expense_category="Frame"></div>
             <div expense_category="ContactLens"></div>
             <div expense_category="Operational"></div>
 
             <input style="display: none;" type="radio" name="PaymentTo" required>
-            <div class="invalid-feedback ">選擇收款人</div>
+            <div class="invalid-feedback ">選擇收款人</div> -->
+
             <div class="mb-3"></div>
 
             <div class="form-floating mb-3">
