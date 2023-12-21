@@ -40,7 +40,7 @@
 
             // 鏡片供應商
             Lens: { To: ["賓得", "亞利安", "GIA", "朝陽", "快達", "依視路", "HOYA", "瑞士寶", "偉光", "Signeo lifestyle", "中南"] },
-            
+
             // 鏡框供應商
             Frame: { To: ["風格", "騰恩", "眾聯", "亞妮", "三泰", "中南"] },
 
@@ -55,7 +55,7 @@
         // NEW FIELD 
         //  Operational: { To: ["租金", "管理費", "電費", "電話費", "淘寶", "寬頻", "強積金", "網站服務", "SLEEKFLOW", "雜費", "視光師", "飛虎", "員工薪金", "EPS"] }
 
-    
+
         window.onload = function () {
             const OptionTemplate = $('#PaymentToOptions')[0].content
 
@@ -107,30 +107,27 @@
             <div class="mb-3"></div>
 
             <div class="btn-group btn-group-lg col-12" role="group">
-                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Lens" value="Lens">
-                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_Lens">供應商-隱形眼鏡</label>
-
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_ContactLens" value="ContactLens">
-                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_ContactLens">供應商-鏡框</label>
+                <label class="btn btn-outline-success p-3 f-xlg col-4" for="ExpenseCategory_ContactLens">供應商-隱形眼鏡</label>
+
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Lens" value="Lens">
+                <label class="btn btn-outline-success p-3 f-xlg col-4" for="ExpenseCategory_Lens">供應商-鏡片</label>
 
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Frame" value="Frame">
-                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_Frame">供應商-鏡片</label>
+                <label class="btn btn-outline-success p-3 f-xlg col-4" for="ExpenseCategory_Frame">供應商-鏡框</label>
 
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Operational" value="Operational">
                 <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_Operational">網站服務</label>
-            </div><br>
-             <div class="btn-group btn-group-lg col-12" role="group">
-                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Lens" value="Lens">
-                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_Lens">固定支出</label>
+            
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_FixedCost" value="FixedCost">
+                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_FixedCost">固定支出</label>
 
-                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_ContactLens" value="ContactLens">
-                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_ContactLens">員工薪金</label>
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_StaffSalary" value="StaffSalary">
+                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_StaffSalary">員工薪金</label>
 
-                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Frame" value="Frame">
-                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_Frame">非固定支出</label>
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_VariableCost" value="VariableCost">
+                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_VariableCost">非固定支出</label>
 
-                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Operational" value="Operational">
-                <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_Operational"></label>
             </div>
             <input style="display: none;" type="radio" name="ExpenseCategory" required>
             <div class="invalid-feedback ">選擇支出類型</div>
@@ -176,7 +173,8 @@
             <div class="input-group mb-3">
                 <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
                 <div class="form-floating">
-                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text" placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal" name="InvoiceSum">
+                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text" placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal"
+                        name="InvoiceSum">
                     <label class="form-label" for="Input_InvoiceSum">帳單總價錢</label>
                 </div>
             </div>
@@ -194,7 +192,8 @@
         </form>
 
         <div class='center' style='margin-top: 2em;'>
-            <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit?usp=sharing' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+            <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit?usp=sharing' target='_blank' style='text-decoration: none;'>Link to
+                Google Sheet</a>
         </div>
     </div>
 </body>
