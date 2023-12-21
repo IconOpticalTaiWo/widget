@@ -60,11 +60,13 @@
 
             $('.input[name=ExpenseCategory]').on('change', (e) => {
                 var ChosenCategory = e.target.value
-                console.log(ChosenCategory);
-                var PaymentToList = ExpenseCategory[ChosenCategory].To;
+                console.log('ChosenCategory ',ChosenCategory);
+                var PaymentToList = ExpenseCategory[ChosenCategory]['To'];
                 var SelectPaymentTo = $('select[name=PaymentTo]')
                 SelectPaymentTo.html('')
-                for (let P of PaymentToList) {
+                for (
+
+                PaymentToList) {
                     SelectPaymentTo.append(`<option>${P}</option>`)
                 }
             })
