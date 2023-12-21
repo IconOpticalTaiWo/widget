@@ -76,7 +76,7 @@
                 
                 var SelectPaymentTo = $('select[name=PaymentTo]')
                 SelectPaymentTo.html('')
-                
+
                 for (let P of ExpenseCategory[ChosenCategory]) {
                     SelectPaymentTo.append(`<option value='${P}'>${P}</option>`)
                 }
@@ -165,7 +165,7 @@
                 <option></option>
             </template>
 
-            <select calss="form-select" name="PaymentTo" value="" required></select>
+            <select class="form-select col-12" name="PaymentTo" value="" required></select>
             <div class="invalid-feedback ">選擇收款人</div>
 
             <!-- <div expense_category="Lens"></div>
