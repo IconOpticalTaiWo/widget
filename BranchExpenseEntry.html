@@ -39,16 +39,16 @@
         var ExpenseCategory = {
 
             // 鏡片供應商
-            Lens: { To: ["賓得", "亞利安", "GIA", "朝陽", "快達", "依視路", "HOYA", "瑞士寶", "偉光", "Signeo lifestyle", "中南"] },
+            Lens: ["賓得", "亞利安", "GIA", "朝陽", "快達", "依視路", "HOYA", "瑞士寶", "偉光", "Signeo lifestyle", "中南"] ,
 
             // 鏡框供應商
-            Frame: { To: ["風格", "騰恩", "眾聯", "亞妮", "三泰", "中南"] },
+            Frame: ["風格", "騰恩", "眾聯", "亞妮", "三泰", "中南"] ,
 
             // 隱形眼鏡供應商
-            ContactLens: { To: ["康明", "博士倫", "協域", "clalen", "oculus", "日通", "晶亮", "偉光", "快達", "銳視"] },
+            ContactLens: ["康明", "博士倫", "協域", "clalen", "oculus", "日通", "晶亮", "偉光", "快達", "銳視"] ,
 
             // 營運支出
-            Operational: { To: ["租金", "管理費", "電費", "電話費", "淘寶", "寬頻", "強積金", "網站服務", "SLEEKFLOW", "雜費", "視光師", "飛虎", "員工薪金", "EPS"] }
+            Operational: ["租金", "管理費", "電費", "電話費", "淘寶", "寬頻", "強積金", "網站服務", "SLEEKFLOW", "雜費", "視光師", "飛虎", "員工薪金", "EPS"] 
         }
 
         // if 營運支出="租金" 
@@ -58,15 +58,16 @@
 
         window.onload = function () {
 
-            $('.input[name=ExpenseCategory]').on('change', (e) => {
+            $('input[name=ExpenseCategory]').on('change', (e) => {
                 var ChosenCategory = e.target.value
                 console.log('ChosenCategory ',ChosenCategory);
-                var PaymentToList = ExpenseCategory[ChosenCategory]['To'];
+                var PaymentToList = ExpenseCategory[ChosenCategory];
                 var SelectPaymentTo = $('select[name=PaymentTo]')
                 SelectPaymentTo.html('')
-                // for ( PaymentToList) {
-                //     SelectPaymentTo.append(`<option>${P}</option>`)
-                // }
+                
+                for ( let P of PaymentToList ){
+                    SelectPaymentTo.append(`<option>${P}</option>`)
+                }
             })
 
             // const OptionTemplate = $('#PaymentToOptions')[0].content
