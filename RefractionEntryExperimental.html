@@ -537,7 +537,10 @@
           var S = parseInt($(`input[name=F_Sphere_${Side}]`).val())
           var A = parseInt($(`input[name=F_ADD_${Side}]`).val())
 
-          if (Content === 'Intermediate | 中距離') A /= 2
+          if (Content === 'Intermediate | 中距離') {
+            A -= A % 50
+            A /= 2
+          }
 
           if (isNaN(A)) A = 0 // return $(`input[name=F_ADD_${Side}]`).focus()
 
