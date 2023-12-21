@@ -72,8 +72,8 @@
             }
 
             $('input[type=radio][name=ExpenseCategory]').on('change', e => {
-                $('div[expense_category]').addClass('hidden')
-                $(`div[expense_category=${e.target.value}]`).removeClass('hidden')
+                $('[expense_category]').addClass('hidden')
+                $(`[expense_category=${e.target.value}]`).removeClass('hidden')
             })
 
         }
@@ -106,7 +106,7 @@
             <div class="invalid-feedback ">選擇分店</div>
             <div class="mb-3"></div>
 
-            <div class="btn-group btn-group-lg col-12 row" role="group">
+            <div class="btn-group btn-group-lg col-12" role="group">
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_ContactLens" value="ContactLens">
                 <label class="btn btn-outline-success p-3 f-xlg col-4" for="ExpenseCategory_ContactLens">供應商-隱形眼鏡</label>
 
@@ -116,7 +116,7 @@
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Frame" value="Frame">
                 <label class="btn btn-outline-success p-3 f-xlg col-4" for="ExpenseCategory_Frame">供應商-鏡框</label>
             </div>
-            <div class="btn-group btn-group-lg col-12 row" role="group">
+            <div class="btn-group btn-group-lg col-12" role="group">
                 <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Operational" value="Operational">
                 <label class="btn btn-outline-success p-3 f-xlg col-3" for="ExpenseCategory_Operational">網站服務</label>
 
@@ -134,10 +134,11 @@
             <div class="mb-3"></div>
 
             <template id="PaymentToOptions">
-                <span>
+                <!-- <span>
                     <input class="btn-check" type="radio" name="PaymentTo" id="" value="">
                     <label class="btn btn-outline-secondary p-2 f-xlg" for=""></label>
-                </span>
+                </span> -->
+                <option value="" ></option>
             </template>
 
             <div expense_category="Lens"></div>
