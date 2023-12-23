@@ -39,13 +39,13 @@
         var ExpenseCategory = {
 
             // 鏡片供應商
-            Lens: ["賓得", "亞利安眼鏡有限公司 ARION OPTICAL CO. LTD", "GIA HONG KONG LTD", "朝陽光學公司", "快達光學公司 FOUDER OPTICAL COMPANY", "ESSILOR HONG KONG LTD", "HOYA LENS HONG KONGLTD", "瑞士寶光學公司","偉光眼鏡公司"],
+            Lens: ["賓得", "亞利安眼鏡有限公司 ARION OPTICAL CO. LTD", "GIA HONG KONG LTD", "朝陽光學公司", "快達光學公司 FOUDER OPTICAL COMPANY", "ESSILOR HONG KONG LTD", "HOYA LENS HONG KONGLTD", "瑞士寶光學公司", "偉光眼鏡公司"],
 
             // 鏡框供應商
-            Frame: ["風格", "騰恩", "眾聯", "亞妮", "三泰", "中南貿易行 OCTOPUS TRADING CO.","偉光眼鏡公司","倬鋒有限公司 SAMSON COMPANY LIMITED","MARCHON EYEWEAR (HONGKONG) LTD","Signeo lifestyle"],
+            Frame: ["風格", "騰恩", "眾聯", "亞妮", "三泰", "中南貿易行 OCTOPUS TRADING CO.", "偉光眼鏡公司", "倬鋒有限公司 SAMSON COMPANY LIMITED", "MARCHON EYEWEAR (HONGKONG) LTD", "Signeo lifestyle"],
 
             // 隱形眼鏡供應商
-            ContactLens: ["康明(香港)有限公司 KANG MING (HK) LTD", "博士倫", "協域", "clalen", "oculus", "日通", "晶亮", "偉光", "快達", "銳視","偉光眼鏡公司","快達光學公司 FOUDER OPTICAL COMPANY"],
+            ContactLens: ["康明(香港)有限公司 KANG MING (HK) LTD", "博士倫", "協域", "clalen", "oculus", "日通", "晶亮", "偉光", "快達", "銳視", "偉光眼鏡公司", "快達光學公司 FOUDER OPTICAL COMPANY"],
 
             // 網站服務
             WebService: ["SLEEKFLOW", "WebWave Ltd"],
@@ -73,6 +73,12 @@
                     SelectPaymentTo.append(`<option value='${P}'><b>${P}</b></option>`)
                 }
             })
+
+            var QueryString = new URLSearchParams(window.location.search)
+            if (QueryString.get('SetPaid') === 'true') {
+                $('input[name=PaymentStatus]').val('Paid')
+                $('.only_for_set_paid').removeClass('hidden')
+            }
 
             // const OptionTemplate = $('#PaymentToOptions')[0].content
             // for (let Cat in ExpenseCategory) {
@@ -211,6 +217,34 @@
                     <label class="form-label" for="Input_InvoiceNumber">帳單編號</label>
                 </div>
             </div>
+
+            <div class="only_for_set_paid hidden">
+                <div class="row mb-2 me-0">
+                    <label class="col-auto col-form-label" for="Input_PaymentDate">付款日期</label>
+                    <input class="col form-control" id="Input_PaymentDate" type="date" required name="PaymentDate" onclick="this.showPicker()">
+                </div>
+
+                <div class="row mb-2 me-0">
+                    <label class="col-auto col-form-label" for="Input_PaymentAmount">付款金額</label>
+                    <input class="col form-control" id="Input_PaymentAmount" type="text" value required name="PaymentAmount">
+                </div>
+
+                <div class="row mb-2 me-0">
+                    <label class="col-auto col-form-label" for="Input_PaymentMethod">付款方式</label>
+                    <input class="col form-control" id="Input_PaymentMethod" type="text" required name="PaymentMethod" list="PaymentMethodList">
+
+                    <datalist id="PaymentMethodList">
+                        <option value="支票"></option>
+                        <option value="FPS"></option>
+                    </datalist>
+                </div>
+
+                <div class="row mb-2 me-0">
+                    <label class="col-auto col-form-label" for="Input_PaymentNumber">參考編號</label>
+                    <input class="col form-control" id="Input_PaymentNumber" type="text" required name="PaymentNumber">
+                </div>
+            </div>
+
             <button class="col-12 f-xlg btn btn-lg btn-primary" style="height:80px;" type="submit">
                 <div id="Input_Submit" class="htmx-anti-indicator">遞交</div>
                 <div id="Input_Indicator" class="hidden spinner-border"></div>
