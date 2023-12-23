@@ -250,8 +250,10 @@
                 })
                 // $('#Input_PaymentAmount').val(Ticket.PaymentAmount)
                 // only enable if default checked
-                // current default is unchecked
 
+                // current default is unchecked
+                $('#Input_PaymentAmount').val(0)
+                
                 SetPaidDialog[0].showModal()
             })
             .appendTo(OutputDevice)
