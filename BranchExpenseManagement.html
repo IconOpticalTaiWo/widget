@@ -50,12 +50,14 @@
 <body class="bg-body-tertiary">
     <h2 class="f-xlg m-3 text-center">分店賬單​待付款紀錄</h2>
 
+    <button class="btn btn-success f-xlg m-3 text-center" onclick="$('#NewEntryAndSetPaidDialog')[0].showModal()">即時登記新帳單</button>
+
     <main id="ticket-container" class="container bounded-width"></main>
 
     <template id="invoice-entry-template">
         <div class="form-check">
             <!-- <input class="form-check-input" type="checkbox" id onchange="CalculateTicketTotalAmount(this)" value sum checked> -->
-            <input class="form-check-input" type="checkbox" id onchange="CalculateTicketTotalAmount(this)" value sum >
+            <input class="form-check-input" type="checkbox" id onchange="CalculateTicketTotalAmount(this)" value sum>
             <label class="form-check-label w-100" for>
                 <div class="row fs-6">
                     <span name="InvoiceDate" class="col text-start"></span>
@@ -81,6 +83,139 @@
             </div>
         </div>
     </template>
+
+    <dialog id='NewEntryAndSetPaidDialog' class="bounded-width overflow-y-scroll">
+        <form class="form-control f-lg needs-validation" novalidate id="Input_Form" onsubmit='FormSubmit(this); return false;'>
+
+            <input type="hidden" name="Action" value="NewEntry">
+            <input type="hidden" name="PaymentStatus" value="Paid">
+            <input type="hidden" name="TableName" value="main">
+            <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
+
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="Branch" id="Branch_TP" value="TP">
+                <label class="btn btn-outline-success p-3 f-lg" for="Branch_TP">大埔</label>
+
+                <input class="btn-check" type="radio" name="Branch" id="Branch_KC" value="KC">
+                <label class="btn btn-outline-success p-3 f-lg" for="Branch_KC">葵廣</label>
+
+                <input class="btn-check" type="radio" name="Branch" id="Branch_WT" value="WT">
+                <label class="btn btn-outline-success p-3 f-lg" for="Branch_WT">太和</label>
+
+                <input class="btn-check" type="radio" name="Branch" id="Branch_Other" value="Other">
+                <label class="btn btn-outline-success p-3 f-lg" for="Branch_Other">其他</label>
+            </div>
+            <input style="display: none;" type="radio" name="Branch" required>
+            <div class="invalid-feedback ">選擇分店</div>
+            <div class="mb-3"></div>
+
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_ContactLens" value="ContactLens">
+                <label class="btn btn-outline-success p-3 f-lg col-auto" for="ExpenseCategory_ContactLens">隱形眼鏡</label>
+
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Lens" value="Lens">
+                <label class="btn btn-outline-success p-3 f-lg col-auto" for="ExpenseCategory_Lens">鏡片</label>
+
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_Frame" value="Frame">
+                <label class="btn btn-outline-success p-3 f-lg col-auto" for="ExpenseCategory_Frame">鏡框</label>
+            </div>
+            <div class="btn-group btn-group-lg col-12" role="group">
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_WebService" value="WebService">
+                <label class="btn btn-outline-success p-3 f-norm col-auto" for="ExpenseCategory_WebService">網站服務</label>
+
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_FixedCost" value="FixedCost">
+                <label class="btn btn-outline-success p-3 f-norm col-auto" for="ExpenseCategory_FixedCost">固定</label>
+
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_VariableCost" value="VariableCost">
+                <label class="btn btn-outline-success p-3 f-norm col-auto" for="ExpenseCategory_VariableCost">非固定</label>
+
+                <input class="btn-check" type="radio" name="ExpenseCategory" id="ExpenseCategory_StaffSalary" value="StaffSalary">
+                <label class="btn btn-outline-success p-3 f-norm col-auto" for="ExpenseCategory_StaffSalary">員工薪金</label>
+            </div>
+            <input style="display: none;" type="radio" name="ExpenseCategory" required>
+            <div class="invalid-feedback ">選擇支出類型</div>
+            <div class="mb-3"></div>
+
+            <select class="form-select col-12 f-xlg" name="PaymentTo" value="" required></select>
+            <div class="invalid-feedback ">選擇收款人</div>
+
+            <div class="mb-3"></div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-norm" id="Input_InvoiceDate" type="date" placeholder=" " required name="InvoiceDate" onclick="this.showPicker()">
+                <label class="form-label" for="Input_InvoiceDate">帳單日期</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input class="form-control f-lg" id="Input_Blame" list="Staff_List" placeholder=" " required name="Blame">
+                <label class="form-label" for="Input_Blame">負責同事</label>
+                <datalist id="Staff_List">
+                    <option value="Dennis"></option>
+                    <option value="Darren"></option>
+                    <option value="Eva"></option>
+                    <option value="Sammy"></option>
+                    <option value="Nick"></option>
+                    <option value="Ango"></option>
+                    <option value="Lam"></option>
+                    <option value="Sam"></option>
+                    <option value="Iris"></option>
+                    <option value="Keung"></option>
+                    <option value="Elsa"></option>
+                </datalist>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text f-lg bg-transparent border border-end-0">$</span>
+                <div class="form-floating">
+                    <input class="form-control f-lg border border-start-0" id="Input_InvoiceSum" type="text" placeholder=" " required pattern="[\+\-]?[0-9\.]+" inputmode="decimal"
+                        name="InvoiceSum">
+                    <label class="form-label" for="Input_InvoiceSum">帳單價錢</label>
+                </div>
+            </div>
+
+            <div class="input-group mb-3">
+                <div class="form-floating">
+                    <input class="form-control f-lg" id="Input_InvoiceNumber" type="text" placeholder=" " required name="InvoiceNumber">
+                    <label class="form-label" for="Input_InvoiceNumber">帳單編號</label>
+                </div>
+            </div>
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentDate_2">付款日期</label>
+                <input class="col form-control" id="Input_PaymentDate_2" type="date" required name="PaymentDate" onclick="this.showPicker()">
+            </div>
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentAmount">付款金額</label>
+                <input class="col form-control" id="Input_PaymentAmount" type="text" value required name="PaymentAmount">
+            </div>
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentMethod">付款方式</label>
+                <input class="col form-control" id="Input_PaymentMethod" type="text" required name="PaymentMethod" list="PaymentMethodList">
+
+                <datalist id="PaymentMethodList">
+                    <option value="支票"></option>
+                    <option value="FPS"></option>
+                </datalist>
+            </div>
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentNumber">參考編號</label>
+                <input class="col form-control" id="Input_PaymentNumber" type="text" required name="PaymentNumber">
+            </div>
+
+            <div class="row ps-2 pe-2">
+                <button class='col-8 btn btn-success f-xlg h-100' type='submit' autofocus>
+                    <div id="Input_Submit" class="htmx-anti-indicator">確認付款紀錄</div>
+                    <div id="Input_Indicator" class="hidden spinner-border"></div>
+                </button>
+                <div class='col-1'></div>
+                <button class='col-3 btn btn-secondary f-xlg h-100' type='button' onclick='CloseModal(this)'>取消</button>
+            </div>
+        </form>
+
+    </dialog>
 
     <dialog id='SetPaidDialog' class="bounded-width overflow-y-scroll">
         <form onsubmit='SetPaid(this); return false;' class='form-control fs-4' autocomplete='off'>
@@ -133,7 +268,8 @@
     <div class='spinner-border hidden' style='position:relative; left:50%; top:1vh; translate: -50%;' id='loader-widget'></div>
 
     <div class='text-center' style='margin-top: 2em;'>
-        <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit#gid=0' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+        <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit#gid=0' target='_blank' style='text-decoration: none;'>Link to Google
+            Sheet</a>
     </div>
 </body>
 
@@ -152,7 +288,7 @@
     }
 
     var OutputDevice = $('#ticket-container')
-    function Output(Content) { OutputDevice.html(Content) }
+    function Output(Content) {OutputDevice.html(Content)}
 
     function CollapseAsInvoiceGroup(DB) {
         var NewDB = {}
@@ -253,7 +389,7 @@
 
                 // current default is unchecked
                 $('#Input_PaymentAmount').val(0)
-                
+
                 SetPaidDialog[0].showModal()
             })
             .appendTo(OutputDevice)
@@ -284,6 +420,23 @@
                 Loading(false)
             })
         })
+    }
+
+    function FormSubmit(Form) {
+        Form.classList.add('was-validated')
+        $('#Input_Submit').html("遞交")
+        if (Form.checkValidity()) {
+            $('#Input_Submit').addClass('hidden')
+            $('#Input_Indicator').removeClass('hidden')
+
+            $.get(ActionURL, $(Form).serialize()).then(() => {
+                $('#Input_Submit').html("已遞交").removeClass('hidden')
+                $('#Input_Indicator').addClass('hidden')
+                $('#Input_InvoiceSum').val("");
+                $('#Input_InvoiceNumber').val("");
+                Form.classList.remove('was-validated')
+            })
+        }
     }
 
 </script>
