@@ -89,8 +89,8 @@
         </div>
     </template>
 
-    <dialog id='NewEntryAndSetPaidDialog' class="bounded-width overflow-y-scroll">
-        <iframe src="about:blank" style="border: 0;" class="m-0 p-0 w-100 h-100"></iframe>
+    <dialog id='NewEntryAndSetPaidDialog' class="bounded-width overflow-y-scroll h-100">
+        <iframe src="about:blank" style="border: 0; overflow: visible;" class="m-0 p-0 w-100 h-100"></iframe>
         <br>
         <button class='col-3 btn btn-secondary f-xlg h-100' type='button' onclick='$("#NewEntryAndSetPaidDialog iframe").attr("src","about:blank"); CloseModal(this)'>取消</button>
         <!-- <form class="form-control f-lg needs-validation" novalidate id="Input_Form" onsubmit='FormSubmit(this); return false;'>
