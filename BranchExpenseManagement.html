@@ -52,7 +52,7 @@
 
     <div class="container bounded-width">
         <div class="w-auto m-auto">
-                <button class="btn btn-success f-xlg m-3 text-center" onclick="$('#NewEntryAndSetPaidDialog')[0].showModal()">即時登記新帳單</button>
+                <button class="btn btn-success f-xlg m-3 text-center" onclick="$('#NewEntryAndSetPaidDialog iframe').attr('src','BranchExpenseEntry.html');$('#NewEntryAndSetPaidDialog')[0].showModal()">即時登記新帳單</button>
             </div>
         </div>
     </div>
@@ -90,7 +90,8 @@
     </template>
 
     <dialog id='NewEntryAndSetPaidDialog' class="bounded-width overflow-y-scroll">
-        <form class="form-control f-lg needs-validation" novalidate id="Input_Form" onsubmit='FormSubmit(this); return false;'>
+        <iframe src="about:blank" style="border: 0;" class="m-0 p-0"></iframe>
+        <!-- <form class="form-control f-lg needs-validation" novalidate id="Input_Form" onsubmit='FormSubmit(this); return false;'>
 
             <input type="hidden" name="Action" value="NewEntry">
             <input type="hidden" name="PaymentStatus" value="Paid">
@@ -218,7 +219,7 @@
                 <div class='col-1'></div>
                 <button class='col-3 btn btn-secondary f-xlg h-100' type='button' onclick='CloseModal(this)'>取消</button>
             </div>
-        </form>
+        </form> -->
 
     </dialog>
 
@@ -427,22 +428,22 @@
         })
     }
 
-    function FormSubmit(Form) {
-        Form.classList.add('was-validated')
-        $('#Input_Submit').html("遞交")
-        if (Form.checkValidity()) {
-            $('#Input_Submit').addClass('hidden')
-            $('#Input_Indicator').removeClass('hidden')
+    // function FormSubmit(Form) {
+    //     Form.classList.add('was-validated')
+    //     $('#Input_Submit').html("遞交")
+    //     if (Form.checkValidity()) {
+    //         $('#Input_Submit').addClass('hidden')
+    //         $('#Input_Indicator').removeClass('hidden')
 
-            $.get(ActionURL, $(Form).serialize()).then(() => {
-                $('#Input_Submit').html("已遞交").removeClass('hidden')
-                $('#Input_Indicator').addClass('hidden')
-                $('#Input_InvoiceSum').val("");
-                $('#Input_InvoiceNumber').val("");
-                Form.classList.remove('was-validated')
-            })
-        }
-    }
+    //         $.get(ActionURL, $(Form).serialize()).then(() => {
+    //             $('#Input_Submit').html("已遞交").removeClass('hidden')
+    //             $('#Input_Indicator').addClass('hidden')
+    //             $('#Input_InvoiceSum').val("");
+    //             $('#Input_InvoiceNumber').val("");
+    //             Form.classList.remove('was-validated')
+    //         })
+    //     }
+    // }
 
 </script>
 
