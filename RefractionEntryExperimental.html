@@ -399,19 +399,27 @@
       AssignValue(Content + FocusedCell.value)
     }
 
-    function ChangePrefix(Content, CounterPart) {
+    function CounterPartOf(Content) {
+      switch (Content) {
+        case '+': return '-'
+        case '-': return '+'
+      }
+      return void 0;
+    }
+
+    function SetPrefix(Content) {
       if (FocusedCell.value.startsWith(Content)) return;
-      if (FocusedCell.value.startsWith(CounterPart)) {
-        AssignValue(FocusedCell.value.replace(CounterPart, Content))
+      if (FocusedCell.value.startsWith(CounterPartOf(Content))) {
+        AssignValue(FocusedCell.value.replace(CounterPartOf(Content), Content))
       } else {
         PrependValue(Content)
       }
     }
 
-    function ChangeSuffix(Content, CounterPart) {
+    function SetSuffix(Content) {
       if (FocusedCell.value.endsWith(Content)) return;
-      if (FocusedCell.value.endsWith(CounterPart)) {
-        AssignValue(FocusedCell.value.replace(CounterPart, Content))
+      if (FocusedCell.value.endsWith(CounterPartOf(Content))) {
+        AssignValue(FocusedCell.value.replace(CounterPartOf(Content), Content))
       } else {
         AppendValue(Content)
       }
@@ -464,22 +472,22 @@
 
     function SwitchMinus() {
       if (Focusing('VA')) {
-        if (/^(?:0.\d|1.0)[+-]?$/.test(FocusedCell.value)) return ChangeSuffix('-', '+')
+        if (/^(?:0.[1-9]|1.0|1.2)[+-]?$/.test(FocusedCell.value)) return SetSuffix('-')
       }
 
       if (Focusing('Sphere') || Focusing('Cylinder')) {
         if (FocusedCell.value === '+000') return;
-        ChangePrefix('-', '+')
+        SetPrefix('-')
       }
     }
 
     function SwitchPlus() {
       if (Focusing('VA')) {
-        if (/^(?:0.\d|1.0)[+-]?$/.test(FocusedCell.value)) return ChangeSuffix('+', '-')
+        if (/^(?:0.[1-9]|1.0|1.2)[+-]?$/.test(FocusedCell.value)) return SetSuffix('+')
       }
 
       if (Focusing('Sphere')) {
-        ChangePrefix('+', '-')
+        SetPrefix('+')
       }
     }
 
@@ -979,7 +987,7 @@
 
           <div class="col-6"><button class="btn-numpad aspect-21" ontouch="AssignValue">1.0</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AssignValue">1.2</button></div>
-          
+
           <div class="col"><button class="btn-numpad" ontouch="AssignValue">NLP</button></div>
         </div>
 
