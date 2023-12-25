@@ -4,7 +4,7 @@
 <head>
   <title>Refraction Entry</title>
   <meta charset="UTF-8">
-  <meta http-equiv="Permissions-Policy" content="interest-cohort=(), user-id=()" />
+  <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
   <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=0.75, maximum-scale=1.0, user-scalable=no">
   <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
   <link href="CSS/bootstrap.min.css" rel="stylesheet">
@@ -211,6 +211,7 @@
           </div>`)
         $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {UserConfirm(Refraction)})
         $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserReject('進行修改')})
+        $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
 
         return new Promise((resolve, reject) => {
           UserConfirm = resolve
