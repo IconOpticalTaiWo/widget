@@ -203,7 +203,7 @@
 
         var UserConfirmation
 
-        $('body').prepend(string.raw`<div id="AddedByWarnAtypicalResult"><button class='btn btn-lg btn-success'>Save Anyways</button></div>`)
+        $('body').prepend(String.raw`<div id="AddedByWarnAtypicalResult"><button class='btn btn-lg btn-success'>Save Anyways</button></div>`)
         $('#AddedByWarnAtypicalResult button').on('click', () => {
           UserConfirmation(Refraction)
         })
@@ -211,7 +211,7 @@
         return new Promise(resolver => {UserConfirmation = resolver});
 
       } else {
-        return new Promise(resolver => {resolver(Refraction)});
+        return Promise.resolve(Refraction)
       }
     }
 
