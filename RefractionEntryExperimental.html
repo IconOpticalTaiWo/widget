@@ -205,10 +205,10 @@
         var UserConfirm
         var UserReject
 
-        $('body').prepend(String.raw`<div id="AddedByWarnAtypicalResult">
+        $('body').prepend(String.raw`<dialog open id="AddedByWarnAtypicalResult">
           <button class='btn btn-lg btn-success confirm'>確定保存</button>
           <button class='btn btn-lg btn-success reject'>進行修改</button>
-          </div>`)
+          </dialog>`)
         $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {UserConfirm(Refraction)})
         $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserReject('進行修改')})
         $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
@@ -331,11 +331,10 @@
 
       if (IncompleteForm) return
 
-
       Refraction.create_date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)
       // Refraction.by = Refraction.optometrist
 
-      WarnAtypicalResult(Refraction).then(SaveRefraction).catch(console.log);
+      WarnAtypicalResult(Refraction).then(SaveRefraction)
       // SaveRefraction(Refraction);
     }
 
