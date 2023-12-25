@@ -4,6 +4,7 @@
 <head>
   <title>Refraction Entry</title>
   <meta charset="UTF-8">
+  <meta http-equiv="Permissions-Policy" content="interest-cohort=(), user-id=()" />
   <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=0.75, maximum-scale=1.0, user-scalable=no">
   <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
   <link href="CSS/bootstrap.min.css" rel="stylesheet">
@@ -170,7 +171,7 @@
 
     function SaveRefraction(Refraction) {
       if (window.location.pathname.includes('Experimental')) {
-        console.log('[SaveRefraction]')
+        console.log('[PseudoPost : SaveRefraction]')
         console.log(Refraction)
         return
       }
@@ -198,17 +199,23 @@
     }
 
     function WarnAtypicalResult(Refraction) {
-      var NeedWarning = true;
+      var NeedWarning = Refraction['VA_R'] === '1.0';
       if (NeedWarning) {
 
-        var UserConfirmation
+        var UserConfirm
+        var UserReject
 
-        $('body').prepend(String.raw`<div id="AddedByWarnAtypicalResult"><button class='btn btn-lg btn-success'>Save Anyways</button></div>`)
-        $('#AddedByWarnAtypicalResult button').on('click', () => {
-          UserConfirmation(Refraction)
-        })
+        $('body').prepend(String.raw`<div id="AddedByWarnAtypicalResult">
+          <button class='btn btn-lg btn-success confirm'>確定保存</button>
+          <button class='btn btn-lg btn-success reject'>進行修改</button>
+          </div>`)
+        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {UserConfirm(Refraction)})
+        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserReject('進行修改')})
 
-        return new Promise(resolver => {UserConfirmation = resolver});
+        return new Promise((resolve, reject) => {
+          UserConfirm = resolve
+          UserReject = reject
+        });
 
       } else {
         return Promise.resolve(Refraction)
@@ -327,7 +334,7 @@
       Refraction.create_date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)
       // Refraction.by = Refraction.optometrist
 
-      WarnAtypicalResult(Refraction).then(SaveRefraction);
+      WarnAtypicalResult(Refraction).then(SaveRefraction).catch(console.log);
       // SaveRefraction(Refraction);
     }
 
