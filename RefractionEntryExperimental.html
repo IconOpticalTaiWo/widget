@@ -112,6 +112,7 @@
     }
   </style>
   <script>
+    window.sessionStorage.DebugEatch = {};
 
     // to do list
     // add copy from habbitual to full function
@@ -163,6 +164,7 @@
       Targets.each((i, e) => {
         if (e.value) Refraction[e.name] = e.value
       })
+      window.sessionStorage.DebugEatch.GatherData = Refraction
       return Refraction
     }
 
@@ -171,8 +173,37 @@
       Target[0].focus()
       return true
     }
+    
+    function SaveRefraction(Refraction) {
+      // pre-condition: Refraction has been validated
+      $('#save-complete-modal')[0].showModal()
+      $('#save-processing-indicator').removeClass('hidden')
+      $('#refraction_id_in_modal').html('');
 
-    function SaveData() {
+      $.ajax("https://samyankc.site/cgi/icon_save_refraction", {
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify(Refraction)
+      }).then((response) => {
+        $('#save-processing-indicator').addClass('hidden')
+        $('#refraction_id_input').val(response.refraction_id);
+        $('#refraction_id_in_modal').html(response.refraction_id);
+      });
+    }
+    
+    function ThoroughValidation() {
+      const Successful = true
+      var ValidationResult = Successful
+
+
+      return ValidationResult
+    }
+
+    function RefractionSanitizer( Refraction){
+      
+    }
+
+    function ValidateThenSave() {
 
       // to do : make all required field handling centralized
 
@@ -180,7 +211,7 @@
       TelField.val(TelField.val().replaceAll(/\s+/g, ''))
 
       var Refraction = GatherData()
-      if (Object.keys(Refraction).length === 0) return // empty form
+      if (Object.keys(Refraction).length === 0) return // unfilled form
 
       var IncompleteForm = false
 
@@ -274,19 +305,8 @@
       Refraction.create_date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)
       // Refraction.by = Refraction.optometrist
 
-      $('#save-complete-modal')[0].showModal()
-      $('#save-processing-indicator').removeClass('hidden')
-      $('#refraction_id_in_modal').html('');
+      SaveRefraction(Refraction);
 
-      $.ajax("https://samyankc.site/cgi/icon_save_refraction", {
-        contentType: 'application/json',
-        type: 'POST',
-        data: JSON.stringify(Refraction)
-      }).then((response) => {
-        $('#save-processing-indicator').addClass('hidden')
-        $('#refraction_id_input').val(response.refraction_id);
-        $('#refraction_id_in_modal').html(response.refraction_id);
-      });
     }
 
     function LoadData() {
@@ -686,7 +706,7 @@
         if (!isNaN(asFloat)) {
           if (asFloat > 45) {
             asFloat = (asFloat / 2).toFixed(2)
-            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
+            if (asFloat.endsWith('0')) { asFloat = asFloat.slice(0, -1) }
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
@@ -770,7 +790,7 @@
 
         <div class="row">
           <div class="col-3"><button class="btn btn-danger w-100 h-100 f-lg text-truncate" tabIndex="-1" onclick="window.location='EasySearchForOptom'">重新開始</button></div>
-          <div class="col"><button class="btn btn-success w-100 p-3 f-lg text-truncate" tabIndex="-1" onclick="SaveData()">Save 完成後按此儲存 Save</button></div>
+          <div class="col"><button class="btn btn-success w-100 p-3 f-lg text-truncate" tabIndex="-1" onclick="ValidateThenSave()">Save 完成後按此儲存 Save</button></div>
         </div>
 
         <div class="row text-end mt-2">
