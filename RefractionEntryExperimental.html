@@ -207,13 +207,13 @@
         var UserConfirm
         var UserReject
 
-        $('body').prepend(String.raw`<dialog open id="AddedByWarnAtypicalResult">
+        $('body').prepend(String.raw`<dialog open class="w-50 h-100" id="AddedByWarnAtypicalResult">
           <button class='btn btn-lg btn-success confirm'>確定保存</button>
           <button class='btn btn-lg btn-success reject'>進行修改</button>
           </dialog>`)
         $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {UserConfirm(Refraction)})
         // $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserReject('進行修改')})
-        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserConfirm({})})
+        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserConfirm({})}) // for silencing uncaught promise
         $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
 
         return new Promise((resolve, reject) => {
