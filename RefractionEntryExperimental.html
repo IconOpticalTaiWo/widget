@@ -202,11 +202,12 @@
     }
 
     function WarnAtypicalResult(Refraction) {
+      DebugPrint(Refraction)
 
       var NeedWarning = false
       var WarningMessage = '';
 
-      if (Refraction.F_Sph_R[0] !== Refraction.F_Sph_R[1]) {
+      if ((Refraction.F_Sph_R > 0) != (Refraction.F_Sph_L > 0)) {
         NeedWarning = true
         WarningMessage += 'Opposite Sign<br>'
       }
