@@ -209,13 +209,13 @@
         var UserConfirm
         var UserReject
 
-        $('body').prepend(String.raw`<dialog class="m-auto p-3 border-2 border-success shadow" id="AddedByWarnAtypicalResult">
+        $('body').prepend(String.raw`<dialog class="m-auto p-3 border-2 border-danger shadow" id="AddedByWarnAtypicalResult">
           <div>
-            <p>罕見度數組合: ${WarningMessage} <br>請檢查正確</p>
+            <p class="fs-2 fw-bold">罕見度數組合: ${WarningMessage} <br>請檢查正確</p>
           </div>
           <div>
-            <button class='btn btn-lg btn-success confirm'>確定保存</button>
-            <button class='btn btn-lg btn-success reject'>進行修改</button>
+            <button class='btn btn-lg btn-danger fw-bold confirm'>確定保存</button>
+            <button class='btn btn-lg btn-success fw-bold reject'>進行修改</button>
           </div></dialog>`)
         $('#AddedByWarnAtypicalResult button.confirm').on('click', () => { UserConfirm(Refraction) })
         $('#AddedByWarnAtypicalResult button.reject').on('click', () => { UserReject('進行修改') })
