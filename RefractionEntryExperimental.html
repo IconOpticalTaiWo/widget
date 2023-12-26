@@ -205,11 +205,11 @@
       DebugPrint(Refraction)
 
       var NeedWarning = false
-      var WarningMessage = '';
+      var WarningMessage = [];
 
-      if ((Refraction.F_Sph_R > 0) != (Refraction.F_Sph_L > 0)) {
+      if (Refraction.F_Sphere_R[0] != Refraction.F_Sphere_L[0]) {
         NeedWarning = true
-        WarningMessage += 'Opposite Sign<br>'
+        WarningMessage.push('Opposite Sign')
       }
 
       if (!NeedWarning) return Promise.resolve(Refraction)
@@ -219,7 +219,7 @@
 
       $('body').prepend(String.raw`<dialog class="m-auto p-3 border-2 border-danger shadow" id="AddedByWarnAtypicalResult">
           <div>
-            <p class="fs-2 fw-bold">罕見度數組合: ${WarningMessage} <br>請檢查正確</p>
+            <p class="fs-2 fw-bold">罕見度數組合: ${WarningMessage.join('<br>')} <br>請檢查正確</p>
           </div>
           <div class="text-center">
             <button class='m-2 btn btn-lg btn-danger fw-bold confirm'>確定保存</button>
