@@ -204,18 +204,19 @@
     function WarnAtypicalResult(Refraction) {
 
       var NeedWarning = false
-      
-      if (Refraction.F_Sph_R){}
-      
+      var WarningMessage = '';
 
-      var WarningMessage = '[測試]  ';
+      if (Refraction.F_Sph_R[0] !== Refraction.F_Sph_R[1]) {
+        NeedWarning = true
+        WarningMessage += 'Opposite Sign<br>'
+      }
 
-      if (NeedWarning) {
+      if (!NeedWarning) return Promise.resolve(Refraction)
 
-        var UserConfirm
-        var UserReject
+      var UserConfirm
+      var UserReject
 
-        $('body').prepend(String.raw`<dialog class="m-auto p-3 border-2 border-danger shadow" id="AddedByWarnAtypicalResult">
+      $('body').prepend(String.raw`<dialog class="m-auto p-3 border-2 border-danger shadow" id="AddedByWarnAtypicalResult">
           <div>
             <p class="fs-2 fw-bold">罕見度數組合: ${WarningMessage} <br>請檢查正確</p>
           </div>
@@ -223,19 +224,17 @@
             <button class='m-2 btn btn-lg btn-danger fw-bold confirm'>確定保存</button>
             <button class='m-2 btn btn-lg btn-success fw-bold reject'>進行修改</button>
           </div></dialog>`)
-        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => { UserConfirm(Refraction) })
-        $('#AddedByWarnAtypicalResult button.reject').on('click', () => { UserReject('進行修改') })
-        $('#AddedByWarnAtypicalResult button').on('click', () => { $('#AddedByWarnAtypicalResult').remove() })
-        $('#AddedByWarnAtypicalResult')[0].showModal()
+      $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {UserConfirm(Refraction)})
+      $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserReject('進行修改')})
+      $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
+      $('#AddedByWarnAtypicalResult')[0].showModal()
 
-        return new Promise((resolve, reject) => {
-          UserConfirm = resolve
-          UserReject = reject
-        })
+      return new Promise((resolve, reject) => {
+        UserConfirm = resolve
+        UserReject = reject
+      })
 
-      }
 
-      return Promise.resolve(Refraction)      
     }
 
     function ThoroughValidation() {
@@ -750,7 +749,7 @@
         if (!isNaN(asFloat)) {
           if (asFloat > 45) {
             asFloat = (asFloat / 2).toFixed(2)
-            if (asFloat.endsWith('0')) { asFloat = asFloat.slice(0, -1) }
+            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
