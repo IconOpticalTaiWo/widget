@@ -202,8 +202,14 @@
     }
 
     function WarnAtypicalResult(Refraction) {
-      var NeedWarning = Refraction['VA_R'] === '1.0';
+
+      var NeedWarning = false
+      
+      if (Refraction.F_Sph_R){}
+      
+
       var WarningMessage = '[測試]  ';
+
       if (NeedWarning) {
 
         var UserConfirm
