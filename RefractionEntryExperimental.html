@@ -210,7 +210,7 @@
         var UserReject
 
 
-        $('body').prepend(String.raw`<dialog open class="m-auto border border-0 shadow" id="AddedByWarnAtypicalResult">
+        $('body').prepend(String.raw`<dialog class="m-auto border border-success shadow" id="AddedByWarnAtypicalResult">
           <div>
             <p>罕見度數組合: ${WarningMessage} <br>請檢查正確</p>
           </div>
@@ -221,6 +221,7 @@
         $('#AddedByWarnAtypicalResult button.confirm').on('click', () => { UserConfirm(Refraction) })
         $('#AddedByWarnAtypicalResult button.reject').on('click', () => { UserReject('進行修改') })
         $('#AddedByWarnAtypicalResult button').on('click', () => { $('#AddedByWarnAtypicalResult').remove() })
+        $('#AddedByWarnAtypicalResult').showModal()
 
         return new Promise((resolve, reject) => {
           UserConfirm = resolve
