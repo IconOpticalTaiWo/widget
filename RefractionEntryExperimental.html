@@ -173,8 +173,9 @@
       if (Object.keys(Refraction).length === 0) return
 
       if (window.location.pathname.includes('Experimental')) {
-        console.log('[PseudoPost : SaveRefraction]')
+        console.log('[PseudoPost : Initiate SaveRefraction]')
         console.log(Refraction)
+        console.log('[PseudoPost : Complete SaveRefraction]')
         return
       }
 
@@ -202,19 +203,24 @@
 
     function WarnAtypicalResult(Refraction) {
       var NeedWarning = Refraction['VA_R'] === '1.0';
+      var WarningMessage = '[測試]  ';
       if (NeedWarning) {
 
         var UserConfirm
         var UserReject
 
-        $('body').prepend(String.raw`<dialog open class="w-50 h-100" id="AddedByWarnAtypicalResult">
-          <button class='btn btn-lg btn-success confirm'>確定保存</button>
-          <button class='btn btn-lg btn-success reject'>進行修改</button>
-          </dialog>`)
-        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {UserConfirm(Refraction)})
-        // $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserReject('進行修改')})
-        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserConfirm({})}) // for silencing uncaught promise
-        $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
+
+        $('body').prepend(String.raw`<dialog open class="m-auto w-50 h-50" id="AddedByWarnAtypicalResult">
+          <div>
+            <p>罕見度數組合: ${WarningMessage} <br>請檢查正確</p>
+          </div>
+          <div>
+            <button class='btn btn-lg btn-success confirm'>確定保存</button>
+            <button class='btn btn-lg btn-success reject'>進行修改</button>
+          </div></dialog>`)
+        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => { UserConfirm(Refraction) })
+        $('#AddedByWarnAtypicalResult button.reject').on('click', () => { UserReject('進行修改') })
+        $('#AddedByWarnAtypicalResult button').on('click', () => { $('#AddedByWarnAtypicalResult').remove() })
 
         return new Promise((resolve, reject) => {
           UserConfirm = resolve
@@ -337,7 +343,7 @@
       Refraction.create_date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)
       // Refraction.by = Refraction.optometrist
 
-      WarnAtypicalResult(Refraction).then(SaveRefraction)
+      WarnAtypicalResult(Refraction).then(SaveRefraction).catch(DebugPrint)
       // SaveRefraction(Refraction);
     }
 
@@ -738,7 +744,7 @@
         if (!isNaN(asFloat)) {
           if (asFloat > 45) {
             asFloat = (asFloat / 2).toFixed(2)
-            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
+            if (asFloat.endsWith('0')) { asFloat = asFloat.slice(0, -1) }
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
