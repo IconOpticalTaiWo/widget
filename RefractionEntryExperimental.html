@@ -201,30 +201,34 @@
       return true
     }
 
+    function SanityCheck(Rx) {
+      var Warnings = [];
+
+      if (Rx.F_Sphere_R[0] != Rx.F_Sphere_L[0]) Warnings.push('鴛鴦')
+
+      return Warnings.join('<br>');
+    }
+
     function WarnAtypicalResult(Refraction) {
-      DebugPrint(Refraction)
 
-      var NeedWarning = false
-      var WarningMessage = [];
+      var WarningMessage = SanityCheck(Refraction)
 
-      if (Refraction.F_Sphere_R[0] != Refraction.F_Sphere_L[0]) {
-        NeedWarning = true
-        WarningMessage.push('Opposite Sign')
-      }
-
-      if (!NeedWarning) return Promise.resolve(Refraction)
+      if (WarningMessage.length === 0) return Promise.resolve(Refraction)
 
       var UserConfirm
       var UserReject
 
-      $('body').prepend(String.raw`<dialog class="m-auto p-3 border-2 border-danger shadow" id="AddedByWarnAtypicalResult">
+      $('body').prepend(String.raw`
+        <dialog class="m-auto p-3 border-2 border-danger shadow" id="AddedByWarnAtypicalResult">
           <div>
-            <p class="fs-2 fw-bold">罕見度數組合: ${WarningMessage.join('<br>')} <br>請檢查正確</p>
+            <p class="fs-2 fw-bold">罕見度數組合: ${WarningMessage} <br>請檢查正確</p>
           </div>
           <div class="text-center">
             <button class='m-2 btn btn-lg btn-danger fw-bold confirm'>確定保存</button>
             <button class='m-2 btn btn-lg btn-success fw-bold reject'>進行修改</button>
-          </div></dialog>`)
+          </div>
+        </dialog>
+      `);
       $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {UserConfirm(Refraction)})
       $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserReject('進行修改')})
       $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
@@ -234,7 +238,6 @@
         UserConfirm = resolve
         UserReject = reject
       })
-
 
     }
 
