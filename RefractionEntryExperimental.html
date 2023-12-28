@@ -344,8 +344,7 @@
       Refraction.create_date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)
       // Refraction.by = Refraction.optometrist
 
-      var Confirmation = await AcknowledgeWarning(SanityCheck(Refraction));
-      if (!Confirmation) return
+      if (!await AcknowledgeWarning(SanityCheck(Refraction))) return
 
       SaveRefraction(Refraction)
     }
