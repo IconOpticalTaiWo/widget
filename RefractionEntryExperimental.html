@@ -204,7 +204,7 @@
     function SanityCheck(Rx) {
       var Warnings = [];
 
-      if (Rx.F_Sphere_R[0] != Rx.F_Sphere_L[0]) Warnings.push('鴛鴦')
+      if (Rx.F_Sphere_R[0] != Rx.F_Sphere_L[0]) Warnings.push(`R: ${Rx.F_Sphere_R}<br>L: ${Rx.F_Sphere_L}`)
 
       return Warnings.join('<br>');
     }
@@ -215,7 +215,7 @@
 
       return new Promise((Resolve, Reject) => {
         $('body').prepend(String.raw`
-          <dialog class="m-auto p-3 rounded-4 border border-2 border-danger shadow" id="AddedByWarnAtypicalResult">
+          <dialog class="m-auto p-4 rounded-4 border border-3 border-danger shadow" id="AddedByWarnAtypicalResult">
             <div>
               <p class="fs-2 fw-bold">罕見度數組合<br> ${WarningMessage} <br>請檢查正確</p>
             </div>
