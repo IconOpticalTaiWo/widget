@@ -204,7 +204,7 @@
     function SanityCheck(Rx) {
       var Warnings = [];
 
-      if (Rx.F_Sphere_R[0] != Rx.F_Sphere_L[0]) Warnings.push(`R: ${Rx.F_Sphere_R}<br>L: ${Rx.F_Sphere_L}`)
+      if (Rx.F_Sphere_R[0] != Rx.F_Sphere_L[0]) Warnings.push(`<span class="font-monospace">R: ${Rx.F_Sphere_R}<br>L: ${Rx.F_Sphere_L}</span>`)
 
       return Warnings.join('<br>');
     }
