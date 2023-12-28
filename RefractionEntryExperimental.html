@@ -204,7 +204,15 @@
     function SanityCheck(Rx) {
       var Warnings = [];
 
-      if (Rx.F_Sphere_R[0] != Rx.F_Sphere_L[0]) Warnings.push(`<span class="font-monospace">R: ${Rx.F_Sphere_R}<br>L: ${Rx.F_Sphere_L}</span>`)
+      // accidental anisometropia
+      {
+        let Sph_R = Rx.F_Sphere_R
+        let Sph_L = Rx.F_Sphere_L
+        if (Sph_R[0] != Sph_L[0] && Math.abs(Sph_R) > 50 && Math.abs(Sph_L) > 50) {
+          Warnings.push(`<span class="font-monospace">R: ${Sph_R}<br>L: ${Sph_L}</span>`)
+        }
+      }
+
 
       return Warnings.join('<br>');
     }
