@@ -215,28 +215,22 @@
 
       if (WarningMessage.length === 0) return Promise.resolve(Refraction)
 
-      var UserConfirm
-      var UserReject
-
-      $('body').prepend(String.raw`
-        <dialog class="m-auto p-3 border-2 border-danger shadow" id="AddedByWarnAtypicalResult">
-          <div>
-            <p class="fs-2 fw-bold">罕見度數組合: ${WarningMessage} <br>請檢查正確</p>
-          </div>
-          <div class="text-center">
-            <button class='m-2 btn btn-lg btn-danger fw-bold confirm'>確定保存</button>
-            <button class='m-2 btn btn-lg btn-success fw-bold reject'>進行修改</button>
-          </div>
-        </dialog>
-      `);
-      $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {UserConfirm(Refraction)})
-      $('#AddedByWarnAtypicalResult button.reject').on('click', () => {UserReject('進行修改')})
-      $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
-      $('#AddedByWarnAtypicalResult')[0].showModal()
-
-      return new Promise((resolve, reject) => {
-        UserConfirm = resolve
-        UserReject = reject
+      return new Promise((Resolve, Reject) => {
+        $('body').prepend(String.raw`
+          <dialog class="m-auto p-3 border-2 border-danger shadow" id="AddedByWarnAtypicalResult">
+            <div>
+              <p class="fs-2 fw-bold">罕見度數組合: ${WarningMessage} <br>請檢查正確</p>
+            </div>
+            <div class="text-center">
+              <button class='m-2 btn btn-lg btn-danger fs-3 fw-bold confirm'>確定保存</button>
+              <button class='m-2 btn btn-lg btn-success fs-3 fw-bold reject'>進行修改</button>
+            </div>
+          </dialog>
+        `);
+        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {Resolve(Refraction)})
+        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {Reject('進行修改')})
+        $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
+        $('#AddedByWarnAtypicalResult')[0].showModal()
       })
 
     }
@@ -1002,12 +996,14 @@
               </svg>
             </button>
           </div>
-          
+
           <div class="col-6">
-            <button class="btn-numpad align-middle" style="--aspect:3/2; border:0; background-color: #e73b38; color: white; font-size: 8dvh; font-weight: 900;" ontouch="SwitchPlus">＋</button>
+            <button class="btn-numpad align-middle" style="--aspect:3/2; border:0; background-color: #e73b38; color: white; font-size: 8dvh; font-weight: 900;"
+              ontouch="SwitchPlus">＋</button>
           </div>
           <div class="col-6">
-            <button class="btn-numpad align-middle" style="--aspect:3/2; border:0; background-color: #346cd4; color: white; font-size: 8dvh; font-weight: 900;" ontouch="SwitchMinus">－</button>
+            <button class="btn-numpad align-middle" style="--aspect:3/2; border:0; background-color: #346cd4; color: white; font-size: 8dvh; font-weight: 900;"
+              ontouch="SwitchMinus">－</button>
           </div>
           <div class="col-12"><button class="btn-numpad f-lg" style="--aspect:9/2;" ontouch="SwitchToPL">Plano 平光</button></div>
         </div>
