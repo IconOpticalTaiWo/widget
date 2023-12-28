@@ -4,6 +4,7 @@
 <head>
   <title>Refraction Entry</title>
   <meta charset="UTF-8">
+  <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
   <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=0.75, maximum-scale=1.0, user-scalable=no">
   <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
   <link href="CSS/bootstrap.min.css" rel="stylesheet">
@@ -112,6 +113,7 @@
     }
   </style>
   <script>
+    window.sessionStorage.DebugWatch = {};
 
     // to do list
     // add copy from habbitual to full function
@@ -163,7 +165,34 @@
       Targets.each((i, e) => {
         if (e.value) Refraction[e.name] = e.value
       })
+      window.sessionStorage.DebugWatch.GatherData = Refraction
       return Refraction
+    }
+
+    function SaveRefraction(Refraction) {
+      if (Object.keys(Refraction).length === 0) return
+
+      if (window.location.pathname.includes('Experimental')) {
+        console.log('[PseudoPost : Initiate SaveRefraction]')
+        console.log(Refraction)
+        console.log('[PseudoPost : Complete SaveRefraction]')
+        return
+      }
+
+      // pre-condition: Refraction has been validated
+      $('#save-complete-modal')[0].showModal()
+      $('#save-processing-indicator').removeClass('hidden')
+      $('#refraction_id_in_modal').html('');
+
+      $.ajax("https://samyankc.site/cgi/icon_save_refraction", {
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify(Refraction)
+      }).then((response) => {
+        $('#save-processing-indicator').addClass('hidden')
+        $('#refraction_id_input').val(response.refraction_id);
+        $('#refraction_id_in_modal').html(response.refraction_id);
+      });
     }
 
     function InvalidValue(Target, Requirement) {
@@ -172,7 +201,47 @@
       return true
     }
 
-    function SaveData() {
+    function SanityCheck(Rx) {
+      var Warnings = [];
+
+      if (Rx.F_Sphere_R[0] != Rx.F_Sphere_L[0]) Warnings.push(`<span class="font-monospace">R: ${Rx.F_Sphere_R}<br>L: ${Rx.F_Sphere_L}</span>`)
+
+      return Warnings.join('<br>');
+    }
+
+    function AcknowledgeWarning(WarningMessage) {
+
+      if (WarningMessage.length === 0) return Promise.resolve(true)
+
+      return new Promise((Resolve, Reject) => {
+        $('body').prepend(String.raw`
+          <dialog class="m-auto p-4 rounded-4 border border-3 border-danger shadow" id="AddedByWarnAtypicalResult">
+            <div>
+              <p class="fs-2 fw-bold">罕見度數組合<br> ${WarningMessage} <br>請檢查正確</p>
+            </div>
+            <div class="text-center">
+              <button class='m-2 btn btn-lg btn-danger fs-3 fw-bold confirm'>確定保存</button>
+              <button class='m-2 btn btn-lg btn-success fs-3 fw-bold reject'>進行修改</button>
+            </div>
+          </dialog>
+        `);
+        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {Resolve(true)})
+        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {Resolve(false)})
+        $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
+        $('#AddedByWarnAtypicalResult')[0].showModal()
+      })
+
+    }
+
+    function ThoroughValidation() {
+      const Successful = true
+      var ValidationResult = Successful
+
+
+      return ValidationResult
+    }
+
+    async function ValidateThenSave() {
 
       // to do : make all required field handling centralized
 
@@ -180,7 +249,7 @@
       TelField.val(TelField.val().replaceAll(/\s+/g, ''))
 
       var Refraction = GatherData()
-      if (Object.keys(Refraction).length === 0) return // empty form
+      if (Object.keys(Refraction).length === 0) return // unfilled form
 
       var IncompleteForm = false
 
@@ -229,6 +298,7 @@
         for (let Prefix of ['F_', '']) {
           let Target = $(`input[name=${Prefix}Cylinder_${Side}]`)
           if (!Target.val()) {
+            // empty cyl is allowed
           } else {
             IncompleteForm |= InvalidValue(Target, CylinderValidation)
           }
@@ -274,19 +344,9 @@
       Refraction.create_date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)
       // Refraction.by = Refraction.optometrist
 
-      $('#save-complete-modal')[0].showModal()
-      $('#save-processing-indicator').removeClass('hidden')
-      $('#refraction_id_in_modal').html('');
+      var Warnings = SanityCheck(Refraction)
+      if (await AcknowledgeWarning(Warnings)) SaveRefraction(Refraction)
 
-      $.ajax("https://samyankc.site/cgi/icon_save_refraction", {
-        contentType: 'application/json',
-        type: 'POST',
-        data: JSON.stringify(Refraction)
-      }).then((response) => {
-        $('#save-processing-indicator').addClass('hidden')
-        $('#refraction_id_input').val(response.refraction_id);
-        $('#refraction_id_in_modal').html(response.refraction_id);
-      });
     }
 
     function LoadData() {
@@ -770,7 +830,7 @@
 
         <div class="row">
           <div class="col-3"><button class="btn btn-danger w-100 h-100 f-lg text-truncate" tabIndex="-1" onclick="window.location='EasySearchForOptom'">重新開始</button></div>
-          <div class="col"><button class="btn btn-success w-100 p-3 f-lg text-truncate" tabIndex="-1" onclick="SaveData()">Save 完成後按此儲存 Save</button></div>
+          <div class="col"><button class="btn btn-success w-100 p-3 f-lg text-truncate" tabIndex="-1" onclick="ValidateThenSave()">Save 完成後按此儲存 Save</button></div>
         </div>
 
         <div class="row text-end mt-2">
@@ -935,7 +995,7 @@
               </svg>
             </button>
           </div>
-          
+
           <div class="col-6">
             <button class="btn-numpad align-middle" style="--aspect:3/2; border:0; background-color: #e73b38; color: white; font-size: 8dvh; font-weight: 900;"
               ontouch="SwitchPlus">＋</button>
