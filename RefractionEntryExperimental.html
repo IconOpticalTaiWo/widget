@@ -25,6 +25,7 @@
       font-size: 0.7em;
       font-weight: 200;
       margin-left: -8px;
+      pointer-events: none;
     }
 
     .w-40 {
@@ -233,9 +234,9 @@
             </div>
           </dialog>
         `);
-        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {Resolve(true)})
-        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {Resolve(false)})
-        $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
+        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => { Resolve(true) })
+        $('#AddedByWarnAtypicalResult button.reject').on('click', () => { Resolve(false) })
+        $('#AddedByWarnAtypicalResult button').on('click', () => { $('#AddedByWarnAtypicalResult').remove() })
         $('#AddedByWarnAtypicalResult')[0].showModal()
       })
 
@@ -755,7 +756,7 @@
         if (!isNaN(asFloat)) {
           if (asFloat > 45) {
             asFloat = (asFloat / 2).toFixed(2)
-            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
+            if (asFloat.endsWith('0')) { asFloat = asFloat.slice(0, -1) }
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
