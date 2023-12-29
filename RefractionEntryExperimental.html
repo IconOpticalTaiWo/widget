@@ -691,7 +691,7 @@
         // e.preventDefault();
         FocusedCell?.focus()
         const This = e.target
-        DebugPrint(This)
+        DebugPrint(This.tagName, " | " ,This.parentNode.tagName)        
         const Func = window[This.getAttribute('ontouch')]
         CheckThenInvoke(Func, This.value || This.textContent)
       })
@@ -1042,7 +1042,7 @@
         </div>
 
         <div class="row row-cols-4 g-0 text-center input-panel va-picker hidden">
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><div><small>0.</small>7</div></button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>7</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>8</button></div>
           <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>9</button></div>
 
