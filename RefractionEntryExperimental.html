@@ -687,11 +687,11 @@
       $('.btn-numpad').addClass('btn btn-outline-success f-lg')
       $('.btn-picker').addClass('btn btn-outline-success f-lg')
       const TouchTrigger = TouchMode ? 'touchstart' : 'mousedown'
-      $('.input-panel button, .input-panel-common button').on(TouchTrigger, e => {
-        // e.preventDefault();
+      $('.input-panel button, .input-panel-common button').on(TouchTrigger, e => {        
+        e.preventDefault();
         FocusedCell?.focus()
-        const This = e.target
-        DebugPrint(This.tagName, " | " ,This.parentNode.tagName)        
+        const This = e.target.tagName == 'BUTTON'? e.target : e.target.parentNode
+        DebugPrint(This)
         const Func = window[This.getAttribute('ontouch')]
         CheckThenInvoke(Func, This.value || This.textContent)
       })
