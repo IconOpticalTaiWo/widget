@@ -235,9 +235,9 @@
             </div>
           </dialog>
         `);
-        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => { Resolve(true) })
-        $('#AddedByWarnAtypicalResult button.reject').on('click', () => { Resolve(false) })
-        $('#AddedByWarnAtypicalResult button').on('click', () => { $('#AddedByWarnAtypicalResult').remove() })
+        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {Resolve(true)})
+        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {Resolve(false)})
+        $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
         $('#AddedByWarnAtypicalResult')[0].showModal()
       })
 
@@ -688,10 +688,10 @@
       $('.btn-numpad').addClass('btn btn-outline-success f-lg')
       $('.btn-picker').addClass('btn btn-outline-success f-lg')
       const TouchTrigger = TouchMode ? 'touchstart' : 'mousedown'
-      $('.input-panel button, .input-panel-common button').on(TouchTrigger, e => {        
+      $('.input-panel button, .input-panel-common button').on(TouchTrigger, e => {
         e.preventDefault();
         FocusedCell?.focus()
-        const This = $(e.target).closest('button')[0]
+        const This = e.currentTarget
         const Func = window[This.getAttribute('ontouch')]
         CheckThenInvoke(Func, This.value || This.textContent)
       })
@@ -756,7 +756,7 @@
         if (!isNaN(asFloat)) {
           if (asFloat > 45) {
             asFloat = (asFloat / 2).toFixed(2)
-            if (asFloat.endsWith('0')) { asFloat = asFloat.slice(0, -1) }
+            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }

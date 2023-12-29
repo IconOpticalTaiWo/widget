@@ -691,7 +691,7 @@
       $('.input-panel button, .input-panel-common button').on(TouchTrigger, e => {
         e.preventDefault();
         FocusedCell?.focus()
-        const This = $(e.target).closest('button')[0]
+        const This = e.currentTarget
         const Func = window[This.getAttribute('ontouch')]
         CheckThenInvoke(Func, This.value || This.textContent)
       })
