@@ -25,7 +25,7 @@
       font-size: 0.7em;
       font-weight: 200;
       margin-left: -8px;
-      pointer-events: none;
+      /* pointer-events: none; */
     }
 
     .w-40 {
@@ -234,9 +234,9 @@
             </div>
           </dialog>
         `);
-        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {Resolve(true)})
-        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {Resolve(false)})
-        $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
+        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => { Resolve(true) })
+        $('#AddedByWarnAtypicalResult button.reject').on('click', () => { Resolve(false) })
+        $('#AddedByWarnAtypicalResult button').on('click', () => { $('#AddedByWarnAtypicalResult').remove() })
         $('#AddedByWarnAtypicalResult')[0].showModal()
       })
 
@@ -687,10 +687,10 @@
       $('.btn-numpad').addClass('btn btn-outline-success f-lg')
       $('.btn-picker').addClass('btn btn-outline-success f-lg')
       const TouchTrigger = TouchMode ? 'touchstart' : 'mousedown'
-      $('.input-panel button, .input-panel-common button').on(TouchTrigger, e => {
+      $('.input-panel button, .input-panel-common button').on(TouchTrigger, e => {        
         e.preventDefault();
         FocusedCell?.focus()
-        const This = e.target
+        const This = $(e.target).closest('button')[0]
         const Func = window[This.getAttribute('ontouch')]
         CheckThenInvoke(Func, This.value || This.textContent)
       })
@@ -755,7 +755,7 @@
         if (!isNaN(asFloat)) {
           if (asFloat > 45) {
             asFloat = (asFloat / 2).toFixed(2)
-            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
+            if (asFloat.endsWith('0')) { asFloat = asFloat.slice(0, -1) }
             if (asFloat.endsWith('.0')) {
               asFloat = Math.round(asFloat)
             }
@@ -996,7 +996,7 @@
           <div class="col-10"><input class="btn-numpad f-lg" style="--aspect:15/3;" disabled type="text" id="numpad-display-panel"></div>
           <div class="col-2">
             <button class="btn-numpad f-lg" style="--aspect:3/3;" ontouch="EraseBack">
-              <svg ontouch="EraseBack" width="28" height="28" fill="currentColor" class="bi bi-backspace" viewBox="0 0 16 16">
+              <svg width="28" height="28" fill="currentColor" class="bi bi-backspace" viewBox="0 0 16 16">
                 <path
                   d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z" />
                 <path
@@ -1041,21 +1041,21 @@
         </div>
 
         <div class="row row-cols-4 g-0 text-center input-panel va-picker hidden">
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue" value="0.7"><small>0.</small>7</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue" value="0.8"><small>0.</small>8</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue" value="0.9"><small>0.</small>9</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>7</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>8</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>9</button></div>
 
           <div class="col"><button class="btn-numpad" ontouch="AssignValue">FC</button></div>
 
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue" value="0.4"><small>0.</small>4</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue" value="0.5"><small>0.</small>5</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue" value="0.6"><small>0.</small>6</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>4</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>5</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>6</button></div>
 
           <div class="col"><button class="btn-numpad" ontouch="AssignValue">BAL</button></div>
 
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue" value="0.1"><small>0.</small>1</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue" value="0.2"><small>0.</small>2</button></div>
-          <div class="col"><button class="btn-numpad" ontouch="AssignValue" value="0.3"><small>0.</small>3</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>1</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>2</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>3</button></div>
 
           <div class="col"><button class="btn-numpad" ontouch="AssignValue">LP</button></div>
 
