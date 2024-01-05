@@ -2,12 +2,13 @@
 <html>
 
 <head>
-  <title>Refraction Viewer</title>
+  <title>Refraction Multiple Viewer</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=0.8, maximum-scale=1.1">
   <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
-  <link href="CSS/bootstrap.min.css" rel="stylesheet">
-  <script src="JS/jquery-3.7.1.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script src="JS/htmx.min.js"></script>
   <script src="JS/nunjucks.min.js"></script>
   <script src="JS/ext/client-side-templates.js"></script>
@@ -30,12 +31,16 @@
     var DebugMode = HashTag.match(/debug/i)
     var QueryString = new URLSearchParams(window.location.search)
 
-    window.onload = function () {
-      $('input[name=date]').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
-      $('main form input[type=submit]').click()
-    }
     function KeywordSearch() {
       $(this).val().split(' ').reduce((R, V) => R.filter((i, e) => $(e).text().toUpperCase().includes(V.toUpperCase())), $('div.card').addClass('hidden')).removeClass('hidden')
+    }
+
+    window.onload = function () {
+      $('input[name=date]')
+        .val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
+        .on('change', (e) => { e.currentTarget.closest('form').submit() })
+        .trigger('change')
+      // $('main form input[type=submit]').click()
     }
   </script>
 </head>
