@@ -38,9 +38,9 @@
     window.onload = function () {
       $('input[name=date]')
         .val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10))
-        .on('change', (e) => { e.currentTarget.closest('form').querySelector('input[type=submit]').click() })
-        .trigger('change')
-      // $('main form input[type=submit]').click()
+        .on('change', e => e.currentTarget.closest('form').submit())
+      // .on('change', (e) => { e.currentTarget.closest('form').querySelector('input[type=submit]').click() })
+      // .trigger('change')
     }
   </script>
 </head>
@@ -51,7 +51,8 @@
 
   <main>
     <div hx-ext="client-side-templates">
-      <form class="text-center" hx-get="https://samyankc.site/cgi/icon_load_refraction" hx-target="#DisplayResult" nunjucks-array-template="RxEntryTemplate">
+      <form class="text-center" hx-get="https://samyankc.site/cgi/icon_load_refraction" hx-trigger="submit load" hx-target="#DisplayResult"
+        nunjucks-array-template="RxEntryTemplate">
         <input name="date" type="date" value>
         <input name="expect" type="hidden" value="all">
         <input type="submit" value="Load">
@@ -66,41 +67,49 @@
 
     <template id="RxEntryTemplate">
       <div class="m-auto" style="min-width:500px; max-width:600px;">
-        {% for Rx in data %}
-        <div class="card m-3">
-          <div class="card-header">
-            <div class="row">
-              <div class="col-auto">
-                <div class="fs-2 fw-bold">#{{Rx.refraction_id}}</div>
-                {% if Rx.user_id %} User ID: {{Rx.user_id}}<br>{% endif %} Tel: {{Rx.tel}}
+        <for_indent>
+          {% for Rx in data %}
+          <div class="card m-3">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-auto">
+                  <div class="fs-2 fw-bold"><a href="RefractionViewer?refraction_id={{Rx.refraction_id}}" target="_self">#{{Rx.refraction_id}}</a></div>
+                  {% if Rx.user_id %} User ID: {{Rx.user_id}}<br>{% endif %} Tel: {{Rx.tel}}
+                </div>
+                <div class="col text-end">Created on {{Rx.create_date}}<br>By {{Rx.optometrist}}</div>
               </div>
-              <div class="col text-end">Created on {{Rx.create_date}}<br>By {{Rx.optometrist}}</div>
+            </div>
+            <div class="card-body">
+              <div class="row" style="margin-left: -7%;">
+                <div class="col"> </div>
+                {% for ComponentLabel in ['Sph','Cyl','Axis','ADD','PD','VA'] %}
+                <div class="col text-center fw-light">{{ComponentLabel}}</div>
+                {% endfor %}
+              </div>
+              <for_indent>
+                {% for GroupName, Prefix in [['Habbitual','OR_'],['Full','F_'],['Adjusted','']] %}
+                <div class="row">{{GroupName}}</div>
+                <for_indent>
+                  {% for Side in ['R','L'] %}
+                  <div class="row font-monospace" style="margin-left: -7%;">
+                    <div class="col text-end">{{Side}}&#41;</div>
+                    <for_indent>
+                      {% for Component in ['Sphere_','Cylinder_','Axis_','ADD_','PD_','VA_'] %}
+                      <div class="col text-center">
+                        {% set ComponentValue = Rx[ Prefix+Component+Side ] %}
+                        {% if ComponentValue %} {{ComponentValue}} {% endif %}
+                      </div>
+                      {% endfor %}
+                    </for_indent>
+                  </div>
+                  {% endfor %}
+                </for_indent>
+                {% endfor %}
+              </for_indent>
             </div>
           </div>
-          <div class="card-body">
-            <div class="row" style="margin-left: -7%;">
-              <div class="col"> </div>
-              {% for ComponentLabel in ['Sph','Cyl','Axis','ADD','PD','VA'] %}
-              <div class="col text-center fw-light">{{ComponentLabel}}</div>
-              {% endfor %}
-            </div>
-            {% for GroupName, Prefix in [['Habbitual','OR_'],['Full','F_'],['Adjusted','']] %}
-            <div class="row">{{GroupName}}</div>
-            {% for Side in ['R','L'] %}
-            <div class="row font-monospace" style="margin-left: -7%;">
-              <div class="col text-end">{{Side}})</div>
-              {% for Component in ['Sphere_','Cylinder_','Axis_','ADD_','PD_','VA_'] %}
-              {% set ComponentValue = Rx[ Prefix+Component+Side ] %}
-              <div class="col text-center">
-                {% if ComponentValue %} {{ComponentValue}} {% endif %}
-              </div>
-              {% endfor %}
-            </div>
-            {% endfor %}
-            {% endfor %}
-          </div>
-        </div>
-        {% endfor %}
+          {% endfor %}
+        </for_indent>
       </div>
     </template>
   </main>

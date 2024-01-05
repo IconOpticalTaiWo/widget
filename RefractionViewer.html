@@ -115,10 +115,11 @@
 
     function RedirectToEditEntry() {
       const BaseRxID = $('input[name=refraction_id]').val()
-      if (BaseRxID) window.location = `RefractionEntry?base_refraction_id=${BaseRxID}`
+      if (BaseRxID) window.location.assign(`RefractionEntry?base_refraction_id=${BaseRxID}`)
     }
 
 
+    var QueryParam_RefractionID = QueryString.get('refraction_id')
     var QueryParam_Optometrist = QueryString.get('optometrist')
     var QueryParam_UserID = QueryString.get('userid') || QueryString.get('user_id')
     var QueryParam_RefractionType = QueryString.get('type') || 1
@@ -127,14 +128,18 @@
 
     window.onload = function () {
 
+      $('#supplementary_info input[name=refraction_id]').val(QueryParam_RefractionID)
       $('#supplementary_info input[name=user_id]').val(QueryParam_UserID)
       $('#supplementary_info input[name=tel]').val(QueryParam_UserTel)
-      if (QueryParam_UserID) LoadDataFromIconOptical(QueryParam_UserID, QueryParam_RefractionType)
+
+      if (QueryParam_RefractionID || QueryParam_UserID || QueryParam_UserTel) LoadData();
+
+      // if (QueryParam_UserID) LoadDataFromIconOptical(QueryParam_UserID, QueryParam_RefractionType)
 
       $('#optom_name_input').val(QueryParam_Optometrist)
 
-      $('.rx-table input').attr("readonly", "readonly")
-      $('#refraction_id_input').removeAttr("readonly")
+      $('.rx-table input').remove('#refraction_id_input').attr("readonly", "readonly")
+      // $('#refraction_id_input').removeAttr("readonly")
 
       if (!DebugMode) $('#Debug_Info_Display').addClass('hidden')
 
