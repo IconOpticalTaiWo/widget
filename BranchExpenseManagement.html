@@ -56,7 +56,7 @@
                 onclick="$('#NewEntryAndSetPaidDialog iframe').attr('src','BranchExpenseEntry?SetPaid=true');$('#NewEntryAndSetPaidDialog')[0].showModal()">即時登記新帳單</button>
         </div>
     </div>
-    
+
 
     <main id="ticket-container" class="container bounded-width"></main>
 
@@ -123,12 +123,10 @@
 
             <div class="row mb-2 me-0">
                 <label class="col-auto col-form-label" for="Input_PaymentMethod">付款方式</label>
-                <input class="col form-control" id="Input_PaymentMethod" type="text" required name="PaymentMethod" list="PaymentMethodList">
-
-                <datalist id="PaymentMethodList">
-                    <option value="支票"></option>
-                    <option value="FPS"></option>
-                </datalist>
+                <select class="col form-control" id="Input_PaymentMethod" required name="PaymentMethod">
+                    <option value="支票">支票</option>
+                    <option value="FPS">FPS</option>
+                </select>
             </div>
 
             <div class="row mb-2 me-0">
