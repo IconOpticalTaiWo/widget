@@ -207,7 +207,7 @@
       var Warnings = [];
 
       // accidental anisometropia
-      {
+      if (Rx.Purposes !== 'COPY') {
         let Sph_R = Rx.F_Sphere_R
         let Sph_L = Rx.F_Sphere_L
         if (Sph_R[0] != Sph_L[0] && Math.abs(Sph_R) > 25 && Math.abs(Sph_L) > 25) {
