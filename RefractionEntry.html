@@ -263,6 +263,9 @@
 
       var IncompleteForm = false
 
+
+      $('.rx-table input[placeholder]').removeAttr('placeholder')
+
       if (!Refraction.tel) {
         $('input[name=tel]').attr('placeholder', '請輸入客入電話')
         $('input[name=tel]')[0].focus()
