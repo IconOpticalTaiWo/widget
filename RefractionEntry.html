@@ -275,9 +275,11 @@
         IncompleteForm = true
       }
 
+      var RequiredGroup = $('input[name=Purposes]').val() === 'COPY' ? ['F_', ''] : ['']
+
       var PDValidation = /^[2-8][0-9](?:\.5|\.25|\.75)?$/
       for (let Side of ['R', 'L']) {
-        for (let Prefix of ['F_', '']) {
+        for (let Prefix of RequiredGroup) {
           let Target = $(`input[name=${Prefix}PD_${Side}]`)
           if (!Target.val()) {
             Target.attr('placeholder', '請輸入')
@@ -291,7 +293,7 @@
 
       var SphereValidation = /^[\+\-][0-9]{1,2}(?:00|25|50|75)$/;
       for (let Side of ['R', 'L']) {
-        for (let Prefix of ['F_', '']) {
+        for (let Prefix of RequiredGroup) {
           let Target = $(`input[name=${Prefix}Sphere_${Side}]`)
           if (!Target.val()) {
             Target.attr('placeholder', '請輸入')
@@ -305,7 +307,7 @@
 
       var CylinderValidation = /^-[0-9](?:00|25|50|75)$/;
       for (let Side of ['R', 'L']) {
-        for (let Prefix of ['F_', '']) {
+        for (let Prefix of RequiredGroup) {
           let Target = $(`input[name=${Prefix}Cylinder_${Side}]`)
           if (!Target.val()) {
             // empty cyl is allowed
@@ -317,7 +319,7 @@
 
       var AxisValidation = /^0[0-9]{2}|[1][0-7][0-9]|180$/;
       for (let Side of ['R', 'L']) {
-        for (let Prefix of ['F_', '']) {
+        for (let Prefix of RequiredGroup) {
           let Target = $(`input[name=${Prefix}Axis_${Side}]`)
           let TargetCyl = $(`input[name=${Prefix}Cylinder_${Side}]`)
           if (!Target.val()) {
@@ -338,13 +340,15 @@
         }
       }
 
-      if ($('input[name=Purposes]').val() !== 'COPY') {
-        for (let Side of ['R', 'L']) {
-          let Target = $(`input[name=F_VA_${Side}]`)
-          if (!Target.val()) {
-            Target.attr('placeholder', '請輸入')
-            Target[0].focus()
-            IncompleteForm = true
+      for (let Side of ['R', 'L']) {
+        for (let Prefix of RequiredGroup) {
+          if (Prefix.length > 0) {
+            let Target = $(`input[name=${Prefix}VA_${Side}]`)
+            if (!Target.val()) {
+              Target.attr('placeholder', '請輸入')
+              Target[0].focus()
+              IncompleteForm = true
+            }
           }
         }
       }
