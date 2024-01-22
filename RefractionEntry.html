@@ -275,7 +275,7 @@
         IncompleteForm = true
       }
 
-      var RequiredGroup = $('input[name=Purposes]').val() === 'COPY' ? ['F_', ''] : ['']
+      var RequiredGroup = $('input[name=Purposes]').val() === 'COPY' ? [''] : ['F_', '']
 
       var PDValidation = /^[2-8][0-9](?:\.5|\.25|\.75)?$/
       for (let Side of ['R', 'L']) {
