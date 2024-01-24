@@ -279,10 +279,10 @@
   </dialog>
 </body>
 <script>
-  function DatePickerInit() {
-    $('#Input_InvoiceDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
-  }
-  DatePickerInit()
+  // function DatePickerInit() {
+  //   $('#Input_InvoiceDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
+  // }
+  // DatePickerInit()
 
   document.querySelectorAll("input").forEach((E) => {
     E.style.height = "80px"
@@ -313,6 +313,7 @@
         Loading(false)
         $('#Input_InvoiceSum').val("")
         $('#Input_InvoiceNumber').val("")
+        $('#Input_InvoiceDate').val("")
         Form.classList.remove('was-validated')
       })
     }
