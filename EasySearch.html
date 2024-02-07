@@ -67,7 +67,7 @@
           var CurrentMember = TemplateClone(display_member_template)
           var D = CurrentMember.find('details')
           item.branch = window.localStorage.IconOpticalBranch
-          D.find('summary').html(`<div class="text-end"><u>#${item.last_order_id}<u></div><br>${item.display_name}<br>${item.tel}`)
+          D.find('summary').html(`<div class="text-end"><u>#${item.last_order_id}</u></div>${item.display_name}<br>${item.tel}`)
           D.find('form input').each((i, e) => e.value = item[e.name])
           CurrentMember.appendTo(Display)
         }
