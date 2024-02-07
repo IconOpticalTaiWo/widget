@@ -53,7 +53,7 @@
       Display.html(String.raw`<span class="spinner-border"></span><span class="ps-3 fw-bold">載入中...</span>`)
       $('#PickUserModal')[0].showModal()
 
-      var PhoneNumber = $('#SearchUserModal input[name=tel]').val()
+      var PhoneNumber = $('#user-keyword').val()
       GetMemberListByPhoneNumber(PhoneNumber).then(response => {
         Display.html('')
         if (response.length === 0) {
@@ -198,7 +198,7 @@
     <div class="card shadow-lg p-2 bg-body-tertiary">
       <div class="card-body">
 
-        <form class="input-group mb-5" autocomplete="off" onsubmit='SearchUser(); return false;'>
+        <form class="input-group mb-5" autocomplete="off" onsubmit='PickUser(); return false;'>
           <input type="text" inputmode="numeric" class="form-control shadow-none border-success f-lg ps-4" id="user-keyword" placeholder="輸入電話" autofocus>
           <button tabindex="-1" class="btn btn-success p-3" type="submit">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" version="2.0">
