@@ -18,6 +18,10 @@
     function SearchUser() {LoadRequest("user-keyword", "wp-admin/users.php?s=")}
     function SearchGeneral() {LoadRequest("general-keyword", "wp-admin/edit.php?post_status=all&post_type=shop_order&s=")}
 
+    function HideOtherDetails(that) {
+      if ($(that).attr('open')) $('details').not(that).removeAttr('open')
+    }
+
     function TemplateClone(IDSelector) {
       return $($(IDSelector)[0].content.firstElementChild).clone()
     }
@@ -33,7 +37,6 @@
     function CloseModal(that) {
       that.closest('dialog').close()
     }
-
 
     function CheckMemberHistory(that) {
       var LastOrderID = GetNearestForm(that)['last_order_id'].value
@@ -64,7 +67,7 @@
           var CurrentMember = TemplateClone(display_member_template)
           var D = CurrentMember.find('details')
           item.branch = window.localStorage.IconOpticalBranch
-          D.find('summary').html(`${item.display_name}<br>${item.tel}<br>#${item.last_order_id}`)
+          D.find('summary').html(`<div class="text-end"><u>#${item.last_order_id}<u></div><br>${item.display_name}<br>${item.tel}`)
           D.find('form input').each((i, e) => e.value = item[e.name])
           CurrentMember.appendTo(Display)
         }
