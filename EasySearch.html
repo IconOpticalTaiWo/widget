@@ -52,6 +52,8 @@
     }
 
     function PickUser() {
+      if (!$('#user-keyword').val()) return;
+
       var Display = $('#DisplayMemberList')
       Display.html(String.raw`<span class="spinner-border"></span><span class="ps-3 fw-bold">載入中...</span>`)
       $('#PickUserModal')[0].showModal()
