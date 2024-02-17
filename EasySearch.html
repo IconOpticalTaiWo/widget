@@ -51,7 +51,7 @@
       return $.get(`https://iconoptical.com/get_users_by_tel.php?value=${PhoneNumber}`).then(R => JSON.parse(R))
     }
 
-    function SortMemberList(){
+    function SortMemberList() {
 
     }
 
@@ -69,9 +69,8 @@
           Display.html(`${PhoneNumber}<br>尚未登記為會員`)
           return
         }
-        console.log('original: ',response)
-        console.log('sorted: ',response.sort((a,b)=>b.last_order_id-a.last_order_id ))
-        for (var item of response) {
+
+        for (var item of response.sort((a, b) => b.last_order_id - a.last_order_id)) {
           var CurrentMember = TemplateClone(display_member_template)
           var D = CurrentMember.find('details')
           item.branch = window.localStorage.IconOpticalBranch
