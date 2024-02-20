@@ -53,7 +53,7 @@
       $.ajax(RefractionQueue_EndPoint, {
         method: 'POST',
         data: Object.fromEntries(FD)
-      }).then(ReloadWaitingList)
+      })
     }
 
     function AddToQueue(that) {
