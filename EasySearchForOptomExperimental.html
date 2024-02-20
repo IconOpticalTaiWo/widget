@@ -12,6 +12,9 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script>
 
+    var RefractionQueue_EndPoint = '/cgi/rx_queue_controller'
+    var RefractionEntry_EndPoint = '/RefractionEntry'
+
     function HideOtherDetails(that) {
       if ($(that).attr('open')) $('details').not(that).removeAttr('open')
     }
@@ -28,8 +31,33 @@
       return $(that).closest(':has(dialog)').find('dialog')[0]
     }
 
+    function RedirectToRefraction(that) {
+      var TargetForm = GetNearestForm(that)
+
+      // var FD = Object.fromEntries(new FormData(TargetForm))
+
+      var AsArrayFD = Array.from(new FormData(TargetForm), arr => `${arr[0]}=${arr[1]}`)
+      var RedirectLink = `${RefractionEntry_EndPoint}?${encodeURI(AsArrayFD.join('&'))}`
+      window.open(RedirectLink, '_self')
+    }
+
     function CloseModal(that) {
       that.closest('dialog').close()
+    }
+
+    function PerformRefractionQueueAction(Caller, Action) {
+      if (!Action) return
+      var TargetForm = GetNearestForm(Caller)
+      var FD = new FormData(TargetForm)
+      FD.set('action', Action)
+      $.ajax(RefractionQueue_EndPoint, {
+        method: 'POST',
+        data: Object.fromEntries(FD)
+      }).then(ReloadWaitingList)
+    }
+
+    function AddToQueue(that) {
+      PerformRefractionQueueAction(that, 'waiting_for_rx')
     }
 
     function CheckMemberHistory(that) {
@@ -167,7 +195,7 @@
           </form>
           <div class="row gap-2 m-auto">
             <button class="col btn btn-primary fs-3 fw-bold p-3 " onclick="CheckMemberHistory(this)">查看紀錄</button>
-            <!-- <button class="col btn btn-success fs-3 fw-bold p-3 " onclick="AddToQueue(this);CloseModal(this);">輪候驗眼</button> -->
+            <button class="col btn btn-success fs-3 fw-bold p-3 " onclick="AddToQueue(this);CloseModal(this);RedirectToRefraction(this);">驗眼</button>
           </div>
         </div>
       </details>
