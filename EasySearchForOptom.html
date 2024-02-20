@@ -55,6 +55,12 @@
       })
     }
 
+    // AddToQueue requires branch parameter
+    // but this page does not contain such information
+    // function AddToQueue(that) {
+    //   PerformRefractionQueueAction(that, 'waiting_for_rx')
+    // }
+    
     function CheckMemberHistory(that) {
       var LastOrderID = GetNearestForm(that)['last_order_id'].value
       if (LastOrderID == 0) {
@@ -184,6 +190,7 @@
             <input type="hidden" name="display_name" value>
             <input type="hidden" name="user_id" value>
             <input type="hidden" name="tel" value>
+            <!-- <input type="hidden" name="branch" value> -->
           </form>
           <div class="row gap-2 m-auto">
             <button class="col btn btn-primary fs-3 fw-bold p-3 " onclick="CheckMemberHistory(this)">查看紀錄</button>
