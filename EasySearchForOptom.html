@@ -44,23 +44,6 @@
       that.closest('dialog').close()
     }
 
-    function PerformRefractionQueueAction(Caller, Action) {
-      if (!Action) return
-      var TargetForm = GetNearestForm(Caller)
-      var FD = new FormData(TargetForm)
-      FD.set('action', Action)
-      $.ajax(RefractionQueue_EndPoint, {
-        method: 'POST',
-        data: Object.fromEntries(FD)
-      })
-    }
-
-    // AddToQueue requires branch parameter
-    // but this page does not contain such information
-    // function AddToQueue(that) {
-    //   PerformRefractionQueueAction(that, 'waiting_for_rx')
-    // }
-    
     function CheckMemberHistory(that) {
       var LastOrderID = GetNearestForm(that)['last_order_id'].value
       if (LastOrderID == 0) {
@@ -234,22 +217,22 @@
     <div class="card shadow-lg p-2 bg-body-tertiary">
       <div class="card-body">
 
-        <form class="input-group mb-5" autocomplete="off" onsubmit='PickUser(); return false;'>
+        <!-- <form class="input-group mb-5" autocomplete="off" onsubmit='PickUser(); return false;'>
           <input type="text" inputmode="numeric" class="form-control shadow-none border-success f-lg ps-4" id="user-keyword" placeholder="輸入電話" autofocus>
           <button tabindex="-1" class="btn btn-success p-3" type="submit">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" version="2.0">
               <use href="#search-symbol" />
             </svg>
           </button>
-        </form>
+        </form> -->
 
         <button tabindex="-1" class="btn btn-success  p-3 w-100 mb-5" type="button" onclick="window.open('https://operation.iconoptical.com/RefractionQueue','_self')">
           <div class="f-lg">輪候驗眼</div>
         </button>
-
+<!-- 
         <button tabindex="-1" class="btn btn-primary p-3 w-100 mb-5" type="button" onclick="window.open('https://www.iconoptical.com/CreateUser.php','_blank')">
           <div class="f-lg">新會員登記</div>
-        </button>
+        </button> -->
 
         <!-- <button tabindex="-1" class="btn btn-success p-3 w-100 mb-5" type="button" onclick="window.open('RefractionViewer','_self')">
           <div class="f-lg">檢視度數紀錄</div>
