@@ -133,6 +133,10 @@
       return Dialog[0]
     }
 
+    function ChangeBranch(that) {
+      BranchSelector.innerHTML = window.localStorage.IconOpticalBranch = that.value
+    }
+
     function PickBranch() {
       OpenDialog({
         Header: '請選擇分店',
