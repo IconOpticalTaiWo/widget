@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>分店賬單待付款紀錄</title>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0'>
+    <script src='JS/jquery-3.7.1.min.js'></script>
+    <script src='JS/public-gsheet-parser.js'></script>
+    <link href="CSS/bootstrap.min.5.3.0.css" rel="stylesheet">
+    <style>
+        .bounded-width {
+            width: 100vw;
+            max-width: 500px;
+            min-width: 360px;
+        }
+
+        .f-xlg {
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .f-sm {
+            font-size: 16px;
+        }
+
+        .invisible {
+            visibility: hidden;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .ticket {
+            margin-bottom: 20px;
+        }
+
+        .ticket [name=InvoiceSum]::before {
+            content: "$";
+        }
+
+        .ticket [name=PaymentAmount]::before {
+            content: "$";
+        }
+    </style>
+</head>
+
+<body class="bg-body-tertiary">
+    <h2 class="f-xlg m-3 text-center">分店賬單​待付款紀錄</h2>
+
+    <main id="ticket-container" class="container bounded-width"></main>
+
+    <template id="invoice-entry-template">
+        <div class="form-check">
+            <!-- <input class="form-check-input" type="checkbox" id onchange="CalculateTicketTotalAmount(this)" value sum checked> -->
+            <input class="form-check-input" type="checkbox" id onchange="CalculateTicketTotalAmount(this)" value sum >
+            <label class="form-check-label w-100" for>
+                <div class="row fs-6">
+                    <span name="InvoiceDate" class="col text-start"></span>
+                    <span name="InvoiceNumber" class="col-auto"></span>
+                    <span name="InvoiceSum" class="col text-end"></span>
+                </div>
+            </label>
+        </div>
+    </template>
+
+    <template id="ticket-template">
+        <div class="card ticket shadow text-center">
+            <div class="card-header bg-success-subtle text-success-emphasis fw-bold fs-4">
+                <span name="PaymentTo"></span>
+                <span name="PaymentAmount" class="float-end"></span>
+            </div>
+            <div class="card-body" InvoiceGroupListing>
+            </div>
+            <div class="card-footer">
+                <span name="Branch" class="float-start"></span>
+                <span name="ExpenseCategory" class="float-end"></span>
+            </div>
+        </div>
+    </template>
+
+    <dialog id='SetPaidDialog' class="bounded-width overflow-y-scroll">
+        <form onsubmit='SetPaid(this); return false;' class='form-control fs-4' autocomplete='off'>
+            <input type="hidden" name='Action' value='BatchUpdate'>
+            <input type="hidden" name="TableName" value="main">
+            <input type="hidden" name="SheetID" value="1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4">
+            <input type="hidden" name='PaymentStatus' value="Paid">
+            <!-- <input type="hidden" name='KeyField' value='InvoiceNumber'> -->
+            <input type="hidden" name='KeyField' value='EntryTimeStamp'>
+            <input type="hidden" name='KeyValue' value>
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentDate">付款日期</label>
+                <input class="col form-control" id="Input_PaymentDate" type="date" required name="PaymentDate" onclick="this.showPicker()">
+            </div>
+
+            <div class="row mb-2 ms-0 me-0">
+                <div>賬單編號</div>
+                <div class="border rounded" InvoiceCheckboxListing></div>
+            </div>
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentAmount">付款金額</label>
+                <input class="col form-control" id="Input_PaymentAmount" type="text" value required name="PaymentAmount">
+            </div>
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentMethod">付款方式</label>
+                <input class="col form-control" id="Input_PaymentMethod" type="text" required name="PaymentMethod" list="PaymentMethodList">
+
+                <datalist id="PaymentMethodList">
+                    <option value="支票"></option>
+                    <option value="FPS"></option>
+                </datalist>
+            </div>
+
+            <div class="row mb-2 me-0">
+                <label class="col-auto col-form-label" for="Input_PaymentNumber">參考編號</label>
+                <input class="col form-control" id="Input_PaymentNumber" type="text" required name="PaymentNumber">
+            </div>
+
+            <div class="row ps-2 pe-2">
+                <button class='col-8 btn btn-success f-xlg h-100' type='submit' autofocus>確認付款紀錄</button>
+                <div class='col-1'></div>
+                <button class='col-3 btn btn-secondary f-xlg h-100' type='button' onclick='CloseModal(this)'>取消</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div class='spinner-border hidden' style='position:relative; left:50%; top:1vh; translate: -50%;' id='loader-widget'></div>
+
+    <div class='text-center' style='margin-top: 2em;'>
+        <a href='https://docs.google.com/spreadsheets/d/1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4/edit#gid=0' target='_blank' style='text-decoration: none;'>Link to Google Sheet</a>
+    </div>
+</body>
+
+<script>
+
+    function DatePickerInit() {
+        $('#Input_PaymentDate').val(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10));
+    }
+    DatePickerInit()
+
+    var ActionURL = 'https://script.google.com/macros/s/AKfycbzgDgTdRnj7gDNf8KpNDtHiESULzcqMsre5VHgB7LskiY1118jbDq9rGfFZlN8JvwOYpA/exec'
+
+    var LoaderWidget = $('#loader-widget')
+    function Loading(isLoading) {
+        if (isLoading) LoaderWidget.removeClass('hidden'); else LoaderWidget.addClass('hidden')
+    }
+
+    var OutputDevice = $('#ticket-container')
+    function Output(Content) { OutputDevice.html(Content) }
+
+    function CollapseAsInvoiceGroup(DB) {
+        var NewDB = {}
+        DB.forEach(E => {
+            var Key = `${E.Branch}|${E.PaymentTo}|${E.ExpenseCategory}`
+            NewDB[Key] ??= {}
+            var CurrentTicket = NewDB[Key]
+            CurrentTicket.Branch ??= E.Branch
+            CurrentTicket.PaymentTo ??= E.PaymentTo
+            CurrentTicket.ExpenseCategory ??= E.ExpenseCategory
+            CurrentTicket.PaymentAmount ??= 0
+            CurrentTicket.PaymentAmount += parseInt(E.InvoiceSum)
+
+            CurrentTicket.InvoiceGroup ??= {}
+            CurrentTicket.InvoiceGroup[E.InvoiceNumber] = {}
+
+            var NewEntry = CurrentTicket.InvoiceGroup[E.InvoiceNumber]
+            NewEntry.EntryTimeStamp = E.EntryTimeStamp
+            NewEntry.InvoiceNumber = E.InvoiceNumber
+            NewEntry.InvoiceSum = E.InvoiceSum
+            NewEntry.InvoiceDate = E.InvoiceDate.substring(5)
+        })
+        return Object.values(NewDB)
+    }
+
+    var DataBase
+    function ReloadDataBase() {
+        return ReadGoogleSheet('1kHBTv6OTA57rAmwvumf2zXcbqotjXRrxkirSbDpPYZ4', 'main', 'select A,C,D,E,F,G,H where M="Pending"')
+            .then(CollapseAsInvoiceGroup)
+            .then(R => DataBase = R)
+    }
+
+    Loading(true)
+    ReloadDataBase().then((DB) => {
+        ReloadTickets(DB)
+        Loading(false)
+    })
+
+    function CloseModal(that) {
+        $(that).parents('dialog').last()[0].close()
+    }
+
+    function TemplateClone(IDSelector) {
+        return $($(IDSelector).clone()[0].content.firstElementChild)
+    }
+    function TicketClone() {
+        return TemplateClone('#ticket-template')
+    }
+    function InvoiceEntryClone() {
+        return TemplateClone('#invoice-entry-template')
+    }
+
+    function CalculateTicketTotalAmount(that) {
+        var This = $(that).parents('[InvoiceCheckboxListing]')
+        $('#Input_PaymentAmount').val(
+            This.find('input[type=checkbox]:checked').toArray().reduce((R, V) => R + parseInt($(V).attr('sum')), 0)
+        )
+    }
+
+    function AddTicket(Ticket) {
+        var NewTicket = TicketClone()
+
+        Object.keys(Ticket).forEach(Key => {
+            NewTicket.find(`[name=${Key}]`).html(Ticket[Key])
+        })
+
+        var InvoiceGroupContainer = NewTicket.find('[InvoiceGroupListing]').html('')[0]
+        Object.values(Ticket.InvoiceGroup).forEach(InvoiceDetail => {
+            var NewInvoiceEntry = InvoiceEntryClone().appendTo(InvoiceGroupContainer)
+            NewInvoiceEntry.find('input[type=checkbox]').remove()
+            Object.keys(InvoiceDetail).forEach(Key => {
+                NewInvoiceEntry.find(`[name=${Key}]`).html(InvoiceDetail[Key])
+            })
+        })
+
+        NewTicket
+            .on('click', () => {
+                var SetPaidDialog = $('#SetPaidDialog')
+
+                var InvoiceCheckboxContainer = SetPaidDialog.find('[InvoiceCheckboxListing]').html('')[0]
+                Object.values(Ticket.InvoiceGroup).forEach(InvoiceDetail => {
+                    var NewInvoiceEntry = InvoiceEntryClone().appendTo(InvoiceCheckboxContainer)
+                    NewInvoiceEntry
+                        .find('input[type=checkbox]')
+                        .attr('id', `checkbox_${InvoiceDetail.InvoiceNumber}`)
+                        .attr('sum', InvoiceDetail.InvoiceSum)
+                        // .val(InvoiceDetail.InvoiceNumber)
+                        .val(InvoiceDetail.EntryTimeStamp)
+                    NewInvoiceEntry
+                        .find('label')
+                        .attr('for', `checkbox_${InvoiceDetail.InvoiceNumber}`)
+                    Object.keys(InvoiceDetail).forEach(Key => {
+                        NewInvoiceEntry.find(`[name=${Key}]`).html(InvoiceDetail[Key])
+                    })
+                })
+                // $('#Input_PaymentAmount').val(Ticket.PaymentAmount)
+                // only enable if default checked
+                // current default is unchecked
+
+                SetPaidDialog[0].showModal()
+            })
+            .appendTo(OutputDevice)
+
+    }
+
+    function ReloadTickets(DB) {
+        Output('')
+        DB.forEach(AddTicket)
+    }
+
+    function AsyncSubmit(Form) {
+        return $.get(ActionURL, $(Form).serialize())
+    }
+
+    function SetPaid(that) {
+        var KeyValueList = $('[InvoiceCheckboxListing]').find('input[type=checkbox]:checked').toArray().map(E => E.value).join(',')
+        $(that).find('[name=KeyValue]').val(KeyValueList)
+
+        Output('')
+        CloseModal(that)
+        Loading(true)
+        AsyncSubmit(that).then(() => {
+            $('#Input_PaymentNumber').val('')
+            $('#Input_PaymentMethod').val('')
+            ReloadDataBase().then((DB) => {
+                ReloadTickets(DB)
+                Loading(false)
+            })
+        })
+    }
+
+</script>
+
+</html>

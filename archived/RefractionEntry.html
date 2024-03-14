@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Refraction Entry</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
+  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=0.75, maximum-scale=1.0, user-scalable=no">
+  <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2018/02/cropped-logo-32x32.jpg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <style>
+    body {
+      margin: auto;
+      padding: 0;
+      max-width: 96vw;
+      height: 94dvh;
+      max-height: 94dvh;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+    }
+
+    small {
+      opacity: 0.4;
+      font-size: 0.7em;
+      font-weight: 200;
+      margin-left: -8px;
+      /* pointer-events: none; */
+    }
+
+    .w-40 {
+      width: 40%;
+    }
+
+    .f-lg {
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    .f-picker-normal {
+      font-weight: 600;
+      font-size: 22px;
+    }
+
+    .f-picker-lg {
+      font-weight: 600;
+      font-size: 28px;
+    }
+
+    .rx-group-header {
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .rx-table input {
+      text-align: center;
+      font-weight: 600;
+      font-size: 20px;
+      padding: 10px 0;
+      margin-bottom: 4px;
+    }
+
+    .rx-table input:invalid {
+      background-color: rgba(255, 20, 20, 0.6);
+    }
+
+    /* .rx-entry-sph {}
+
+    .rx-entry-cyl {}
+
+    .rx-entry-axis {}
+
+    .rx-entry-add {}
+
+    .rx-entry-h {}
+
+    .rx-entry-va {}
+
+    .rx-entry-pd {} */
+
+
+    .rx-table {
+      /* overflow: hidden; */
+    }
+
+    .btn-numpad {
+      aspect-ratio: var(--aspect, 1/1);
+      width: 100%;
+    }
+
+    .btn-picker {
+      aspect-ratio: var(--aspect, 4/1);
+      width: 100%;
+    }
+
+    .aspect-21 {
+      --aspect: 2/1;
+    }
+
+    .aspect-31 {
+      --aspect: 3/1;
+    }
+
+    .aspect-43 {
+      --aspect: 4/3;
+    }
+
+    [debug] {
+      display: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+  <script>
+    window.sessionStorage.DebugWatch = {};
+
+    var HashTag = window.location.hash?.substring(1)
+    var DebugMode = HashTag.match(/debug/i)
+    var TouchMode = 'ontouchstart' in window
+    var QueryString = new URLSearchParams(window.location.search)
+
+    function DebugPrint(...Args) {
+      if (DebugMode) console.log(...Args)
+    }
+
+    function FillData(RefractionRecord) {
+      // $('[name="optometrist"]').val(RefractionRecord.optometrist)
+      // $('[name="Purposes"]').val(RefractionRecord.Purposes)
+      $('.rx-entry, #supplementary_info input').each((unused, e) => {
+        if (RefractionRecord[e.name]) $(e).val(RefractionRecord[e.name])
+      })
+    }
+
+    function FillDataFromIconOptical(RefractionRecordString) {
+      var RefractionRecord = JSON.parse(RefractionRecordString)
+      $('#habbitual_rx_group .rx-entry').each((unused, e) => {
+        // eg. fill Sphere_R into OR_Sphere_R
+        // skip leading 'OR_' on input name
+        var NewValue = RefractionRecord[e.name.slice(3)]
+        if (NewValue && NewValue !== '–––') {
+          $(e).val(NewValue)
+        }
+      })
+
+      // this additional loading need heavy a rework
+      // if (RefractionRecord["result_amount"] === 0) {
+      //   LoadData()
+      // } else {
+      //   $('#supplementary_info input').each((unused, e) => {
+      //     if (RefractionRecord[e.name]) $(e).val(RefractionRecord[e.name])
+      //   })
+      // }
+    }
+
+    function GatherData() {
+      var Refraction = {}
+      var Targets = $('.rx-entry, #supplementary_info input')
+      DebugPrint('GatherData | ', Targets)
+      Targets.each((i, e) => {
+        if (e.value) Refraction[e.name] = e.value
+      })
+      window.sessionStorage.DebugWatch.GatherData = Refraction
+      return Refraction
+    }
+
+    function SaveRefraction(Refraction) {
+      if (Object.keys(Refraction).length === 0) return
+
+      if (window.location.pathname.includes('Experimental')) {
+        console.log('[PseudoPost : Initiate SaveRefraction]')
+        console.log(Refraction)
+        console.log('[PseudoPost : Complete SaveRefraction]')
+        return
+      }
+
+      // pre-condition: Refraction has been validated
+      $('#save-complete-modal')[0].showModal()
+      $('#save-processing-indicator').removeClass('hidden')
+      $('#refraction_id_in_modal').html('');
+
+      $.ajax("https://samyankc.site/cgi/icon_save_refraction", {
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify(Refraction)
+      }).then((response) => {
+        $('#save-processing-indicator').addClass('hidden')
+        $('#refraction_id_input').val(response.refraction_id);
+        $('#refraction_id_in_modal').html(response.refraction_id);
+      });
+    }
+
+    function InvalidValue(Target, Requirement) {
+      if (Requirement.test(Target.val())) return false
+      Target[0].focus()
+      return true
+    }
+
+    function SanityCheck(Rx) {
+      var Warnings = [];
+
+      // accidental anisometropia
+      if (Rx.Purposes !== 'COPY') {
+        let Sph_R = Rx.F_Sphere_R
+        let Sph_L = Rx.F_Sphere_L
+        if (Sph_R[0] != Sph_L[0] && Math.abs(Sph_R) > 25 && Math.abs(Sph_L) > 25) {
+          Warnings.push(`<span class="font-monospace">R: ${Sph_R}<br>L: ${Sph_L}</span>`)
+        }
+      }
+
+
+      return Warnings.join('<br>');
+    }
+
+    function AcknowledgeWarning(WarningMessage) {
+
+      if (WarningMessage.length === 0) return Promise.resolve(true)
+
+      return new Promise((Resolve, Reject) => {
+        $('body').prepend(String.raw`
+          <dialog class="m-auto p-4 rounded-4 border border-3 border-danger shadow" id="AddedByWarnAtypicalResult">
+            <div>
+              <p class="fs-2 fw-bold">罕見度數組合<br> ${WarningMessage} <br>請檢查正確</p>
+            </div>
+            <div class="text-center">
+              <button class='m-2 btn btn-lg btn-danger fs-3 fw-bold confirm'>確定保存</button>
+              <button class='m-2 btn btn-lg btn-success fs-3 fw-bold reject'>進行修改</button>
+            </div>
+          </dialog>
+        `);
+        $('#AddedByWarnAtypicalResult button.confirm').on('click', () => {Resolve(true)})
+        $('#AddedByWarnAtypicalResult button.reject').on('click', () => {Resolve(false)})
+        $('#AddedByWarnAtypicalResult button').on('click', () => {$('#AddedByWarnAtypicalResult').remove()})
+        $('#AddedByWarnAtypicalResult')[0].showModal()
+      })
+
+    }
+
+    function ThoroughValidation() {
+      const Successful = true
+      var ValidationResult = Successful
+
+
+      return ValidationResult
+    }
+
+    async function ValidateThenSave() {
+
+      // to do : make all required field handling centralized
+
+      const TelField = $('.rx-table input[name=tel]')
+      TelField.val(TelField.val().replaceAll(/\s+/g, ''))
+
+      var Refraction = GatherData()
+      if (Object.keys(Refraction).length === 0) return // unfilled form
+
+      var IncompleteForm = false
+
+
+      $('.rx-table input[placeholder]').removeAttr('placeholder')
+
+      if (!Refraction.tel) {
+        $('input[name=tel]').attr('placeholder', '請輸入客入電話')
+        $('input[name=tel]')[0].focus()
+        IncompleteForm = true
+      }
+
+      if (!Refraction.Purposes) {
+        $('input[name=Purposes]').attr('placeholder', '請選擇用途')
+        $('input[name=Purposes]')[0].focus()
+        IncompleteForm = true
+      }
+
+      var RequiredGroup = $('input[name=Purposes]').val() === 'COPY' ? [''] : ['F_', '']
+
+      var PDValidation = /^[2-8][0-9](?:\.5|\.25|\.75)?$/
+      for (let Side of ['R', 'L']) {
+        for (let Prefix of RequiredGroup) {
+          let Target = $(`input[name=${Prefix}PD_${Side}]`)
+          if (!Target.val()) {
+            Target.attr('placeholder', '請輸入')
+            Target[0].focus()
+            IncompleteForm = true
+          } else {
+            IncompleteForm |= InvalidValue(Target, PDValidation)
+          }
+        }
+      }
+
+      var SphereValidation = /^[\+\-][0-9]{1,2}(?:00|25|50|75)$/;
+      for (let Side of ['R', 'L']) {
+        for (let Prefix of RequiredGroup) {
+          let Target = $(`input[name=${Prefix}Sphere_${Side}]`)
+          if (!Target.val()) {
+            Target.attr('placeholder', '請輸入')
+            Target[0].focus()
+            IncompleteForm = true
+          } else {
+            IncompleteForm |= InvalidValue(Target, SphereValidation)
+          }
+        }
+      }
+
+      var CylinderValidation = /^-[0-9](?:00|25|50|75)$/;
+      for (let Side of ['R', 'L']) {
+        for (let Prefix of RequiredGroup) {
+          let Target = $(`input[name=${Prefix}Cylinder_${Side}]`)
+          if (!Target.val()) {
+            // empty cyl is allowed
+          } else {
+            IncompleteForm |= InvalidValue(Target, CylinderValidation)
+          }
+        }
+      }
+
+      var AxisValidation = /^0[0-9]{2}|[1][0-7][0-9]|180$/;
+      for (let Side of ['R', 'L']) {
+        for (let Prefix of RequiredGroup) {
+          let Target = $(`input[name=${Prefix}Axis_${Side}]`)
+          let TargetCyl = $(`input[name=${Prefix}Cylinder_${Side}]`)
+          if (!Target.val()) {
+            if (TargetCyl.val()) {
+              Target.attr('placeholder', '請輸入')
+              Target[0].focus()
+              IncompleteForm = true
+            }
+          } else {
+            if (!TargetCyl.val()) {
+              TargetCyl.attr('placeholder', '==>')
+              Target[0].focus()
+              IncompleteForm = true
+            } else {
+              IncompleteForm |= InvalidValue(Target, AxisValidation)
+            }
+          }
+        }
+      }
+
+      for (let Side of ['R', 'L']) {
+        for (let Prefix of RequiredGroup) {
+          if (Prefix.length > 0) {
+            let Target = $(`input[name=${Prefix}VA_${Side}]`)
+            if (!Target.val()) {
+              Target.attr('placeholder', '請輸入')
+              Target[0].focus()
+              IncompleteForm = true
+            }
+          }
+        }
+      }
+
+      if (IncompleteForm) return
+
+      Refraction.create_date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)
+      // Refraction.by = Refraction.optometrist
+
+      var Warnings = SanityCheck(Refraction)
+      if (await AcknowledgeWarning(Warnings)) SaveRefraction(Refraction)
+
+    }
+
+    function LoadData() {
+      $.ajax("https://samyankc.site/cgi/icon_load_refraction", {
+        type: 'GET',
+        data: {
+          refraction_id: $('input[name=refraction_id]').val(),
+          user_id: $('input[name=user_id]').val(),
+          tel: $('input[name=tel]').val()
+        }
+      }).then(FillData);
+    }
+
+    function LoadDataFromIconOpticalIndirect(UserID, RxType) {
+      $.ajax("https://samyankc.site/cgi/icon_load_refraction_indirect", {
+        type: 'POST',
+        data: {
+          action: "get_last_tm_data_action",
+          type: RxType,
+          user_id: UserID
+        }
+      }).then(FillDataFromIconOptical);
+    }
+
+    function LoadDataFromIconOptical(UserID, RxType) {
+      $.ajax("https://www.iconoptical.com/wp-admin/admin-ajax.php", {
+        type: 'POST',
+        data: {
+          action: "get_last_tm_data_action",
+          type: RxType,
+          user_id: UserID
+        }
+      }).then(FillDataFromIconOptical);
+    }
+
+    function ClearAll() {
+      // $('#refraction_id_input').val("")
+      alert("此功能只可為同一位客人使用\n如果需要為新客人驗眼,請重新開始流程");
+      $('.rx-table input.rx-entry:not(#optom_name_input, #customer_phone_input)').val("")
+    }
+
+
+    var FocusedCell;
+
+    function SwitchInputPanel() {
+      function StripDecorator(FullName) {
+        var Fragment = FullName.split('_')
+        if (Fragment.length < 2) return Fragment[0]
+        return Fragment.at(-2)
+      }
+
+      var ActiveInputPanel = '.standard-numpad'
+      switch (StripDecorator(FocusedCell.name)) {
+        case 'optometrist': ActiveInputPanel = '.optom-picker'; break
+        case 'VA': ActiveInputPanel = '.va-picker'; break
+        case 'Purposes': ActiveInputPanel = '.purposes-picker'; break
+      }
+      $('.input-panel').addClass('hidden')
+      $(ActiveInputPanel).removeClass('hidden')
+
+    }
+
+    function UpdateNumpadDisplay() {
+      $('#numpad-display-panel').val(FocusedCell.value)
+    }
+
+    function SwitchFocus(Element) {
+      FocusedCell = Element
+      $('#CurrentFocus').html(FocusedCell.name)
+
+      // to do :  make switch purpose as input event listener
+      if (FocusedCell === $('#refraction_purposes_input')[0]) {
+        if (FocusedCell.value.length === 0) {
+          FocusedCell.value = "配眼鏡處方"
+          SwitchPurposes(FocusedCell.value)
+        }
+      }
+      SwitchInputPanel()
+      UpdateNumpadDisplay()
+    }
+
+    function Focusing(NameFragment) {
+      // if (!FocusedCell) return false
+      return FocusedCell?.name.includes(NameFragment)
+    }
+
+    function CheckThenInvoke(Func, ...Arg) {
+      $('#LastNumpadKey').html(Arg[0] ?? 'N/A')
+      if (!FocusedCell || !Func) return
+      Func(...Arg)
+      UpdateNumpadDisplay()
+    }
+
+    function AssignValue(NewContent) {
+      FocusedCell.value = NewContent
+      // FocusedCell.dispatchEvent(new Event('input'))
+      $(FocusedCell).trigger('input')
+    }
+
+    function AppendValue(Content) {
+      AssignValue(FocusedCell.value + Content)
+    }
+
+    function AppendValueThenNextCell(Content) {
+      AssignValue(FocusedCell.value + Content)
+      NextCell()
+    }
+
+    function PrependValue(Content) {
+      AssignValue(Content + FocusedCell.value)
+    }
+
+    function CounterPartOf(Content) {
+      switch (Content) {
+        case '+': return '-'
+        case '-': return '+'
+      }
+      return void 0;
+    }
+
+    function SetPrefix(Content) {
+      if (FocusedCell.value.startsWith(Content)) return;
+      if (FocusedCell.value.startsWith(CounterPartOf(Content))) {
+        AssignValue(FocusedCell.value.replace(CounterPartOf(Content), Content))
+      } else {
+        PrependValue(Content)
+      }
+    }
+
+    function SetSuffix(Content) {
+      if (FocusedCell.value.endsWith(Content)) return;
+      if (FocusedCell.value.endsWith(CounterPartOf(Content))) {
+        AssignValue(FocusedCell.value.replace(CounterPartOf(Content), Content))
+      } else {
+        AppendValue(Content)
+      }
+    }
+
+    function EraseBack() {
+      if (FocusedCell.value === "") return
+      AssignValue(FocusedCell.value.slice(0, -1))
+    }
+
+    function ClearCell() {
+      AssignValue("")
+    }
+
+    function AdjustLeadingZero(OldValue) {
+      if (!OldValue) return ""
+
+      var Prefix = OldValue[0]
+      if (!["+", "-"].includes(Prefix)) Prefix = ""
+
+      var MainValueBody = OldValue.replace(/^[^\d]*/i, '')
+      switch (MainValueBody) {
+        default: return OldValue
+        case "0": MainValueBody = "00"
+        case "00": Prefix = "+"
+        case "25":
+        case "50":
+        case "75":
+          return Prefix + "0" + MainValueBody
+      }
+    }
+
+    function NextCell() {
+      const LastCellName = 'VA_L'
+      if (FocusedCell.name === LastCellName) {
+        $('input[name=OR_Sphere_R]')[0].focus()
+      } else {
+        $(`input[tabindex=${FocusedCell.tabIndex + 1}]`)[0].focus()
+      }
+    }
+
+    function PickOptom(Optom) {
+      window.localStorage.optometrist_on_duty = Optom
+      AssignValue(Optom)
+    }
+
+    function SwitchToPL() {
+      if (Focusing('Sphere')) AssignValue("+000")
+    }
+
+    function SwitchMinus() {
+      if (Focusing('VA')) {
+        if (/^(?:0.[1-9]|1.0|1.2)[+-]?$/.test(FocusedCell.value)) return SetSuffix('-')
+      }
+
+      if (Focusing('Sphere') || Focusing('Cylinder')) {
+        if (FocusedCell.value === '+000') return;
+        SetPrefix('-')
+      }
+    }
+
+    function SwitchPlus() {
+      if (Focusing('VA')) {
+        if (/^(?:0.[1-9]|1.0|1.2)[+-]?$/.test(FocusedCell.value)) return SetSuffix('+')
+      }
+
+      if (Focusing('Sphere')) {
+        SetPrefix('+')
+      }
+    }
+
+    function ClearAdjustedRx() {
+      $('#adjusted_rx_group').find('input').val("")
+    }
+
+    function CopyFromFullRx(...FieldNames) {
+      for (var Name of FieldNames) {
+        for (var Side of ['R', 'L']) {
+          $(`input[name=${Name}_${Side}]`).val($(`input[name=F_${Name}_${Side}]`).val())
+        }
+      }
+    }
+
+    function CopyFromHabbitualRx(...FieldNames) {
+      for (var Name of FieldNames) {
+        for (var Side of ['R', 'L']) {
+          $(`input[name=${Name}_${Side}]`).val($(`input[name=OR_${Name}_${Side}]`).val())
+        }
+      }
+    }
+
+    function SwitchPurposes(Content) {
+      ClearAdjustedRx()
+      if (Content.includes('ClearAdjustedRx')) return ClearCell()
+
+      AssignValue(Content)
+      // try {
+      // Phase 1 Fallthrough Copy
+      switch (Content) {
+        case '配眼鏡處方':
+        case '漸進式':
+        case 'Record':
+        case '雙光':
+          CopyFromFullRx('ADD', 'Prism')
+        case '遠用':
+          CopyFromFullRx('Sphere')
+        case 'Mono Vision':
+          CopyFromFullRx('PD')
+        case '老花 近用':
+        case 'Intermediate | 中距離':
+          CopyFromFullRx('Cylinder', 'Axis', 'VA', 'PD')
+        default: break;
+        case 'COPY':
+          CopyFromHabbitualRx('Sphere', 'Cylinder', 'Axis', 'ADD', 'Prism', 'VA', 'PD')
+      }
+
+
+      // Phase 2 Adjustment
+
+      if (['老花 近用', 'Intermediate | 中距離'].includes(Content)) {
+        // Sphere Adjustment
+        for (var Side of ['R', 'L']) {
+          var S = parseInt($(`input[name=F_Sphere_${Side}]`).val())
+          var A = parseInt($(`input[name=F_ADD_${Side}]`).val())
+
+          if (Content === 'Intermediate | 中距離') {
+            A -= A % 50
+            A /= 2
+          }
+
+          if (isNaN(A)) A = 0 // return $(`input[name=F_ADD_${Side}]`).focus()
+
+          var Result = (S + A).toString()
+          var Sign = Result.startsWith('-') ? '-' : '+';
+
+          Result = Result.match(/\d+/)[0]
+
+          switch (Result.length) {
+            case 1: Result = '00' + Result; break
+            case 2: Result = '0' + Result; break
+          }
+
+          $(`input[name=Sphere_${Side}]`).val(Sign + Result)
+        }
+
+        //PD Adjustment
+        for (var Side of ['R', 'L']) {
+          var P = parseFloat($(`input[name=F_PD_${Side}]`).val()) - 1.0
+          // if (isNaN(P)) P = 100.0 // return $(`input[name=F_PD_${Side}]`).focus()
+          if (Content === 'Intermediate | 中距離') P += 0.5
+          $(`input[name=PD_${Side}]`).val(isNaN(P) ? "" : P.toString())
+        }
+      }
+
+      // } catch (err) { }
+
+    }
+
+    var QueryParam_Optometrist = window.localStorage.optometrist_on_duty
+    // var QueryParam_Optometrist = QueryString.get('optometrist') || window.localStorage.optometrist_on_duty // deprecated
+    var QueryParam_BaseRefractionID = QueryString.get('base_refraction_id')
+    var QueryParam_UserID = QueryString.get('userid') || QueryString.get('user_id')
+    var QueryParam_RefractionType = QueryString.get('type') || 1
+    var QueryParam_UserTel = QueryString.get('tel')
+    var TabIndexCounter = 0;
+
+    const Raw = String.raw
+
+    window.onload = function () {
+
+      $('input[name=user_id]').val(QueryParam_UserID)
+      $('input[name=tel]').val(QueryParam_UserTel)
+
+      if (QueryParam_BaseRefractionID) {
+        $('input[name=refraction_id]').val(QueryParam_BaseRefractionID)
+        LoadData()
+      } else {
+        if (QueryParam_UserID) LoadDataFromIconOpticalIndirect(QueryParam_UserID, QueryParam_RefractionType)
+        $('#optom_name_input').val(QueryParam_Optometrist)
+      }
+
+      // input validation pattern
+      $('input[name*=Sphere_]').attr("pattern", Raw`^[\+\-][0-9]{1,2}(?:00|25|50|75)$`)
+      $('input[name*=Cylinder_]').attr("pattern", Raw`^-[0-9](?:00|25|50|75)$`)
+      $('input[name*=Axis_]').attr("pattern", Raw`^0[0-9]{2}|[1][0-7][0-9]|180$`)
+      $('input[name*=ADD_]').attr("pattern", Raw`^[0-9](?:00|25|50|75)$`)
+      $('input[name*=PD_]').attr("pattern", Raw`^[2-8][0-9](?:\.5|\.25|\.75)?$`)
+
+      $('.rx-table input.rx-entry').each((i, e) => {
+        e.tabIndex = ++TabIndexCounter
+      })
+      $('.rx-table input')
+        .attr("inputmode", "none")
+        .attr("autocomplete", "off")
+        .attr("onfocus", "SwitchFocus(this)")
+      $('.btn-numpad').addClass('btn btn-outline-success f-lg')
+      $('.btn-picker').addClass('btn btn-outline-success f-lg')
+      const TouchTrigger = TouchMode ? 'touchstart' : 'mousedown'
+      $('.input-panel button, .input-panel-common button').on(TouchTrigger, e => {
+        e.preventDefault();
+        FocusedCell?.focus()
+        const This = e.currentTarget
+        const Func = window[This.getAttribute('ontouch')]
+        CheckThenInvoke(Func, This.value || This.textContent)
+      })
+      $('.input-panel button, .input-panel-common button').attr("tabIndex", "-1")
+
+      $('input[name*=Sphere_]').on('focusout', e => {
+        const This = e.target
+        This.value = This.value.replace(/^[\+\-]?p+l[^\d]*$/i, '+000').replaceAll(/[^\d\+\-]+/g, '').replace(/^[\+\-]?0+$/i, '+000')
+        $(This)
+          .val(AdjustLeadingZero(This.value))
+          .trigger('input')
+      })
+
+      $('input[name*=Cylinder_]').on('focusout', e => {
+        const This = e.target
+        This.value = This.value.replaceAll(/[^\d]+/g, '')
+        if (This.value.length > 0) {
+          This.value = AdjustLeadingZero(This.value)
+          if (This.value.endsWith('000')) {
+            This.value = ""
+          } else {
+            This.value = '-' + This.value
+          }
+        }
+        $(This).trigger('input')
+      })
+
+      $('input[name*=Axis_]').on('focusout', e => {
+        const This = e.target
+        // const Cylinder = $(`input[name=${This.name.replace('Axis', 'Cylinder')}]`)[0]
+        // if (Cylinder.value === "") return This.value = ""
+        This.value = This.value.replaceAll(/[^\d]+/g, '')
+        switch (This.value.length) {
+          case 1: This.value = '00' + This.value; break
+          case 2: This.value = '0' + This.value; break
+        }
+        if (This.value === '000') This.value = '180'
+        $(This).trigger('input')
+      })
+
+      $('input[name*=ADD_]').on('focusout', e => {
+        const This = e.target
+        This.value = AdjustLeadingZero(This.value.replaceAll(/[^\d]+/g, ''))
+        if (This.name === 'F_ADD_R' && This.value) $(This).trigger('input')
+      })
+
+      $('input[name*=Prism_]').on('focusout', e => {
+        const This = e.target
+        This.value = This.value.replaceAll(/[^\d\.]+/g, '')
+      })
+
+      $('input[name*=VA_]').on('focusout', e => {
+        const This = e.target
+        This.value = This.value.toUpperCase()
+      })
+
+      $('input[name*=PD_]').on('focusout', e => {
+        const This = e.target
+        This.value = This.value.replaceAll(/[^\d\.]+/g, '')
+
+        var asFloat = parseFloat(This.value)
+        if (!isNaN(asFloat)) {
+          if (asFloat > 45) {
+            asFloat = (asFloat / 2).toFixed(2)
+            if (asFloat.endsWith('0')) {asFloat = asFloat.slice(0, -1)}
+            if (asFloat.endsWith('.0')) {
+              asFloat = Math.round(asFloat)
+            }
+            $(`input[name^=${This.name.slice(0, -1)}]`).each((i, e) => {
+              e.value = asFloat
+              e.dispatchEvent(new Event('input'))
+            })
+          }
+        }
+
+      })
+
+      $('input[name^=OR_]').on('input', e => {
+        if ($('input[name=Purposes]').val() !== 'COPY') return
+        const FieldNameSuffix = e.target.name.slice(3)
+        $(`input[name=${FieldNameSuffix}]`).val($(e.target).val())
+      })
+
+      $('input[name^=F_]').on('input', e => {
+        if ($('input[name=Purposes]').val() !== '配眼鏡處方') return
+        const FieldNameSuffix = e.target.name.slice(2)
+        $(`input[name=${FieldNameSuffix}]`).val($(e.target).val())
+      })
+
+      $('input[name=F_ADD_R]').on('input', e => {
+        $('input[name=F_ADD_L]').val(e.target.value).trigger('input')
+      })
+
+      if (DebugMode) {
+        $('[debug]').css('display', 'block')
+        $('body').css('overflow', 'scroll')
+      }
+
+      alert('此版本已被棄置, 請使用[輪候驗眼]流程進入驗眼頁面')
+
+    }
+  </script>
+</head>
+
+<body translate="no">
+  <div debug id="debug-mode-indicator" class="bg-danger text-center text-white">Debug Mode Enabled</div>
+  <div debug id="Debug_Info_Display" class="mb-3">
+
+    <div id="supplementary_info">
+      <div class="row m-1">
+        <label class="col-2 col-form-label text-truncate text-end" for="refraction_id_input">Refraction ID :</label>
+        <div class="col-6"><input class="form-control" id="refraction_id_input" type="text" name="refraction_id"></div>
+        <div class="col"><button class="btn btn-success p-2 w-100" onclick="LoadData()">Load Record</button></div>
+      </div>
+      <div class="row m-1">
+        <label class="col-2 col-form-label text-truncate text-end" for="user_id_input">User ID :</label>
+        <div class="col-6"><input class="form-control" id="user_id_input" type="text" name="user_id"></div>
+      </div>
+      <div class="row m-1">
+        <label class="col-2 col-form-label text-truncate text-end" for="create_date_input">Creat Date :</label>
+        <div class="col-6"><input class="form-control" id="create_date_input" type="text" name="create_date"></div>
+      </div>
+    </div>
+
+    <table>
+      <tr>
+        <td> Element in Focus | </td>
+        <td>
+          <div id="CurrentFocus"></div>
+        </td>
+      </tr>
+      <tr>
+        <td> Last Numpad Key | </td>
+        <td>
+          <div id="LastNumpadKey"></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div style="padding-top: 10px;"></div>
+  <div debug id="debug-mode-indicator" class="bg-danger text-center text-white mb-1">Debug Mode Enabled</div>
+
+
+  <main class="container-fluid ps-0">
+    <div class="row pt-1">
+
+      <div class="col-8 rx-table h-100">
+
+        <div class="row">
+          <div class="col-3"><button class="btn btn-danger w-100 h-100 f-lg text-truncate" tabIndex="-1" onclick="window.location='EasySearchForOptom'">重新開始</button></div>
+          <div class="col"><button class="btn btn-success w-100 p-3 f-lg text-truncate" tabIndex="-1" onclick="ValidateThenSave()">Save 完成後按此儲存 Save</button></div>
+        </div>
+
+        <div class="row text-end mt-2">
+          <!-- <label class="col-3 col-form-label text-truncate" for="refraction_id_input">Refraction ID :</label>
+          <div class="col-6"><input class="form-control" id="refraction_id_input" type="text" name="refraction_id"></div>
+
+          <div class="col"><button class="btn btn-success mt-1 p-2 w-100" onclick="LoadData()">Load Record</button></div> -->
+          <label class="col-3 col-form-label text-truncate" for="customer_phone_input">Customer Phone :</label>
+          <div class="col-6"><input class="rx-entry form-control" id="customer_phone_input" type="text" name="tel"></div>
+        </div>
+
+        <div class="row text-end">
+          <label class="col-3 col-form-label text-truncate" for="optom_name_input">Optometrist :</label>
+          <div class="col-6"><input class="rx-entry form-control" id="optom_name_input" type="text" name="optometrist"></div>
+          <!-- <div class="col"><button class="btn btn-danger mt-1 p-2 w-100" onclick="ClearAll()">Clear All</button></div> -->
+        </div>
+
+        <div class="rx-group-header ps-2">Habbitual Rx</div>
+        <div id="habbitual_rx_group">
+          <div class="row g-2 text-center">
+            <div class="col-1"> </div>
+            <div class="col">Sph</div>
+            <div class="col">Cyl</div>
+            <div class="col">Axis</div>
+            <div class="col">ADD</div>
+            <!-- <div class="col">H</div> -->
+            <div class="col">PD</div>
+            <div class="col">VA</div>
+          </div>
+          <div id="habbitual_r" class="row g-2">
+            <div class="col-1 col-form-label text-center f-lg">R</div>
+            <div class="col"><input name="OR_Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="OR_Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="OR_Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="OR_ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <!-- <div class="col"><input name="OR_Prism_R" class="rx-entry rx-entry-h form-control" type="text"></div> -->
+            <div class="col"><input name="OR_PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            <div class="col"><input name="OR_VA_R" class="rx-entry rx-entry-va form-control" type="text"></div>
+          </div>
+          <div id="habbitual_l" class="row g-2">
+            <div class="col-1 col-form-label text-center f-lg">L</div>
+            <div class="col"><input name="OR_Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="OR_Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="OR_Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="OR_ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <!-- <div class="col"><input name="OR_Prism_L" class="rx-entry rx-entry-h form-control" type="text"></div> -->
+            <div class="col"><input name="OR_PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            <div class="col"><input name="OR_VA_L" class="rx-entry rx-entry-va form-control" type="text"></div>
+          </div>
+        </div>
+
+        <div class="rx-group-header ps-2 pt-1">Full Rx</div>
+        <div id="full_rx_group">
+          <div class="row g-2 text-center">
+            <div class="col-1"> </div>
+            <div class="col">Sph</div>
+            <div class="col">Cyl</div>
+            <div class="col">Axis</div>
+            <div class="col">ADD</div>
+            <!-- <div class="col">H</div> -->
+            <div class="col">PD</div>
+            <div class="col">VA</div>
+          </div>
+          <div id="full_r" class="row g-2">
+            <div class="col-1 col-form-label text-center f-lg">R</div>
+            <div class="col"><input name="F_Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="F_Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="F_Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="F_ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <!-- <div class="col"><input name="F_Prism_R" class="rx-entry rx-entry-h form-control" type="text"></div> -->
+            <div class="col"><input name="F_PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            <div class="col"><input name="F_VA_R" class="rx-entry rx-entry-va form-control" type="text"></div>
+          </div>
+          <div id="full_l" class="row g-2">
+            <div class="col-1 col-form-label text-center f-lg">L</div>
+            <div class="col"><input name="F_Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="F_Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="F_Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="F_ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <!-- <div class="col"><input name="F_Prism_L" class="rx-entry rx-entry-h form-control" type="text"></div> -->
+            <div class="col"><input name="F_PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            <div class="col"><input name="F_VA_L" class="rx-entry rx-entry-va form-control" type="text"></div>
+          </div>
+        </div>
+
+        <div class="row ps-2 pt-1">
+          <div class="col-4 mt-auto mb-0 pb-0">
+            <div class="row">
+              <div class="col-8 rx-group-header">Adjusted Rx</div>
+              <label class="col rx-group-header text-end" for="refraction_purposes_input">用途:</label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="row">
+              <!-- <label class="col-3 col-form-label text-truncate text-end f-lg" for="refraction_purposes_input">用途:</label> -->
+              <div class="col-8"><input id="refraction_purposes_input" name="Purposes" class="rx-entry rx-entry-purposes form-control text-center"></div>
+
+              <!-- <div class="col"><button class="btn btn-success h-100 w-100" tabIndex="-1" onclick="SaveData()">Save</button></div> -->
+
+              <!-- <?> <div class="col"><button class="btn btn-success h-100" tabIndex="-1" onclick="SendTestData()">Test Data</button></div> -->
+            </div>
+          </div>
+        </div>
+
+        <div id="adjusted_rx_group">
+
+          <div class="row g-2 text-center">
+            <div class="col-1"> </div>
+            <div class="col">Sph</div>
+            <div class="col">Cyl</div>
+            <div class="col">Axis</div>
+            <div class="col">ADD</div>
+            <!-- <div class="col">H</div> -->
+            <div class="col">PD</div>
+            <div class="col">VA</div>
+          </div>
+          <div id="adjusted_r" class="row g-2">
+            <div class="col-1 col-form-label text-center f-lg">R</div>
+            <div class="col"><input name="Sphere_R" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="Cylinder_R" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="Axis_R" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="ADD_R" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <!-- <div class="col"><input name="Prism_R" class="rx-entry rx-entry-h form-control" type="text"></div> -->
+            <div class="col"><input name="PD_R" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            <div class="col"><input name="VA_R" class="rx-entry rx-entry-va form-control" type="text"></div>
+          </div>
+          <div id="adjusted_l" class="row g-2">
+            <div class="col-1 col-form-label text-center f-lg">L</div>
+            <div class="col"><input name="Sphere_L" class="rx-entry rx-entry-sph form-control" type="text"></div>
+            <div class="col"><input name="Cylinder_L" class="rx-entry rx-entry-cyl form-control" type="text"></div>
+            <div class="col"><input name="Axis_L" class="rx-entry rx-entry-axis form-control" type="text"></div>
+            <div class="col"><input name="ADD_L" class="rx-entry rx-entry-add form-control" type="text"></div>
+            <!-- <div class="col"><input name="Prism_L" class="rx-entry rx-entry-h form-control" type="text"></div> -->
+            <div class="col"><input name="PD_L" class="rx-entry rx-entry-pd form-control" type="text"></div>
+            <div class="col"><input name="VA_L" class="rx-entry rx-entry-va form-control" type="text"></div>
+          </div>
+        </div>
+
+        <div class="pb-4"></div>
+
+      </div>
+
+      <div id="input-panel-container" class="col-4">
+
+        <div class="row row-cols-4 g-0 text-center input-panel-common">
+
+          <div class="col-6"><button class="btn-numpad" style="--aspect:2/1;" ontouch="ClearCell">Clear</button></div>
+          <div class="col-6"><button class="btn-numpad" style="--aspect:2/1;" ontouch="NextCell">Next</button></div>
+
+          <div class="col-12 pb-3"></div>
+        </div>
+
+        <div class="row row-cols-4 g-0 text-center input-panel standard-numpad va-picker">
+          <div class="col-10"><input class="btn-numpad f-lg" style="--aspect:15/3;" disabled type="text" id="numpad-display-panel"></div>
+          <div class="col-2">
+            <button class="btn-numpad f-lg" style="--aspect:3/3;" ontouch="EraseBack">
+              <svg width="28" height="28" fill="currentColor" class="bi bi-backspace" viewBox="0 0 16 16">
+                <path
+                  d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z" />
+                <path
+                  d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1h7.08zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-7.08z" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="col-6">
+            <button class="btn-numpad align-middle" style="--aspect:3/2; border:0; background-color: #e73b38; color: white; font-size: 8dvh; font-weight: 900;"
+              ontouch="SwitchPlus">＋</button>
+          </div>
+          <div class="col-6">
+            <button class="btn-numpad align-middle" style="--aspect:3/2; border:0; background-color: #346cd4; color: white; font-size: 8dvh; font-weight: 900;"
+              ontouch="SwitchMinus">－</button>
+          </div>
+          <div class="col-12"><button class="btn-numpad f-lg" style="--aspect:9/2;" ontouch="SwitchToPL">Plano 平光</button></div>
+        </div>
+
+        <div class="row row-cols-4 g-0 text-center input-panel standard-numpad">
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">7</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">8</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">9</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AppendValueThenNextCell">75</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">4</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">5</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">6</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AppendValueThenNextCell">50</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">1</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">2</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">3</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AppendValueThenNextCell">25</button></div>
+
+          <div class="col-6"><button class="btn-numpad aspect-21" ontouch="AppendValue">0</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValue">.</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AppendValueThenNextCell">00</button></div>
+        </div>
+
+        <div class="row row-cols-4 g-0 text-center input-panel va-picker hidden">
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>7</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>8</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>9</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">FC</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>4</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>5</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>6</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">BAL</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>1</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>2</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue"><small>0.</small>3</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">LP</button></div>
+
+          <div class="col-6"><button class="btn-numpad aspect-21" ontouch="AssignValue">1.0</button></div>
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">1.2</button></div>
+
+          <div class="col"><button class="btn-numpad" ontouch="AssignValue">NLP</button></div>
+        </div>
+
+        <div class="row g-2 text-center input-panel optom-picker hidden">
+          <div class="col-12"><button class="btn-picker" ontouch="AssignValue" value="COPY RX / GIVEN RX">客人提供度數<br>或 醫生處方</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="PickOptom" value="OP101012 LAW PUI LEUNG">OP101012<br>LAW PUI LEUNG</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="PickOptom" value="OP101026 YAN KA CHUN">OP101026<br>YAN KA CHUN</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="PickOptom" value="OP400195 CHEUNG SHIU WAH">OP400195<br>CHEUNG SHIU WAH</button></div>
+          <div class="col-12"><button class="btn-picker" ontouch="PickOptom" value="OP400281 HUI KAM POR">OP400281<br>HUI KAM POR</button></div>
+        </div>
+
+        <div class="row gy-2 text-center input-panel purposes-picker hidden">
+          <!-- <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="遠用">遠用</button></div>
+            <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="老花 近用">近用</button></div>
+            <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="漸進式">漸進式</button></div>
+            <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes" value="雙光">雙光</button></div>
+            <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes">Mono Vision</button></div>
+            <div class="col-6"><button class="btn-picker aspect-43" ontouch="SwitchPurposes">Contact Lens</button></div> -->
+          <div class="col-12"><button class="btn-picker" ontouch="SwitchPurposes">配眼鏡處方</button></div>
+          <!-- <div class="col-12"><button class="btn-picker" ontouch="SwitchPurposes" value="Intermediate | 中距離">中距離</button></div> -->
+          <!-- <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes">Record</button></div> -->
+          <div class="col-12"><button class="btn-picker" ontouch="SwitchPurposes" value="COPY">COPY 舊光</button></div>
+          <!-- <div class="col-12 pt-2"><button class="btn-picker" ontouch="SwitchPurposes" value="ClearAdjustedRx">Clear Adjusted Rx</button></div> -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <dialog id="save-complete-modal" class="w-50 text-center" tabindex="-1">
+
+    <div class="modal-header">
+      <h1 class="modal-title m-auto">New Refraction ID</h1>
+    </div>
+    <div class="modal-body m-auto">
+      <div id="save-processing-indicator" class="spinner-border text-black-50 hidden"></div>
+      <h1 id="refraction_id_in_modal" class="modal-title text-center" style="font-size: 160px;">Loading...</h1>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary m-auto p-4 w-40 h-100 f-lg" onclick="window.location='EasySearchForOptom'">新紀錄</button>
+      <button class="btn btn-secondary m-auto p-4 w-40 h-100 f-lg" onclick="$('#save-complete-modal')[0].close()">繼續修改</button>
+    </div>
+
+  </dialog>
+
+
+</body>
+
+</html>

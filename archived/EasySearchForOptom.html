@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>&#x1F50D;</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, user-scalable=0">
+  <link rel="icon" href="https://www.iconoptical.com/wp-content/uploads/2023/12/Rx_Icon.png" size="70x70" type="image/png">
+  <link rel="apple-touch-icon" href="https://www.iconoptical.com/wp-content/uploads/2023/12/Rx_Icon.png" size="70x70" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script>
+
+    var RefractionEntry_EndPoint = 'https://operation.iconoptical.com/RefractionEntry'
+
+    function HideOtherDetails(that) {
+      if ($(that).attr('open')) $('details').not(that).removeAttr('open')
+    }
+
+    function TemplateClone(IDSelector) {
+      return $($(IDSelector)[0].content.firstElementChild).clone()
+    }
+
+    function GetNearestForm(that) {
+      return $(that).closest(':has(form)').find('form')[0]
+    }
+
+    function GetNearestDialog(that) {
+      return $(that).closest(':has(dialog)').find('dialog')[0]
+    }
+
+    function RedirectToRefraction(that) {
+      var TargetForm = GetNearestForm(that)
+
+      // var FD = Object.fromEntries(new FormData(TargetForm))
+
+      var AsArrayFD = Array.from(new FormData(TargetForm), arr => `${arr[0]}=${arr[1]}`)
+      var RedirectLink = `${RefractionEntry_EndPoint}?${encodeURI(AsArrayFD.join('&'))}`
+      window.open(RedirectLink, '_self')
+    }
+
+    function CloseModal(that) {
+      that.closest('dialog').close()
+    }
+
+    function CheckMemberHistory(that) {
+      var LastOrderID = GetNearestForm(that)['last_order_id'].value
+      if (LastOrderID == 0) {
+        $(that).html('無購物紀錄')
+      } else {
+        window.open(`https://www.iconoptical.com/account/view-order/${LastOrderID}`, '_blank')
+      }
+    }
+
+    function GetMemberListByPhoneNumber(PhoneNumber) {
+      return $.get(`https://iconoptical.com/get_users_by_tel.php?value=${PhoneNumber}`).then(R => JSON.parse(R))
+    }
+
+    function SortMemberList() {
+
+    }
+
+    function PickUser() {
+      if (!$('#user-keyword').val()) return;
+
+      var Display = $('#DisplayMemberList')
+      Display.html(String.raw`<span class="spinner-border"></span><span class="ps-3 fw-bold">載入中...</span>`)
+      $('#PickUserModal')[0].showModal()
+
+      var PhoneNumber = $('#user-keyword').val()
+      GetMemberListByPhoneNumber(PhoneNumber).then(response => {
+        Display.html('')
+        if (response.length === 0) {
+          Display.html(`${PhoneNumber}<br>尚未登記為會員`)
+          return
+        }
+
+        for (var item of response.sort((a, b) => b.last_order_id - a.last_order_id)) {
+          var CurrentMember = TemplateClone(display_member_template)
+          var D = CurrentMember.find('details')
+          item.branch = window.localStorage.IconOpticalBranch
+          D.find('summary').html(`<div class="text-end"><b>#${item.last_order_id || '無購物紀錄'}</b></div>${item.display_name}<br>${item.tel}`)
+          D.find('form input').each((i, e) => e.value = item[e.name])
+          CurrentMember.appendTo(Display)
+        }
+        $(Display).find('details')[0].setAttribute('open', '')
+      })
+    }
+
+  </script>
+  <style>
+    .f-lg {
+      font-weight: 600;
+      font-size: 28px;
+    }
+
+    .fixed-width {
+      max-width: 400px;
+      min-width: 320px;
+    }
+
+    body {
+      background-color: #B8E2F2;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    dialog {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      overflow: visible;
+      outline: none;
+
+      &::backdrop {
+        backdrop-filter: blur(9px);
+        -webkit-backdrop-filter: blur(9px);
+      }
+
+      &[open] {
+        height: 80dvh;
+      }
+
+      .btn-close-dialog {
+        position: absolute;
+        right: 0;
+        width: fit-content;
+        transform: translateX(50%) translateY(-50%);
+      }
+
+    }
+
+
+    details summary {
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+    }
+
+    .highlight-when-open:has(details[open]) {
+      border: 4px green solid;
+      font-weight: 600;
+    }
+
+    .min-w-40 {
+      min-width: 40%;
+    }
+
+    .min-w-25vw {
+      min-width: 25vw;
+    }
+
+    .aspect2-1 {
+      aspect-ratio: 2 / 1;
+    }
+
+    .aspect5-1 {
+      aspect-ratio: 5 / 1;
+    }
+  </style>
+</head>
+
+<template id="display_member_template">
+  <div class="card shadow w-auto mb-2 m-auto highlight-when-open">
+    <div class="card-body p-1 text-center">
+      <details ontoggle="HideOtherDetails(this)">
+        <summary class="fs-3 p-2 DisplayMember "></summary>
+        <div class="m-auto p-2 details-content">
+          <form>
+            <input type="hidden" name="display_name" value>
+            <input type="hidden" name="user_id" value>
+            <input type="hidden" name="tel" value>
+            <input type="hidden" name="last_order_id" value>
+            <!-- <input type="hidden" name="branch" value> -->
+          </form>
+          <div class="row gap-2 m-auto">
+            <button class="col btn btn-primary fs-3 fw-bold p-3 " onclick="CheckMemberHistory(this)">查看紀錄</button>
+            <button class="col btn btn-success fs-3 fw-bold p-3 " onclick="CloseModal(this);RedirectToRefraction(this);">驗眼</button>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</template>
+
+<dialog id="PickUserModal" style="width:86vw; max-width: 600px;">
+  <div class="card border-success fs-2 ">
+    <button class="btn btn-close-dialog btn-danger fw-bold " onclick="CloseModal(this)">X</button>
+
+    <div class="card-header text-bg-success fw-bold ">請選擇客人</div>
+    <div class="card-body text-center overflow-y-auto " style="max-height: 70dvh;">
+      <div class="p-3" id="DisplayMemberList"></div>
+    </div>
+    <!-- <div class="card-footer text-center ">
+      <button class="btn btn-primary p-3 fs-3 fw-bold " onclick="RegisterNewMember();CloseModal(this);">登記新會員</button>
+    </div> -->
+  </div>
+</dialog>
+
+<body>
+  <svg style="display:none;" version="2.0">
+    <defs>
+      <symbol id="search-symbol">
+        <path
+          d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <main class="container fixed-width mt-2 text-center">
+    <img class="w-auto mb-3 me-3" src="https://www.iconoptical.com/wp-content/uploads/2023/12/Rx_Icon.png" />
+    <div class="fs-2 fw-bold text-center">視光師版</div>
+    <div class="card shadow-lg p-2 bg-body-tertiary">
+      <div class="card-body">
+
+        <!-- <form class="input-group mb-5" autocomplete="off" onsubmit='PickUser(); return false;'>
+          <input type="text" inputmode="numeric" class="form-control shadow-none border-success f-lg ps-4" id="user-keyword" placeholder="輸入電話" autofocus>
+          <button tabindex="-1" class="btn btn-success p-3" type="submit">
+            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" version="2.0">
+              <use href="#search-symbol" />
+            </svg>
+          </button>
+        </form> -->
+
+        <button tabindex="-1" class="btn btn-success  p-3 w-100 mb-5" type="button" onclick="window.open('https://operation.iconoptical.com/RefractionQueue','_self')">
+          <div class="f-lg">輪候驗眼</div>
+        </button>
+<!-- 
+        <button tabindex="-1" class="btn btn-primary p-3 w-100 mb-5" type="button" onclick="window.open('https://www.iconoptical.com/CreateUser.php','_blank')">
+          <div class="f-lg">新會員登記</div>
+        </button> -->
+
+        <!-- <button tabindex="-1" class="btn btn-success p-3 w-100 mb-5" type="button" onclick="window.open('RefractionViewer','_self')">
+          <div class="f-lg">檢視度數紀錄</div>
+        </button> -->
+
+        <button tabindex="-1" class="btn btn-primary p-3 w-100 mb-3" type="button" onclick="window.open('https://operation.iconoptical.com/RefractionMultipleViewer','_self')">
+          <div class="f-lg">檢視所有紀錄</div>
+        </button>
+
+      </div>
+    </div>
+  </main>
+  <div class="text-center">
+    <a href="EasySearch">切換至鋪面專用版</a>
+  </div>
+
+</body>
+
+</html>
